@@ -3,141 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I.M.L. | CYBER-HUB v2.0</title>
+    <title>I.M.L. | PROTOCOL_REVEALED</title>
     <style>
-        :root { --primary: #00d2ff; --bg: #020202; --glitch-red: #ff0055; --glitch-blue: #00f7ff; }
+        :root { --primary: #00d2ff; --bg: #010101; --glitch-red: #ff0055; --glitch-blue: #00f7ff; }
         
-        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Courier New', monospace; overflow-x: hidden; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Courier New', monospace; overflow-x: hidden; user-select: none; }
 
-        #canvas-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        #canvas-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; transition: filter 0.5s; }
 
-        /* CYBER HUD ELEMENTS */
-        .hud-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; border: 1px solid rgba(0, 210, 255, 0.1); }
-        .hud-coords { position: absolute; bottom: 20px; left: 20px; font-size: 10px; color: var(--primary); letter-spacing: 2px; }
-        .hud-status { position: absolute; top: 80px; right: 20px; font-size: 10px; color: var(--primary); text-align: right; line-height: 1.5; }
-
-        /* GLITCH HEADER */
-        .header-container { padding: 60px 20px; text-align: center; position: relative; }
-        .logo-glitch { width: 140px; border-radius: 50%; filter: drop-shadow(0 0 15px var(--primary)); position: relative; z-index: 5; }
-        
-        /* GLITCH TEXT EFFECT */
-        .glitch-text { font-size: 4rem; font-weight: 900; text-transform: uppercase; letter-spacing: 15px; position: relative; display: inline-block; }
-        .glitch-text::before, .glitch-text::after { content: 'I.M.L.'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8; }
-        .glitch-text:hover::before { animation: glitch-anim 0.3s infinite; color: var(--glitch-red); left: -2px; }
-        .glitch-text:hover::after { animation: glitch-anim 0.3s infinite reverse; color: var(--glitch-blue); left: 2px; }
-
-        @keyframes glitch-anim {
-            0% { transform: translate(0); }
-            20% { transform: translate(-3px, 3px); }
-            40% { transform: translate(-3px, -3px); }
-            60% { transform: translate(3px, 3px); }
-            80% { transform: translate(3px, -3px); }
-            100% { transform: translate(0); }
+        /* SECRET MODAL */
+        #secret-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(255, 0, 85, 0.1); backdrop-filter: blur(20px);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 2000; color: var(--glitch-red); text-align: center;
         }
 
-        /* PROFESSIONAL GRID WITH CARD GLITCH */
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; padding: 40px 10%; position: relative; z-index: 10; }
-        .video-card { background: rgba(10, 10, 10, 0.9); border: 1px solid #333; border-radius: 4px; overflow: hidden; transition: 0.2s; }
-        .video-card:hover { border-color: var(--primary); transform: skewX(-2deg); box-shadow: 5px 5px 0px var(--glitch-red), -5px -5px 0px var(--glitch-blue); }
-        iframe { width: 100%; aspect-ratio: 16/9; border: 0; filter: grayscale(0.5); transition: 0.3s; }
-        .video-card:hover iframe { filter: grayscale(0); }
+        /* HUD OVERLAY */
+        .hud-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+        .hud-line { position: absolute; background: rgba(0, 210, 255, 0.1); }
+        .h-line { width: 100%; height: 1px; top: 50%; }
+        .v-line { height: 100%; width: 1px; left: 50%; }
 
-        .info { padding: 15px; border-top: 1px solid #222; }
-        .info h3 { margin: 0; font-size: 1rem; color: var(--primary); }
+        /* SCANNER TEXT */
+        .hud-text { position: absolute; font-size: 10px; color: var(--primary); letter-spacing: 2px; text-transform: uppercase; }
+        #mouse-tracker { bottom: 20px; left: 20px; }
+        #system-status { top: 20px; right: 20px; text-align: right; }
+
+        /* HEADER & LOGO */
+        .header-container { padding: 80px 20px; text-align: center; }
+        .logo-glitch { width: 150px; border-radius: 50%; border: 1px solid var(--primary); filter: drop-shadow(0 0 15px var(--primary)); cursor: pointer; }
+        
+        .glitch-text { font-size: 5rem; font-weight: 900; letter-spacing: 20px; position: relative; color: white; }
+        .glitch-text:hover { color: transparent; }
+        .glitch-text:hover::before { content: 'I.M.L.'; position: absolute; left: 0; color: var(--glitch-red); animation: shift 0.1s infinite; }
+        .glitch-text:hover::after { content: 'I.M.L.'; position: absolute; left: 5px; color: var(--glitch-blue); animation: shift 0.1s infinite reverse; }
+
+        @keyframes shift {
+            0% { transform: translate(2px, 2px); }
+            50% { transform: translate(-2px, -2px); }
+            100% { transform: translate(2px, -2px); }
+        }
+
+        /* VIDEO GRID */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; padding: 0 10% 100px; position: relative; z-index: 10; }
+        .video-card { background: #000; border: 1px solid #1a1a1a; transition: 0.3s; position: relative; }
+        .video-card:hover { border-color: var(--glitch-red); transform: scale(1.02); z-index: 20; }
+        iframe { width: 100%; aspect-ratio: 16/9; border: 0; opacity: 0.7; transition: 0.5s; }
+        .video-card:hover iframe { opacity: 1; filter: contrast(1.2); }
+
+        /* HOLD PROGRESS BAR */
+        #hold-progress { position: fixed; bottom: 0; left: 0; height: 4px; background: var(--glitch-red); width: 0%; z-index: 3000; transition: width 0.1s linear; }
+
     </style>
 </head>
-<body>
+<body onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()">
 
+    <div id="hold-progress"></div>
     <canvas id="canvas-layer"></canvas>
 
+    <div id="secret-overlay">
+        <h1 style="letter-spacing: 20px; font-size: 3rem;">ENCRYPTION BROKEN</h1>
+        <p style="max-width: 600px;">"THE FREQUENCIES ARE NOT JUST SOUND. THEY ARE COORDINATES. WE ARE BUILDING THE NEXT DIMENSION."</p>
+        <button onclick="closeSecret()" style="background: none; border: 1px solid var(--glitch-red); color: var(--glitch-red); padding: 10px 20px; cursor: pointer; margin-top: 20px;">RETURN TO SURFACE</button>
+    </div>
+
     <div class="hud-overlay">
-        <div class="hud-coords" id="mouse-tracker">LOC: 0.00 / 0.00</div>
-        <div class="hud-status">SYSTEM: ACTIVE<br>SIGNAL: HIGH FREQUENCY<br>MODE: ANALYZING_SOUND</div>
+        <div class="hud-line h-line"></div>
+        <div class="hud-line v-line"></div>
+        <div class="hud-text" id="mouse-tracker">X-000 // Y-000</div>
+        <div class="hud-text" id="system-status">DECRYPTING... 14%<br>VIBE: UNSTABLE<br>ORIGIN: UNKNOWN</div>
     </div>
 
     <div class="header-container">
         <img src="1000032165.png" class="logo-glitch" alt="IML">
-        <br>
         <h1 class="glitch-text">I.M.L.</h1>
+        <p style="letter-spacing: 5px; opacity: 0.4;">HOLD CLICK ANYWHERE TO BREACH</p>
     </div>
 
     <div class="video-grid">
-        <div class="video-card">
-            <iframe src="https://www.youtube.com/embed/ZSYhsA1_yL8"></iframe>
-            <div class="info"><h3>NO FILTER NEEDED</h3></div>
-        </div>
-        <div class="video-card">
-            <iframe src="https://www.youtube.com/embed/irbqdvb9rLY"></iframe>
-            <div class="info"><h3>THE VIEW FROM HERE</h3></div>
-        </div>
-        <div class="video-card">
-            <iframe src="https://www.youtube.com/embed/8YkRKiAjGO8"></iframe>
-            <div class="info"><h3>L'ÉCLAT ET LE CHAOS</h3></div>
-        </div>
+        <div class="video-card"><iframe src="https://www.youtube.com/embed/ZSYhsA1_yL8"></iframe></div>
+        <div class="video-card"><iframe src="https://www.youtube.com/embed/irbqdvb9rLY"></iframe></div>
+        <div class="video-card"><iframe src="https://www.youtube.com/embed/8YkRKiAjGO8"></iframe></div>
     </div>
 
     <script>
         const canvas = document.getElementById('canvas-layer');
         const ctx = canvas.getContext('2d');
         const tracker = document.getElementById('mouse-tracker');
-        let points = [];
+        const progress = document.getElementById('hold-progress');
+        const secret = document.getElementById('secret-overlay');
+        
         let mouse = { x: 0, y: 0 };
+        let points = [];
+        let holdTimer;
+        let holdPercent = 0;
 
+        // --- BREACH LOGIC ---
+        function startHold() {
+            holdPercent = 0;
+            holdTimer = setInterval(() => {
+                holdPercent += 2;
+                progress.style.width = holdPercent + "%";
+                if(holdPercent >= 100) {
+                    clearInterval(holdTimer);
+                    secret.style.display = 'flex';
+                }
+            }, 50);
+        }
+
+        function endHold() {
+            clearInterval(holdTimer);
+            holdPercent = 0;
+            progress.style.width = "0%";
+        }
+
+        function closeSecret() { secret.style.display = 'none'; }
+
+        // --- BACKGROUND LOGIC ---
         window.onmousemove = (e) => { 
-            mouse.x = e.clientX; 
-            mouse.y = e.clientY;
-            tracker.innerText = `LOC: ${mouse.x}.00 / ${mouse.y}.00`;
+            mouse.x = e.clientX; mouse.y = e.clientY; 
+            tracker.innerText = `X-${mouse.x.toString().padStart(3,'0')} // Y-${mouse.y.toString().padStart(3,'0')}`;
         };
 
         function init() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             points = [];
-            for(let i=0; i<60; i++) points.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                vX: (Math.random() - 0.5) * 1.5,
-                vY: (Math.random() - 0.5) * 1.5
-            });
+            for(let i=0; i<80; i++) points.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2 });
         }
 
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw Scanned Grid
-            ctx.strokeStyle = 'rgba(0, 210, 255, 0.05)';
-            for(let i=0; i<canvas.width; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
+        function animate() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.strokeStyle = 'rgba(0, 210, 255, 0.1)';
+            ctx.strokeRect(mouse.x-50, mouse.y-50, 100, 100); // Mouse Scanner Box
 
             points.forEach(p => {
-                p.x += p.vX; p.y += p.vY;
-                if(p.x < 0 || p.x > canvas.width) p.vX *= -1;
-                if(p.y < 0 || p.y > canvas.height) p.vY *= -1;
-
+                p.x += p.vx; p.y += p.vy;
+                if(p.x<0 || p.x>canvas.width) p.vx *= -1;
+                if(p.y<0 || p.y>canvas.height) p.vy *= -1;
+                
                 ctx.fillStyle = 'rgba(0, 210, 255, 0.5)';
-                ctx.fillRect(p.x, p.y, 2, 2);
+                ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI*2); ctx.fill();
 
-                let dist = Math.hypot(mouse.x - p.x, mouse.y - p.y);
-                if(dist < 200) {
-                    ctx.strokeStyle = `rgba(0, 210, 255, ${1 - dist/200})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.beginPath();
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(mouse.x, mouse.y);
-                    ctx.stroke();
-                    
-                    // Add small scanning circles
-                    if(dist < 50) {
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
-                        ctx.stroke();
-                    }
+                let d = Math.hypot(mouse.x - p.x, mouse.y - p.y);
+                if(d < 180) {
+                    ctx.strokeStyle = `rgba(0, 210, 255, ${1 - d/180})`;
+                    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
                 }
             });
-            requestAnimationFrame(draw);
+            requestAnimationFrame(animate);
         }
 
         window.onresize = init;
-        init(); draw();
+        init(); animate();
     </script>
 </body>
 </html>
