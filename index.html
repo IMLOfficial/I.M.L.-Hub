@@ -40,3 +40,116 @@
         /* BREACH BAR */
         #hold-progress { position: fixed; bottom: 0; left: 0; height: 6px; background: var(--glitch-red); width: 0%; z-index: 3000; box-shadow: 0 0 15px var(--glitch-red); }
     </style>
+</head>
+<body onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()">
+
+    <div id="hold-progress"></div>
+    <canvas id="canvas-layer"></canvas>
+
+    <div id="secret-overlay">
+        <h1 style="letter-spacing: 15px; font-size: 3rem; text-shadow: 0 0 20px var(--glitch-red);">ACCESS GRANTED</h1>
+        <p style="max-width: 600px; padding: 20px;">"THE FREQUENCIES ARE NOT JUST SOUND. THEY ARE COORDINATES. I.M.L. HAS BREACHED THE PERIMETER."</p>
+        <button onclick="closeSecret()" style="background: none; border: 1px solid var(--glitch-red); color: var(--glitch-red); padding: 15px 30px; cursor: pointer; font-family: 'Courier New';">REBOOT SYSTEM</button>
+    </div>
+
+    <div class="hud-overlay">
+        <div class="hud-text" id="mouse-tracker">X-000 // Y-000</div>
+        <div class="hud-text" id="system-status">DECRYPTING... 42%<br>VIBE: UNSTABLE<br>ORIGIN: IML_HUB</div>
+    </div>
+
+    <div class="header-container">
+        <img src="1000032165.png" class="logo-glitch" alt="IML">
+        <h1 class="glitch-text">I.M.L.</h1>
+        <p style="letter-spacing: 3px; opacity: 0.5; font-size: 10px;">LONG-PRESS ANYWHERE TO OVERRIDE</p>
+    </div>
+
+    <div class="video-grid">
+        <div class="video-card"><iframe src="https://www.youtube.com/embed/ZSYhsA1_yL8"></iframe></div>
+        <div class="video-card"><iframe src="https://www.youtube.com/embed/irbqdvb9rLY"></iframe></div>
+        <div class="video-card"><iframe src="https://www.youtube.com/embed/8YkRKiAjGO8"></iframe></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas-layer');
+        const ctx = canvas.getContext('2d');
+        const progress = document.getElementById('hold-progress');
+        const secret = document.getElementById('secret-overlay');
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        let mouse = { x: 0, y: 0 };
+        let points = [];
+        let holdTimer;
+        let holdPercent = 0;
+
+        // --- THE CRAZY GLITCH SOUND GENERATOR ---
+        function synthGlitch() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.5);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        }
+
+        // --- BREACH LOGIC ---
+        function startHold() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            holdPercent = 0;
+            holdTimer = setInterval(() => {
+                holdPercent += 2;
+                progress.style.width = holdPercent + "%";
+                if(holdPercent >= 100) {
+                    clearInterval(holdTimer);
+                    synthGlitch(); // TRIGGER THE SOUND
+                    secret.style.display = 'flex';
+                }
+            }, 40);
+        }
+
+        function endHold() {
+            clearInterval(holdTimer);
+            holdPercent = 0;
+            progress.style.width = "0%";
+        }
+
+        function closeSecret() { secret.style.display = 'none'; }
+
+        // --- INTERACTIVE BACKGROUND ---
+        window.onmousemove = (e) => { 
+            mouse.x = e.clientX; mouse.y = e.clientY; 
+            document.getElementById('mouse-tracker').innerText = `X-${mouse.x} // Y-${mouse.y}`;
+        };
+
+        function init() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            points = [];
+            for(let i=0; i<70; i++) points.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2 });
+        }
+
+        function animate() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            points.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x<0 || p.x>canvas.width) p.vx *= -1;
+                if(p.y<0 || p.y>canvas.height) p.vy *= -1;
+                ctx.fillStyle = 'rgba(0, 210, 255, 0.5)';
+                ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI*2); ctx.fill();
+                let d = Math.hypot(mouse.x - p.x, mouse.y - p.y);
+                if(d < 200) {
+                    ctx.strokeStyle = `rgba(0, 210, 255, ${1 - d/200})`;
+                    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.onresize = init;
+        init(); animate();
+    </script>
+</body>
+</html>
