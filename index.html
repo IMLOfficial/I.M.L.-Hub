@@ -3,111 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="manifest.json">
-    <title>I.M.L. Official Hub</title>
+    <title>I.M.L. | Live Interactive Hub</title>
     <style>
-        :root { 
-            --primary: #00d2ff; 
-            --bg: #050505; 
-            --glass: rgba(255, 255, 255, 0.03);
+        :root { --primary: #00d2ff; --bg: #050505; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+
+        /* INTERACTIVE BACKGROUND CANVAS */
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; }
+
+        /* LIVE AUDIO PLAYER BAR */
+        .audio-player { 
+            position: sticky; top: 0; z-index: 2000; 
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px);
+            padding: 15px; border-bottom: 1px solid var(--primary);
+            display: flex; align-items: center; justify-content: center; gap: 20px;
         }
 
-        body { 
-            background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0;
-            background-image: linear-gradient(rgba(0, 210, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 210, 255, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
+        /* CONTENT WRAPPER */
+        .content { position: relative; z-index: 10; text-align: center; padding-top: 40px; }
+        
+        .logo { 
+            width: 120px; border-radius: 50%; border: 2px solid var(--primary);
+            box-shadow: 0 0 30px var(--primary); transition: 0.5s;
         }
 
-        /* INSTALL BANNER */
-        #pwa-area { display: none; background: #000; padding: 10px; text-align: center; border-bottom: 1px solid var(--primary); }
-        .install-btn { background: var(--primary); color: black; padding: 10px 25px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; box-shadow: 0 0 15px var(--primary); }
+        .about-box {
+            max-width: 700px; margin: 40px auto; padding: 25px;
+            background: rgba(255,255,255,0.05); border-radius: 15px;
+            border: 1px solid rgba(0,210,255,0.2); backdrop-filter: blur(10px);
+        }
 
-        /* HEADER & SOCIALS */
-        .social-bar { padding: 15px; display: flex; justify-content: center; gap: 30px; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; }
-        .social-bar a { text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; transition: 0.3s; }
-        .tiktok-link { color: #ff0050; } .yt-link { color: #ff0000; }
-        .social-bar a:hover { transform: scale(1.1); text-shadow: 0 0 15px currentColor; }
-
-        header { padding: 60px 20px; text-align: center; }
-        .logo { width: 150px; border-radius: 50%; border: 2px solid var(--primary); box-shadow: 0 0 20px var(--primary); animation: pulse 3s infinite alternate; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
-
-        /* ABOUT SECTION */
-        .about-section { max-width: 800px; margin: 0 auto 60px; padding: 30px; background: var(--glass); border-radius: 20px; border: 1px solid rgba(0, 210, 255, 0.1); backdrop-filter: blur(10px); text-align: center; }
-        .about-section h2 { color: var(--primary); text-transform: uppercase; letter-spacing: 4px; }
-        .about-section p { line-height: 1.6; opacity: 0.8; font-size: 1.1rem; }
-
-        /* DISCOGRAPHY GRID */
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; padding: 20px; max-width: 1200px; margin: 0 auto; }
-        .card { background: #111; border-radius: 15px; border: 1px solid #333; overflow: hidden; transition: 0.4s; }
-        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
-        .info { padding: 20px; text-align: left; }
-        .info h3 { margin: 0 0 10px 0; color: var(--primary); font-size: 1.2rem; }
-        .info p { margin: 0; font-size: 0.9rem; opacity: 0.7; line-height: 1.4; }
+        /* DYNAMIC VIDEO FEED */
+        .video-feed {
+            display: flex; overflow-x: auto; gap: 20px; padding: 40px;
+            scrollbar-width: thin; scrollbar-color: var(--primary) transparent;
+        }
+        .video-card {
+            min-width: 350px; background: #111; border-radius: 12px;
+            border: 1px solid #333; overflow: hidden; transition: 0.3s;
+        }
+        .video-card:hover { border-color: var(--primary); transform: scale(1.02); }
+        .video-info { padding: 15px; text-align: left; }
+        .video-info h3 { color: var(--primary); margin: 0; }
         iframe { width: 100%; aspect-ratio: 16/9; border: 0; }
 
-        footer { padding: 60px; text-align: center; opacity: 0.4; font-size: 12px; }
     </style>
 </head>
 <body>
 
-    <div id="pwa-area">
-        <button class="install-btn" id="installBtn">INSTALL I.M.L. APP</button>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="audio-player">
+        <span><strong>LIVE STREAM:</strong> No Filter Needed</span>
+        <audio controls src="YOUR_AUDIO_FILE_URL_HERE.mp3" style="height: 30px;"></audio>
     </div>
 
-    <nav class="social-bar">
-        <a href="https://www.tiktok.com/@i.m.l._official" target="_blank" class="tiktok-link">TikTok</a>
-        <a href="https://youtube.com/@i.m.l._official" target="_blank" class="yt-link">YouTube</a>
-    </nav>
+    <div class="content">
+        <header>
+            <img src="1000032165.png" class="logo">
+            <h1 style="letter-spacing: 8px;">I.M.L. OFFICIAL</h1>
+        </header>
 
-    <header>
-        <img src="1000032165.png" class="logo" alt="IML Logo">
-        <h1>I.M.L. OFFICIAL</h1>
-    </header>
-
-    <section class="about-section">
-        <h2>The Mission</h2>
-        <p>I.M.L. Official is a digital-first audiovisual project focused on blending high-voltage electronic energy with cinematic storytelling. Every track is a gateway to a new atmosphere.</p>
-    </section>
-
-    <main class="video-grid">
-        <div class="card">
-            <iframe src="https://www.youtube.com/embed/ZSYhsA1_yL8"></iframe>
-            <div class="info">
-                <h3>No Filter Needed</h3>
-                <p>A deep dive into raw atmosphere and organic soundscapes. This track focuses on the beauty of unrefined emotion and the power of simplicity.</p>
-            </div>
+        <div class="about-box">
+            <h2>THE MISSION</h2>
+            <p>Experience the intersection of high-frequency sound and visual chaos. I.M.L. is more than music; it's a digital atmosphere designed to be felt.</p>
         </div>
 
-        <div class="card">
-            <iframe src="https://www.youtube.com/embed/irbqdvb9rLY"></iframe>
-            <div class="info">
-                <h3>The View From Here</h3>
-                <p>An uplifting journey through melodic layers, designed to evoke the feeling of standing on the edge of a new discovery.</p>
+        <h2 style="color: var(--primary);">LATEST VISUALS</h2>
+        <div class="video-feed">
+            <div class="video-card">
+                <iframe src="https://www.youtube.com/embed/ZSYhsA1_yL8"></iframe>
+                <div class="video-info"><h3>No Filter Needed</h3><p>Raw emotion. Pure sound.</p></div>
             </div>
-        </div>
-
-        <div class="card">
-            <iframe src="https://www.youtube.com/embed/8YkRKiAjGO8"></iframe>
-            <div class="info">
-                <h3>L'Éclat et le Chaos</h3>
-                <p>Explaining the balance between light and noise. A high-energy track that defines the signature I.M.L. soundscapes.</p>
+            <div class="video-card">
+                <iframe src="https://www.youtube.com/embed/irbqdvb9rLY"></iframe>
+                <div class="video-info"><h3>The View From Here</h3><p>Cinematic melodic journey.</p></div>
             </div>
-        </div>
-    </main>
-
-    <footer>&copy; 2026 I.M.L. | THE SOUND OF THE FUTURE</footer>
+            <div class="video-card">
+                <iframe src="https://www.youtube.com/embed/8YkRKiAjGO8"></iframe>
+                <div class="video-info"><h3>L'Éclat et le Chaos</h3><p>High-energy signature track.</p></div>
+            </div>
+            </div>
+    </div>
 
     <script>
-        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
-        let prompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault(); prompt = e;
-            document.getElementById('pwa-area').style.display = 'block';
-        });
-        document.getElementById('installBtn').addEventListener('click', () => {
-            if(prompt) prompt.prompt();
-        });
+        // INTERACTIVE PARTICLE SYSTEM (LOGO INSPIRED)
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const mouse = { x: null, y: null };
+
+        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            for(let i=0; i<80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speedX: Math.random() * 1 - 0.5,
+                    speedY: Math.random() * 1 - 0.5
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.speedX; p.y += p.speedY;
+                if(p.x > canvas.width || p.x < 0) p.speedX *= -1;
+                if(p.y > canvas.height || p.y < 0) p.speedY *= -1;
+
+                // Draw Particle
+                ctx.fillStyle = '#00d2ff33';
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+
+                // Connect to Mouse
+                let dx = mouse.x - p.x; let dy = mouse.y - p.y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                if(dist < 150) {
+                    ctx.strokeStyle = `rgba(0, 210, 255, ${1 - dist/150})`;
+                    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+        init(); animate();
     </script>
 </body>
 </html>
