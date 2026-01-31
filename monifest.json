@@ -1,0 +1,11 @@
+{
+  "name": "I.M.L. Official",
+  "short_name": "IML",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#00d2ff",
+  "icons": [
+    { "src": "1000032165.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

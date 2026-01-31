@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="description" content="Official Hub for I.M.L. - Stream the latest tracks, watch new music videos, and join the movement.">
+    <meta name="keywords" content="IML, IML Official, New Music, YouTube Artist, Music Hub">
+    <meta property="og:title" content="I.M.L. Official | Music & Visuals">
+    <meta property="og:description" content="The official destination for I.M.L. tracks and videos. Install the app now.">
+    <meta property="og:image" content="1000032165.png">
+    <meta property="og:url" content="https://yourusername.github.io/iml-hub/">
+    
+    <link rel="manifest" href="manifest.json">
+    <title>I.M.L. Official Hub</title>
+    <style>
+        :root { --primary: #00d2ff; --bg: #050505; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; text-align: center; }
+        
+        /* SOCIAL NAV */
+        .social-bar { padding: 15px; display: flex; justify-content: center; gap: 40px; background: #000; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
+        .social-bar a { text-decoration: none; font-weight: bold; text-transform: uppercase; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .tiktok-link { color: #ff0050; }
+        .yt-link { color: #ff0000; }
+        .social-bar a:hover { transform: scale(1.1); text-shadow: 0 0 10px currentColor; }
+
+        /* APP INSTALL BANNER */
+        #pwa-area { display: none; background: #111; padding: 15px; border-bottom: 1px solid var(--primary); }
+        .install-btn { background: var(--primary); color: black; padding: 10px 20px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px var(--primary); }
+
+        header { padding: 60px 20px; }
+        .logo { width: 140px; height: 140px; border-radius: 50%; border: 3px solid var(--primary); box-shadow: 0 0 30px var(--primary); margin-bottom: 20px; }
+        
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: #111; border-radius: 12px; border: 1px solid #333; overflow: hidden; transition: 0.3s; }
+        .card:hover { border-color: var(--primary); }
+        iframe { width: 100%; aspect-ratio: 16/9; border: 0; }
+
+        footer { padding: 40px; opacity: 0.5; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div id="pwa-area">
+        <button class="install-btn" id="installBtn">INSTALL I.M.L. APP</button>
+    </div>
+
+    <nav class="social-bar">
+        <a href="https://www.tiktok.com/@i.m.l._official" target="_blank" class="tiktok-link">TikTok</a>
+        <a href="https://youtube.com/@i.m.l._official" target="_blank" class="yt-link">YouTube</a>
+    </nav>
+
+    <header>
+        <img src="1000032165.png" class="logo" alt="IML Logo">
+        <h1>I.M.L. OFFICIAL</h1>
+    </header>
+
+    <main class="video-grid">
+        <div class="card"><iframe src="https://www.youtube.com/embed/ZSYhsA1_yL8"></iframe></div>
+        <div class="card"><iframe src="https://www.youtube.com/embed/irbqdvb9rLY"></iframe></div>
+        <div class="card"><iframe src="https://www.youtube.com/embed/8YkRKiAjGO8"></iframe></div>
+    </main>
+
+    <footer>&copy; 2026 I.M.L. | Optimized for PC, Android, & iOS</footer>
+
+    <script>
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+        let prompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); prompt = e;
+            document.getElementById('pwa-area').style.display = 'block';
+        });
+        document.getElementById('installBtn').addEventListener('click', () => {
+            if(prompt) prompt.prompt();
+        });
+    </script>
+</body>
+</html>
