@@ -3,64 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I.M.L. | PROTOCOL_REVEALED</title>
+    <title>I.M.L. | SYSTEM_OVERRIDE</title>
     <style>
-        :root { --primary: #00d2ff; --bg: #010101; --glitch-red: #ff0055; --glitch-blue: #00f7ff; }
+        :root { --primary: #00d2ff; --alert: #ff0055; --bg: #010101; }
         
         body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Courier New', monospace; overflow-x: hidden; user-select: none; }
 
+        /* CANVAS LAYER */
         #canvas-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 
-        /* SECRET MODAL */
+        /* SECRET MODAL (HIDDEN) */
         #secret-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(10px);
             display: none; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 2000; color: var(--glitch-red); text-align: center;
+            z-index: 2000; color: var(--alert); text-align: center;
         }
 
-        /* SCANNER HUD */
-        .hud-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
-        .hud-text { position: absolute; font-size: 10px; color: var(--primary); letter-spacing: 2px; text-transform: uppercase; }
+        /* HUD OVERLAY */
+        .hud-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; transition: color 0.2s; }
+        .hud-text { position: absolute; font-size: 10px; color: var(--primary); letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; }
         #mouse-tracker { bottom: 20px; left: 20px; }
         #system-status { top: 20px; right: 20px; text-align: right; }
 
-        /* LOGO & TEXT */
+        /* HEADER */
         .header-container { padding: 80px 20px; text-align: center; }
-        .logo-glitch { width: 150px; border-radius: 50%; border: 1px solid var(--primary); filter: drop-shadow(0 0 15px var(--primary)); }
-        .glitch-text { font-size: clamp(2rem, 10vw, 5rem); font-weight: 900; letter-spacing: 20px; position: relative; }
-
+        .logo-glitch { width: 150px; border-radius: 50%; border: 1px solid var(--primary); filter: drop-shadow(0 0 15px var(--primary)); transition: 0.3s; }
+        
+        .glitch-text { font-size: clamp(3rem, 10vw, 6rem); font-weight: 900; letter-spacing: 15px; position: relative; transition: 0.3s; }
+        
         /* VIDEO GRID */
-        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 0 10% 100px; position: relative; z-index: 10; }
-        .video-card { background: #000; border: 1px solid #1a1a1a; transition: 0.3s; }
-        .video-card:hover { border-color: var(--glitch-red); transform: scale(1.02); }
-        iframe { width: 100%; aspect-ratio: 16/9; border: 0; opacity: 0.6; transition: 0.5s; }
-        .video-card:hover iframe { opacity: 1; }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; padding: 0 10% 100px; position: relative; z-index: 10; }
+        .video-card { background: #050505; border: 1px solid #222; transition: 0.3s; }
+        .video-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 210, 255, 0.1); }
+        iframe { width: 100%; aspect-ratio: 16/9; border: 0; opacity: 0.7; transition: 0.5s; }
+        .video-card:hover iframe { opacity: 1; filter: contrast(1.1); }
 
-        /* BREACH BAR */
-        #hold-progress { position: fixed; bottom: 0; left: 0; height: 6px; background: var(--glitch-red); width: 0%; z-index: 3000; box-shadow: 0 0 15px var(--glitch-red); }
+        /* RED PROGRESS BAR */
+        #hold-progress { position: fixed; bottom: 0; left: 0; height: 10px; background: var(--alert); width: 0%; z-index: 3000; box-shadow: 0 0 20px var(--alert); transition: width 0.05s linear; }
+
+        /* ALERT STATE CLASSES */
+        body.alert-mode .hud-text { color: var(--alert) !important; text-shadow: 0 0 10px var(--alert); }
+        body.alert-mode .logo-glitch { border-color: var(--alert); filter: drop-shadow(0 0 25px var(--alert)); }
+        body.alert-mode .video-card { border-color: #333; opacity: 0.3; } /* Dim videos during breach */
+
     </style>
 </head>
-<body onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()">
+<body onmousedown="startHold()" onmouseup="endHold()" onmouseleave="endHold()" ontouchstart="startHold()" ontouchend="endHold()">
 
     <div id="hold-progress"></div>
     <canvas id="canvas-layer"></canvas>
 
     <div id="secret-overlay">
-        <h1 style="letter-spacing: 15px; font-size: 3rem; text-shadow: 0 0 20px var(--glitch-red);">ACCESS GRANTED</h1>
-        <p style="max-width: 600px; padding: 20px;">"THE FREQUENCIES ARE NOT JUST SOUND. THEY ARE COORDINATES. I.M.L. HAS BREACHED THE PERIMETER."</p>
-        <button onclick="closeSecret()" style="background: none; border: 1px solid var(--glitch-red); color: var(--glitch-red); padding: 15px 30px; cursor: pointer; font-family: 'Courier New';">REBOOT SYSTEM</button>
+        <h1 style="letter-spacing: 10px; font-size: 3rem; text-shadow: 0 0 20px var(--alert); margin: 0;">SYSTEM BREACHED</h1>
+        <p style="max-width: 600px; padding: 20px; line-height: 1.6;">"WELCOME TO THE CORE.<br>THE NEXT FREQUENCY DROP IS IMMINENT."</p>
+        <button onclick="closeSecret()" style="background: transparent; border: 1px solid var(--alert); color: var(--alert); padding: 15px 40px; cursor: pointer; font-family: 'Courier New'; font-weight: bold; letter-spacing: 2px;">REBOOT</button>
     </div>
 
     <div class="hud-overlay">
         <div class="hud-text" id="mouse-tracker">X-000 // Y-000</div>
-        <div class="hud-text" id="system-status">DECRYPTING... 42%<br>VIBE: UNSTABLE<br>ORIGIN: IML_HUB</div>
+        <div class="hud-text" id="system-status">STATUS: SECURE<br>ENCRYPTION: 256-BIT<br>I.M.L. V2.0</div>
     </div>
 
     <div class="header-container">
         <img src="1000032165.png" class="logo-glitch" alt="IML">
         <h1 class="glitch-text">I.M.L.</h1>
-        <p style="letter-spacing: 3px; opacity: 0.5; font-size: 10px;">LONG-PRESS ANYWHERE TO OVERRIDE</p>
+        <p style="letter-spacing: 4px; opacity: 0.5; font-size: 10px; margin-top: -10px;">[ PRESS & HOLD TO OVERRIDE ]</p>
     </div>
 
     <div class="video-grid">
@@ -74,52 +82,71 @@
         const ctx = canvas.getContext('2d');
         const progress = document.getElementById('hold-progress');
         const secret = document.getElementById('secret-overlay');
+        const statusText = document.getElementById('system-status');
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         let mouse = { x: 0, y: 0 };
         let points = [];
         let holdTimer;
         let holdPercent = 0;
+        let isBreaching = false; // Tracks if user is holding button
 
-        // --- THE CRAZY GLITCH SOUND GENERATOR ---
-        function synthGlitch() {
+        // --- SOUND GENERATOR ---
+        function playGlitchSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.5);
-            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+            // Drop pitch from high to low rapidly
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.4);
+            // Distortion/Volume curve
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
+            
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.5);
+            osc.stop(audioCtx.currentTime + 0.4);
         }
 
-        // --- BREACH LOGIC ---
+        // --- BREACH MECHANIC ---
         function startHold() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            isBreaching = true;
+            document.body.classList.add('alert-mode'); // Turn HUD Red
+            statusText.innerHTML = "STATUS: CRITICAL<br>BREACH IN PROGRESS...<br>WARNING!";
+            
             holdPercent = 0;
             holdTimer = setInterval(() => {
-                holdPercent += 2;
+                holdPercent += 2.5; // Fill speed
                 progress.style.width = holdPercent + "%";
+                
+                // Random shake effect on canvas logic handled in animate()
+                
                 if(holdPercent >= 100) {
                     clearInterval(holdTimer);
-                    synthGlitch(); // TRIGGER THE SOUND
+                    playGlitchSound();
                     secret.style.display = 'flex';
+                    isBreaching = false; // Stop the chaos behind the modal
                 }
-            }, 40);
+            }, 30);
         }
 
         function endHold() {
+            isBreaching = false;
+            document.body.classList.remove('alert-mode'); // Revert HUD
+            statusText.innerHTML = "STATUS: SECURE<br>ENCRYPTION: 256-BIT<br>I.M.L. V2.0";
             clearInterval(holdTimer);
             holdPercent = 0;
             progress.style.width = "0%";
         }
 
-        function closeSecret() { secret.style.display = 'none'; }
+        function closeSecret() { 
+            secret.style.display = 'none'; 
+            endHold();
+        }
 
-        // --- INTERACTIVE BACKGROUND ---
+        // --- CANVAS BACKGROUND ---
         window.onmousemove = (e) => { 
             mouse.x = e.clientX; mouse.y = e.clientY; 
             document.getElementById('mouse-tracker').innerText = `X-${mouse.x} // Y-${mouse.y}`;
@@ -128,20 +155,43 @@
         function init() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             points = [];
-            for(let i=0; i<70; i++) points.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2 });
+            // Create particles
+            for(let i=0; i<80; i++) points.push({ 
+                x: Math.random()*canvas.width, 
+                y: Math.random()*canvas.height, 
+                vx: (Math.random()-0.5), // Normal speed X
+                vy: (Math.random()-0.5)  // Normal speed Y
+            });
         }
 
         function animate() {
             ctx.clearRect(0,0,canvas.width, canvas.height);
+            
+            // DYNAMIC COLOR & SPEED SETTINGS
+            // If breaching: Red + Fast. If normal: Blue + Slow.
+            let color = isBreaching ? '255, 0, 85' : '0, 210, 255'; 
+            let speedMult = isBreaching ? 12 : 1.5; 
+
             points.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
+                // Move particles
+                p.x += p.vx * speedMult;
+                p.y += p.vy * speedMult;
+
+                // Bounce off walls
                 if(p.x<0 || p.x>canvas.width) p.vx *= -1;
                 if(p.y<0 || p.y>canvas.height) p.vy *= -1;
-                ctx.fillStyle = 'rgba(0, 210, 255, 0.5)';
-                ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI*2); ctx.fill();
+                
+                // Draw dots
+                ctx.fillStyle = `rgba(${color}, 0.5)`;
+                ctx.beginPath(); ctx.arc(p.x, p.y, isBreaching ? 2 : 1.5, 0, Math.PI*2); ctx.fill();
+
+                // Draw connecting lines
+                let distLimit = isBreaching ? 250 : 180; // Connect further when breaching
                 let d = Math.hypot(mouse.x - p.x, mouse.y - p.y);
-                if(d < 200) {
-                    ctx.strokeStyle = `rgba(0, 210, 255, ${1 - d/200})`;
+                
+                if(d < distLimit) {
+                    ctx.strokeStyle = `rgba(${color}, ${1 - d/distLimit})`;
+                    ctx.lineWidth = isBreaching ? 1 : 0.5;
                     ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
                 }
             });
