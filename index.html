@@ -3,134 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I.M.L. | Live Interactive Hub</title>
+    <title>I.M.L. | Official Interactive Hub</title>
     <style>
-        :root { --primary: #00d2ff; --bg: #050505; }
-        body { margin: 0; background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
-
-        /* INTERACTIVE BACKGROUND CANVAS */
-        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; width: 100%; height: 100%; }
-
-        /* LIVE AUDIO PLAYER BAR */
-        .audio-player { 
-            position: sticky; top: 0; z-index: 2000; 
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px);
-            padding: 15px; border-bottom: 1px solid var(--primary);
-            display: flex; align-items: center; justify-content: center; gap: 20px;
-        }
-
-        /* CONTENT WRAPPER */
-        .content { position: relative; z-index: 10; text-align: center; padding-top: 40px; }
+        :root { --primary: #00d2ff; --bg: #050505; --glass: rgba(0, 210, 255, 0.05); }
         
-        .logo { 
-            width: 120px; border-radius: 50%; border: 2px solid var(--primary);
-            box-shadow: 0 0 30px var(--primary); transition: 0.5s;
+        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; }
+
+        /* LIVE BACKGROUND CANVAS */
+        #interactive-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+        /* LIVE LISTENING BAR */
+        .audio-bar { 
+            position: sticky; top: 0; z-index: 1000; 
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(15px);
+            padding: 15px; border-bottom: 1px solid var(--primary);
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
 
-        .about-box {
-            max-width: 700px; margin: 40px auto; padding: 25px;
-            background: rgba(255,255,255,0.05); border-radius: 15px;
-            border: 1px solid rgba(0,210,255,0.2); backdrop-filter: blur(10px);
+        /* LAYOUT CONTAINERS */
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; text-align: center; position: relative; z-index: 10; }
+        
+        .logo-circle { 
+            width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--primary);
+            box-shadow: 0 0 25px var(--primary); margin-bottom: 20px;
         }
 
-        /* DYNAMIC VIDEO FEED */
-        .video-feed {
-            display: flex; overflow-x: auto; gap: 20px; padding: 40px;
-            scrollbar-width: thin; scrollbar-color: var(--primary) transparent;
+        .mission-box { 
+            background: var(--glass); padding: 30px; border-radius: 20px; 
+            border: 1px solid rgba(0,210,255,0.2); backdrop-filter: blur(10px); margin-bottom: 50px;
         }
-        .video-card {
-            min-width: 350px; background: #111; border-radius: 12px;
-            border: 1px solid #333; overflow: hidden; transition: 0.3s;
-        }
-        .video-card:hover { border-color: var(--primary); transform: scale(1.02); }
-        .video-info { padding: 15px; text-align: left; }
-        .video-info h3 { color: var(--primary); margin: 0; }
-        iframe { width: 100%; aspect-ratio: 16/9; border: 0; }
 
+        /* HORIZONTAL VIDEO GALLERY */
+        .video-scroll { 
+            display: flex; overflow-x: auto; gap: 25px; padding: 20px 0;
+            scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--primary) transparent;
+        }
+        .video-card { 
+            min-width: 320px; background: rgba(20,20,20,0.9); border-radius: 15px; 
+            overflow: hidden; border: 1px solid #222; scroll-snap-align: start; transition: 0.3s;
+        }
+        .video-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .video-card iframe { width: 100%; aspect-ratio: 16/9; border: 0; }
+        .video-card .desc { padding: 15px; text-align: left; }
+        .video-card h3 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--primary); }
+        .video-card p { margin: 0; font-size: 0.85rem; opacity: 0.7; }
+
+        h2 { text-transform: uppercase; letter-spacing: 4px; color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <canvas id="bg-canvas"></canvas>
+    <canvas id="interactive-bg"></canvas>
 
-    <div class="audio-player">
-        <span><strong>LIVE STREAM:</strong> No Filter Needed</span>
-        <audio controls src="YOUR_AUDIO_FILE_URL_HERE.mp3" style="height: 30px;"></audio>
+    <div class="audio-bar">
+        <span style="font-size: 0.8rem; letter-spacing: 2px;">LIVE STREAMING: I.M.L. TRACKLIST</span>
+        <audio controls src="PASTE_YOUR_AUDIO_LINK_HERE.mp3" style="width: 100%; max-width: 400px; height: 30px;"></audio>
     </div>
 
-    <div class="content">
+    <div class="container">
         <header>
-            <img src="1000032165.png" class="logo">
-            <h1 style="letter-spacing: 8px;">I.M.L. OFFICIAL</h1>
+            <img src="1000032165.png" class="logo-circle" alt="IML LOGO">
+            <h1 style="letter-spacing: 6px;">I.M.L. OFFICIAL</h1>
         </header>
 
-        <div class="about-box">
-            <h2>THE MISSION</h2>
-            <p>Experience the intersection of high-frequency sound and visual chaos. I.M.L. is more than music; it's a digital atmosphere designed to be felt.</p>
-        </div>
+        <section class="mission-box">
+            <h2>The Mission</h2>
+            <p>I.M.L. is a specialized audiovisual channel focused on high-energy electronic soundscapes and futuristic visual art. We bridge the gap between heavy bass and cinematic beauty.</p>
+        </section>
 
-        <h2 style="color: var(--primary);">LATEST VISUALS</h2>
-        <div class="video-feed">
+        <h2>All Visuals</h2>
+        <div class="video-scroll">
             <div class="video-card">
                 <iframe src="https://www.youtube.com/embed/ZSYhsA1_yL8"></iframe>
-                <div class="video-info"><h3>No Filter Needed</h3><p>Raw emotion. Pure sound.</p></div>
+                <div class="desc">
+                    <h3>No Filter Needed</h3>
+                    <p>A raw exploration of sound and unedited energy. Focuses on the organic side of electronic production.</p>
+                </div>
             </div>
+
             <div class="video-card">
                 <iframe src="https://www.youtube.com/embed/irbqdvb9rLY"></iframe>
-                <div class="video-info"><h3>The View From Here</h3><p>Cinematic melodic journey.</p></div>
+                <div class="desc">
+                    <h3>The View From Here</h3>
+                    <p>Melodic journey through high-altitude atmosphere. Designed for deep listening and focus.</p>
+                </div>
             </div>
+
             <div class="video-card">
                 <iframe src="https://www.youtube.com/embed/8YkRKiAjGO8"></iframe>
-                <div class="video-info"><h3>L'Éclat et le Chaos</h3><p>High-energy signature track.</p></div>
+                <div class="desc">
+                    <h3>L'Éclat et le Chaos</h3>
+                    <p>The signature track. Balancing high-voltage noise with pure melodic clarity.</p>
+                </div>
             </div>
-            </div>
+        </div>
+
+        <footer style="margin-top: 80px; opacity: 0.3; font-size: 0.7rem;">
+            &copy; 2026 I.M.L. | ENCODED FOR THE FUTURE
+        </footer>
     </div>
 
     <script>
-        // INTERACTIVE PARTICLE SYSTEM (LOGO INSPIRED)
-        const canvas = document.getElementById('bg-canvas');
+        // INTERACTIVE BACKGROUND LOGIC
+        const canvas = document.getElementById('interactive-bg');
         const ctx = canvas.getContext('2d');
-        let particles = [];
+        let dots = [];
         const mouse = { x: null, y: null };
 
         window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+        window.addEventListener('resize', init);
 
         function init() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            for(let i=0; i<80; i++) {
-                particles.push({
+            dots = [];
+            for (let i = 0; i < 100; i++) {
+                dots.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    size: Math.random() * 2,
-                    speedX: Math.random() * 1 - 0.5,
-                    speedY: Math.random() * 1 - 0.5
+                    vx: (Math.random() - 0.5) * 1,
+                    vy: (Math.random() - 0.5) * 1
                 });
             }
         }
 
-        function animate() {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.x += p.speedX; p.y += p.speedY;
-                if(p.x > canvas.width || p.x < 0) p.speedX *= -1;
-                if(p.y > canvas.height || p.y < 0) p.speedY *= -1;
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            dots.forEach(d => {
+                d.x += d.vx; d.y += d.vy;
+                if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
+                if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
+                
+                ctx.fillStyle = 'rgba(0, 210, 255, 0.2)';
+                ctx.beginPath(); ctx.arc(d.x, d.y, 2, 0, Math.PI*2); ctx.fill();
 
-                // Draw Particle
-                ctx.fillStyle = '#00d2ff33';
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
-
-                // Connect to Mouse
-                let dx = mouse.x - p.x; let dy = mouse.y - p.y;
-                let dist = Math.sqrt(dx*dx + dy*dy);
-                if(dist < 150) {
+                let dist = Math.hypot(mouse.x - d.x, mouse.y - d.y);
+                if (dist < 150) {
                     ctx.strokeStyle = `rgba(0, 210, 255, ${1 - dist/150})`;
-                    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
                 }
             });
-            requestAnimationFrame(animate);
+            requestAnimationFrame(draw);
         }
-        init(); animate();
+        init(); draw();
     </script>
 </body>
 </html>
