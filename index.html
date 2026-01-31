@@ -305,6 +305,10 @@ async function enableAudio(){
   function loop(){
     an.getByteFrequencyData(data);
     audioLevel=data.reduce((a,b)=>a+b)/data.length/255;
+const glow = document.querySelector(".logo-hero .glow");
+if(glow){
+  glow.style.transform = `scale(${1 + audioLevel * 0.4})`;
+}
 
     let pts=[];
     for(let i=0;i<9;i++){
@@ -353,6 +357,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
