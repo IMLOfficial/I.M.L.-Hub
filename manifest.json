@@ -1,11 +1,10 @@
 {
   "name": "I.M.L. Official",
   "short_name": "I.M.L.",
-  "description": "I.M.L. Official – high-voltage sound, cinematic visuals, and live energy.",
+  "description": "High-voltage sound and cinematic visuals.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait-primary",
   "background_color": "#eef7ff",
   "theme_color": "#4db8ff",
   "icons": [
