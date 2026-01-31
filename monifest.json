@@ -1,11 +1,25 @@
 {
   "name": "I.M.L. Official",
-  "short_name": "IML",
-  "start_url": "index.html",
+  "short_name": "I.M.L.",
+  "description": "I.M.L. Official – high-voltage sound, cinematic visuals, and live energy.",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#050505",
-  "theme_color": "#00d2ff",
+  "orientation": "portrait-primary",
+  "background_color": "#eef7ff",
+  "theme_color": "#4db8ff",
   "icons": [
-    { "src": "1000032165.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
