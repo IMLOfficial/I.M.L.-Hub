@@ -2,102 +2,136 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#4db8ff">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>I.M.L. Official</title>
 
 <link rel="manifest" href="manifest.json">
+<link rel="icon" href="logo.png">
+<meta name="theme-color" content="#0b1220">
 
 <style>
 :root{
   --bg:#eef7ff;
-  --text:#0a1a2a;
+  --fg:#0b1220;
   --accent:#4db8ff;
 }
-
 [data-theme="dark"]{
   --bg:#0b1220;
-  --text:#e9f4ff;
+  --fg:#eef7ff;
 }
 
-*{margin:0;box-sizing:border-box;font-family:system-ui,Segoe UI,sans-serif}
-body{background:var(--bg);color:var(--text);overflow-x:hidden}
+body{
+  margin:0;
+  font-family:system-ui,Arial;
+  background:var(--bg);
+  color:var(--fg);
+  overflow-x:hidden;
+}
 
-/* BACKGROUND */
-#bg{position:fixed;inset:0;z-index:-1}
+canvas#bg{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+}
 
-/* HEADER */
-header{display:flex;align-items:center;gap:15px;padding:25px}
-header img{width:60px}
-header h1{font-size:2rem;letter-spacing:3px}
-
-/* BUTTONS */
-button{
-  padding:12px 22px;
+/* Header */
+header{
+  padding:15px;
+}
+.btns button{
+  margin:5px;
+  padding:10px 18px;
+  border-radius:25px;
   border:none;
-  border-radius:30px;
-  background:linear-gradient(135deg,var(--accent),#89d6ff);
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
+  background:var(--accent);
+  color:#fff;
+  font-weight:600;
   touch-action:manipulation;
 }
 
-/* CONTROLS */
-.controls{display:flex;gap:10px;padding:0 25px;flex-wrap:wrap}
-
-/* SOCIALS */
-.socials{display:flex;gap:15px;padding:20px 25px}
-.socials a{
-  text-decoration:none;
-  padding:12px 22px;
-  border-radius:30px;
-  background:linear-gradient(135deg,var(--accent),#89d6ff);
-  color:white;
-  font-weight:bold;
+/* Hero */
+#hero{
+  text-align:center;
+  padding:70px 20px;
+}
+.logo-wrap{
+  position:relative;
+  width:160px;
+  height:160px;
+  margin:auto;
+}
+.logo-wrap img{
+  width:100%;
+  position:relative;
+  z-index:3;
+  animation:float 6s ease-in-out infinite;
+}
+.glow{
+  position:absolute;
+  inset:-25%;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(120,200,255,.9),transparent 70%);
+  filter:blur(40px);
+  animation:pulse 4s infinite;
+}
+#orbit{
+  position:absolute;
+  inset:0;
+  z-index:2;
 }
 
-/* HERO */
-#hero{text-align:center;padding:80px 25px}
-.logo-hero{position:relative;width:170px;height:170px;margin:auto;cursor:pointer}
-.logo-hero img{width:100%;animation:float 6s ease-in-out infinite}
-.logo-hero.expanded img{transform:scale(1.25)}
-.logo-hero .glow{
-  position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle,rgba(77,184,255,.6),transparent 70%);
-  filter:blur(30px);animation:pulse 4s infinite
+@keyframes float{
+  50%{transform:translateY(-12px)}
 }
-#orbit{position:absolute;inset:0}
-.hero-text{margin-top:25px;opacity:.7}
-
-/* SECTIONS */
-section{padding:40px 25px}
-iframe{width:100%;height:500px;border:none;border-radius:20px}
-
-/* DOWNLOAD */
-.downloads{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
-
-/* INSTALL MODAL */
-#installModal{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;align-items:center;justify-content:center;
+@keyframes pulse{
+  50%{opacity:.4}
 }
-#installBox{
-  background:var(--bg);
-  padding:25px;
+
+/* Sections */
+section{
+  padding:40px 20px;
+}
+iframe{
+  width:100%;
+  height:260px;
+  border:none;
   border-radius:20px;
-  max-width:300px;
+}
+
+/* Install */
+#installBox{
   text-align:center;
 }
-#installBox h3{margin-bottom:15px}
+#installBox button{
+  padding:15px 35px;
+  border-radius:30px;
+  border:none;
+  background:var(--accent);
+  color:white;
+  font-size:1.1em;
+}
+#iosHint{
+  display:none;
+  opacity:.7;
+  margin-top:10px;
+}
 
-/* FOOTER */
-footer{text-align:center;padding:30px;opacity:.6}
-
-/* ANIMATIONS */
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+/* Modal */
+#installModal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  align-items:center;
+  justify-content:center;
+}
+#installModal .card{
+  background:var(--bg);
+  color:var(--fg);
+  padding:25px;
+  border-radius:20px;
+  text-align:center;
+}
 </style>
 </head>
 
@@ -106,58 +140,44 @@ footer{text-align:center;padding:30px;opacity:.6}
 <canvas id="bg"></canvas>
 
 <header>
-  <img src="logo.png">
-  <h1>I.M.L.</h1>
+  <h2>I.M.L.</h2>
+  <div class="btns">
+    <button onclick="toggleTheme()">Light / Dark</button>
+    <button onclick="window.open('https://youtube.com/@i.m.l._official','_blank')">YouTube</button>
+    <button onclick="window.open('https://www.tiktok.com/@i.m.l._official','_blank')">TikTok</button>
+  </div>
 </header>
 
-<div class="controls">
-  <button onclick="toggleTheme()">Light / Dark</button>
-  <button onclick="enableAudio()">Sound Reactive</button>
-</div>
-
-<div class="socials">
-  <a href="https://youtube.com/@i.m.l._official" target="_blank">YouTube</a>
-  <a href="https://www.tiktok.com/@i.m.l._official" target="_blank">TikTok</a>
-</div>
-
 <section id="hero">
-  <div class="logo-hero" id="logoHero">
-    <img src="logo.png">
-    <span class="glow"></span>
+  <div class="logo-wrap" id="hero">
+    <img src="./logo.png" alt="I.M.L Logo">
+    <div class="glow"></div>
     <canvas id="orbit"></canvas>
   </div>
-  <p class="hero-text">High-voltage sound · Cinematic visuals · I.M.L.</p>
+  <p>High-voltage sound · Cinematic visuals · I.M.L.</p>
 </section>
 
 <section>
-  <h2>Latest Videos</h2>
-  <iframe src="https://www.youtube.com/embed?listType=playlist&list=UUes-oJI1M7Rr6oWIofhK6fg" allowfullscreen></iframe>
+<h2>Latest Videos</h2>
+<iframe src="https://www.youtube.com/embed?listType=playlist&list=UUes-oJI1M7Rr6oWIofhK6fg"></iframe>
 </section>
 
-<section id="download">
-  <h2>Install App</h2>
-  <div class="downloads" id="installButtons">
-    <button onclick="openInstall()">Install</button>
-  </div>
+<section id="installBox">
+<h2>Install App</h2>
+<button onclick="openInstall()">Install</button>
+<p id="iosHint">iOS: Share → Add to Home Screen</p>
 </section>
 
-<footer>© 2026 I.M.L. Official</footer>
-
-<!-- INSTALL MODAL -->
 <div id="installModal">
-  <div id="installBox">
+  <div class="card">
     <h3>Install I.M.L. App</h3>
-    <p>Get the full experience offline.</p><br>
-    <button onclick="installApp()">Install</button>
-    <br><br>
+    <p>Get the full experience offline.</p>
+    <button onclick="doInstall()">Install</button><br><br>
     <button onclick="closeInstall()">Cancel</button>
   </div>
 </div>
 
 <script>
-/* ANALYTICS */
-const analytics={shown:0,installed:0,dismissed:0};
-
 /* THEME */
 function toggleTheme(){
   document.body.dataset.theme =
@@ -166,74 +186,65 @@ function toggleTheme(){
 
 /* BACKGROUND */
 const bg=document.getElementById("bg"),ctx=bg.getContext("2d");
-let w,h,p=[],audioLevel=0;
-function resize(){w=bg.width=innerWidth;h=bg.height=innerHeight}
-addEventListener("resize",resize);resize();
-for(let i=0;i<80;i++)p.push({x:Math.random()*w,y:Math.random()*h,s:Math.random()*1.5+.5});
-(function draw(){
-  ctx.clearRect(0,0,w,h);
-  p.forEach(d=>{
-    d.y-=d.s+audioLevel*5;if(d.y<0)d.y=h;
-    ctx.fillStyle="rgba(77,184,255,.6)";
-    ctx.beginPath();ctx.arc(d.x,d.y,2+audioLevel*3,0,Math.PI*2);ctx.fill();
-  });
-  requestAnimationFrame(draw);
-})();
-
-/* AUDIO */
-async function enableAudio(){
-  const s=await navigator.mediaDevices.getUserMedia({audio:true});
-  const ac=new AudioContext(),an=ac.createAnalyser();
-  ac.createMediaStreamSource(s).connect(an);
-  const data=new Uint8Array(an.frequencyBinCount);
-  const glow=document.querySelector(".glow");
-  (function loop(){
-    an.getByteFrequencyData(data);
-    audioLevel=data.reduce((a,b)=>a+b)/data.length/255;
-    glow.style.transform=`scale(${1+audioLevel*.4})`;
-    requestAnimationFrame(loop);
-  })();
+let w,h,pts=[];
+function resize(){
+  w=bg.width=innerWidth;
+  h=bg.height=innerHeight;
+  pts=[...Array(80)].map(()=>({x:Math.random()*w,y:Math.random()*h,s:Math.random()*1+0.5}));
 }
+window.onresize=resize;resize();
+function animate(){
+  ctx.clearRect(0,0,w,h);
+  pts.forEach(p=>{
+    p.y-=p.s;
+    if(p.y<0)p.y=h;
+    ctx.fillStyle="rgba(120,200,255,.6)";
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,2,0,Math.PI*2);
+    ctx.fill();
+  });
+  requestAnimationFrame(animate);
+}
+animate();
 
-/* HERO */
-const hero=document.getElementById("logoHero");
-hero.onclick=()=>hero.classList.toggle("expanded");
+/* ORBIT */
+const o=document.getElementById("orbit"),ox=o.getContext("2d");
+function orbit(){
+  o.width=o.offsetWidth;o.height=o.offsetHeight;
+  ox.clearRect(0,0,o.width,o.height);
+  for(let i=0;i<12;i++){
+    let a=Date.now()/800+i;
+    let r=o.width/2.2;
+    ox.fillStyle="rgba(120,200,255,.9)";
+    ox.beginPath();
+    ox.arc(o.width/2+Math.cos(a)*r,o.height/2+Math.sin(a)*r,3,0,7);
+    ox.fill();
+  }
+  requestAnimationFrame(orbit);
+}
+orbit();
 
-/* INSTALL LOGIC */
-let deferredPrompt=null;
+/* INSTALL */
+let deferredPrompt;
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
   deferredPrompt=e;
 });
-
 function openInstall(){
-  analytics.shown++;
-  document.getElementById("installModal").style.display="flex";
-}
-
-function closeInstall(){
-  analytics.dismissed++;
-  document.getElementById("installModal").style.display="none";
-}
-
-function installApp(){
   if(deferredPrompt){
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(res=>{
-      if(res.outcome==="accepted"){
-        analytics.installed++;
-        document.getElementById("installButtons").style.display="none";
-      }
-      deferredPrompt=null;
-      closeInstall();
-    });
+    document.getElementById("installModal").style.display="flex";
+  }else{
+    document.getElementById("iosHint").style.display="block";
   }
 }
-
-/* DETECT INSTALLED */
-window.addEventListener("appinstalled",()=>{
-  document.getElementById("installButtons").style.display="none";
-});
+function closeInstall(){
+  document.getElementById("installModal").style.display="none";
+}
+function doInstall(){
+  deferredPrompt.prompt();
+  deferredPrompt=null;
+  closeInstall();
+}
 
 /* SERVICE WORKER */
 if("serviceWorker"in navigator){
