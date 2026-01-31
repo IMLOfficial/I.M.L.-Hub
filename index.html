@@ -3,94 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <meta name="description" content="Official Hub for I.M.L. - Stream the latest tracks, watch new music videos, and join the movement.">
-    <meta name="keywords" content="IML, IML Official, New Music, YouTube Artist, Music Hub">
-    <meta property="og:title" content="I.M.L. Official | Music & Visuals">
-    <meta property="og:description" content="The official destination for I.M.L. tracks and videos. Install the app now.">
-    <meta property="og:image" content="1000032165.png">
-    <meta property="og:url" content="https://yourusername.github.io/iml-hub/">
-    
     <link rel="manifest" href="manifest.json">
     <title>I.M.L. Official Hub</title>
-<style>
-    :root { 
-        --primary: #00d2ff; 
-        --bg: #050505; 
-        --accent: #ff0050; /* TikTok Pink for highlights */
-    }
+    <style>
+        :root { 
+            --primary: #00d2ff; 
+            --bg: #050505; 
+            --card-bg: rgba(255, 255, 255, 0.03);
+        }
 
-    /* ANIMATED BACKGROUND */
-    body { 
-        background: var(--bg); 
-        color: white; 
-        font-family: 'Segoe UI', sans-serif; 
-        margin: 0; 
-        text-align: center;
-        overflow-x: hidden;
-        background-image: linear-gradient(0deg, transparent 24%, rgba(0, 210, 255, .05) 25%, rgba(0, 210, 255, .05) 26%, transparent 27%, transparent 74%, rgba(0, 210, 255, .05) 75%, rgba(0, 210, 255, .05) 76%, transparent 77%, transparent);
-        background-size: 50px 50px; /* Tech-grid pattern */
-    }
+        /* TECH-GRID ANIMATED BACKGROUND */
+        body { 
+            background: var(--bg); 
+            color: white; 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(0, 210, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 210, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
 
-    /* FLOATING HEADER */
-    header { 
-        padding: 80px 20px; 
-        background: radial-gradient(circle, rgba(0,210,255,0.1) 0%, transparent 70%);
-    }
+        /* FIXED SOCIAL BAR */
+        .social-bar { 
+            padding: 15px; 
+            display: flex; 
+            justify-content: center; 
+            gap: 30px; 
+            background: rgba(0,0,0,0.9); 
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
 
-    /* GLOWING LOGO ANIMATION */
-    .logo { 
-        width: 160px; height: 160px; 
-        border-radius: 50%; 
-        border: 2px solid var(--primary); 
-        box-shadow: 0 0 20px var(--primary); 
-        transition: 0.5s;
-        animation: pulseGlow 3s infinite alternate;
-    }
+        .social-bar a { 
+            text-decoration: none; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            font-size: 13px;
+            letter-spacing: 2px;
+            transition: 0.3s; 
+        }
+        .tiktok-link { color: #ff0050; }
+        .yt-link { color: #ff0000; }
+        .social-bar a:hover { transform: scale(1.1); text-shadow: 0 0 15px currentColor; }
 
-    @keyframes pulseGlow {
-        from { box-shadow: 0 0 20px var(--primary), inset 0 0 10px var(--primary); }
-        to { box-shadow: 0 0 40px var(--primary), inset 0 0 20px var(--primary); transform: scale(1.02); }
-    }
+        /* HEADER & PULSING LOGO */
+        header { padding: 60px 20px; text-align: center; }
+        .logo { 
+            width: 150px; height: 150px; 
+            border-radius: 50%; 
+            border: 2px solid var(--primary); 
+            box-shadow: 0 0 20px var(--primary); 
+            animation: pulse 3s infinite alternate;
+        }
 
-    /* NEON VIDEO CARDS */
-    .video-grid { 
-        display: grid; 
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-        gap: 30px; 
-        padding: 40px; 
-        max-width: 1200px; 
-        margin: 0 auto; 
-    }
+        @keyframes pulse {
+            from { box-shadow: 0 0 10px var(--primary); transform: scale(1); }
+            to { box-shadow: 0 0 30px var(--primary); transform: scale(1.05); }
+        }
 
-    .card { 
-        background: rgba(255, 255, 255, 0.03); 
-        backdrop-filter: blur(10px); /* Glass effect */
-        border-radius: 15px; 
-        border: 1px solid rgba(0, 210, 255, 0.2); 
-        overflow: hidden; 
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-    }
+        h1 { font-size: 2.5rem; letter-spacing: 5px; margin-top: 20px; text-shadow: 0 0 10px var(--primary); }
 
-    .card:hover { 
-        transform: translateY(-10px) scale(1.03); 
-        border-color: var(--primary); 
-        box-shadow: 0 10px 30px rgba(0, 210, 255, 0.3); 
-    }
+        /* VIDEO GRID - GLASSMORPHISM */
+        .video-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 25px; 
+            padding: 40px; 
+            max-width: 1100px; 
+            margin: 0 auto; 
+        }
 
-    /* SOCIAL BAR UPGRADE */
-    .social-bar { 
-        padding: 20px; 
-        background: rgba(0,0,0,0.8); 
-        backdrop-filter: blur(15px);
-        border-bottom: 1px solid #333;
-    }
-</style>
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 15px; 
+            border: 1px solid rgba(0, 210, 255, 0.1); 
+            overflow: hidden; 
+            transition: 0.4s;
+            backdrop-filter: blur(5px);
+        }
+
+        .card:hover { 
+            border-color: var(--primary); 
+            transform: translateY(-10px); 
+            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.2); 
+        }
+
+        iframe { width: 100%; aspect-ratio: 16/9; border: 0; display: block; }
+
+        /* INSTALL BUTTON UPGRADE */
+        #pwa-area { padding: 10px; background: #000; }
+        .install-btn { 
+            background: var(--primary); 
+            color: black; 
+            padding: 8px 20px; 
+            border-radius: 50px; 
+            border: none; 
+            font-weight: 800; 
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--primary);
+        }
+    </style>
 </head>
 <body>
 
-    <div id="pwa-area">
-        <button class="install-btn" id="installBtn">INSTALL I.M.L. APP</button>
+    <div id="pwa-area" style="display:none;">
+        <button class="install-btn" id="installBtn">INSTALL APP</button>
     </div>
 
     <nav class="social-bar">
@@ -109,7 +131,9 @@
         <div class="card"><iframe src="https://www.youtube.com/embed/8YkRKiAjGO8"></iframe></div>
     </main>
 
-    <footer>&copy; 2026 I.M.L. | Optimized for PC, Android, & iOS</footer>
+    <footer style="padding: 50px; opacity: 0.4; font-size: 11px; text-align: center;">
+        &copy; 2026 I.M.L. | THE SOUND OF THE FUTURE
+    </footer>
 
     <script>
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
