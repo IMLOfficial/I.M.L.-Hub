@@ -277,6 +277,24 @@ if("serviceWorker"in navigator){
   navigator.serviceWorker.register("sw.js");
 }
 </script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").then(reg => {
+    reg.onupdatefound = () => {
+      const newWorker = reg.installing;
+      newWorker.onstatechange = () => {
+        if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+          if (confirm("New update available. Reload now?")) {
+            newWorker.postMessage("SKIP_WAITING");
+            location.reload();
+          }
+        }
+      };
+    };
+  });
+}
+</script>
 
 </body>
 </html>
+
