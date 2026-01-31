@@ -21,42 +21,33 @@
 }
 
 *{margin:0;box-sizing:border-box;font-family:system-ui,Segoe UI,sans-serif}
+body{background:var(--bg);color:var(--text);overflow-x:hidden}
 
-body{
-  background:var(--bg);
-  color:var(--text);
-  overflow-x:hidden;
-}
-
-/* ===== BACKGROUND ===== */
+/* BACKGROUND */
 #bg{position:fixed;inset:0;z-index:-1}
 
-/* ===== HEADER ===== */
+/* HEADER */
 header{display:flex;align-items:center;gap:15px;padding:25px}
 header img{width:60px}
 header h1{font-size:2rem;letter-spacing:3px}
 
-/* ===== CONTROLS ===== */
-.controls{
-  display:flex;
-  gap:10px;
-  padding:0 25px;
-  flex-wrap:wrap;
-}
-
-.controls button{
-  padding:10px 18px;
+/* BUTTONS */
+button{
+  padding:12px 22px;
   border:none;
-  border-radius:25px;
+  border-radius:30px;
   background:linear-gradient(135deg,var(--accent),#89d6ff);
   color:white;
   font-weight:bold;
   cursor:pointer;
+  touch-action:manipulation;
 }
 
-/* ===== SOCIALS ===== */
-.socials{display:flex;gap:15px;padding:20px 25px}
+/* CONTROLS */
+.controls{display:flex;gap:10px;padding:0 25px;flex-wrap:wrap}
 
+/* SOCIALS */
+.socials{display:flex;gap:15px;padding:20px 25px}
 .socials a{
   text-decoration:none;
   padding:12px 22px;
@@ -66,74 +57,47 @@ header h1{font-size:2rem;letter-spacing:3px}
   font-weight:bold;
 }
 
-/* ===== HERO ===== */
-#hero{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:70px 25px 90px;
-  text-align:center;
-}
-
-.logo-hero{
-  position:relative;
-  width:170px;
-  height:170px;
-  cursor:pointer;
-}
-
-.logo-hero img{
-  width:100%;
-  z-index:3;
-  position:relative;
-  animation:float 6s ease-in-out infinite;
-  transition:transform .6s ease;
-}
-
+/* HERO */
+#hero{text-align:center;padding:80px 25px}
+.logo-hero{position:relative;width:170px;height:170px;margin:auto;cursor:pointer}
+.logo-hero img{width:100%;animation:float 6s ease-in-out infinite}
 .logo-hero.expanded img{transform:scale(1.25)}
-
 .logo-hero .glow{
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  background:radial-gradient(circle, rgba(77,184,255,.65), transparent 70%);
-  filter:blur(30px);
-  z-index:1;
-  animation:pulse 4s ease-in-out infinite;
+  position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle,rgba(77,184,255,.6),transparent 70%);
+  filter:blur(30px);animation:pulse 4s infinite
 }
+#orbit{position:absolute;inset:0}
+.hero-text{margin-top:25px;opacity:.7}
 
-#orbit{position:absolute;inset:0;z-index:2}
-
-.hero-text{margin-top:28px;font-size:1.05rem;opacity:.7}
-
-/* ===== SECTIONS ===== */
+/* SECTIONS */
 section{padding:40px 25px}
 iframe{width:100%;height:500px;border:none;border-radius:20px}
 
-/* ===== DOWNLOAD ===== */
+/* DOWNLOAD */
 .downloads{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
 
-.downloads a{
-  padding:15px 30px;
-  border-radius:30px;
-  background:linear-gradient(135deg,var(--accent),#89d6ff);
-  color:white;
-  font-weight:bold;
-  text-decoration:none;
+/* INSTALL MODAL */
+#installModal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;align-items:center;justify-content:center;
 }
+#installBox{
+  background:var(--bg);
+  padding:25px;
+  border-radius:20px;
+  max-width:300px;
+  text-align:center;
+}
+#installBox h3{margin-bottom:15px}
 
+/* FOOTER */
 footer{text-align:center;padding:30px;opacity:.6}
 
-/* ===== ANIMATIONS ===== */
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-14px)}
-}
-@keyframes pulse{
-  0%,100%{opacity:.6}
-  50%{opacity:1}
-}
+/* ANIMATIONS */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
 </style>
 </head>
 
@@ -142,14 +106,13 @@ footer{text-align:center;padding:30px;opacity:.6}
 <canvas id="bg"></canvas>
 
 <header>
-  <img src="logo.png" alt="I.M.L Logo">
+  <img src="logo.png">
   <h1>I.M.L.</h1>
 </header>
 
 <div class="controls">
   <button onclick="toggleTheme()">Light / Dark</button>
   <button onclick="enableAudio()">Sound Reactive</button>
-  <button onclick="toggleMusic()">Music</button>
 </div>
 
 <div class="socials">
@@ -159,7 +122,7 @@ footer{text-align:center;padding:30px;opacity:.6}
 
 <section id="hero">
   <div class="logo-hero" id="logoHero">
-    <img src="logo.png" alt="I.M.L Logo">
+    <img src="logo.png">
     <span class="glow"></span>
     <canvas id="orbit"></canvas>
   </div>
@@ -171,118 +134,110 @@ footer{text-align:center;padding:30px;opacity:.6}
   <iframe src="https://www.youtube.com/embed?listType=playlist&list=UUes-oJI1M7Rr6oWIofhK6fg" allowfullscreen></iframe>
 </section>
 
-<section>
-  <h2>Download</h2>
-  <div class="downloads">
-    <a href="#">Windows</a>
-    <a href="#">Android</a>
-    <a href="#">iOS</a>
+<section id="download">
+  <h2>Install App</h2>
+  <div class="downloads" id="installButtons">
+    <button onclick="openInstall()">Install</button>
   </div>
 </section>
 
 <footer>© 2026 I.M.L. Official</footer>
 
-<audio id="bgMusic" src="background.mp3" loop></audio>
+<!-- INSTALL MODAL -->
+<div id="installModal">
+  <div id="installBox">
+    <h3>Install I.M.L. App</h3>
+    <p>Get the full experience offline.</p><br>
+    <button onclick="installApp()">Install</button>
+    <br><br>
+    <button onclick="closeInstall()">Cancel</button>
+  </div>
+</div>
 
 <script>
-/* ===== THEME ===== */
+/* ANALYTICS */
+const analytics={shown:0,installed:0,dismissed:0};
+
+/* THEME */
 function toggleTheme(){
   document.body.dataset.theme =
     document.body.dataset.theme==="dark"?"":"dark";
 }
 
-/* ===== MUSIC PLAYER ===== */
-const music=document.getElementById("bgMusic");
-let musicOn=false;
-
-function toggleMusic(){
-  if(!musicOn){
-    music.play();
-    musicOn=true;
-  }else{
-    music.pause();
-    musicOn=false;
-  }
-}
-
-/* ===== BACKGROUND PARTICLES ===== */
+/* BACKGROUND */
 const bg=document.getElementById("bg"),ctx=bg.getContext("2d");
-let w,h,particles=[],audioLevel=0;
-
+let w,h,p=[],audioLevel=0;
 function resize(){w=bg.width=innerWidth;h=bg.height=innerHeight}
 addEventListener("resize",resize);resize();
-
-for(let i=0;i<100;i++)particles.push({x:Math.random()*w,y:Math.random()*h,s:Math.random()*1.5+.5});
-
-function draw(){
+for(let i=0;i<80;i++)p.push({x:Math.random()*w,y:Math.random()*h,s:Math.random()*1.5+.5});
+(function draw(){
   ctx.clearRect(0,0,w,h);
-  particles.forEach(p=>{
-    p.y-=p.s+audioLevel*6;
-    if(p.y<0)p.y=h;
+  p.forEach(d=>{
+    d.y-=d.s+audioLevel*5;if(d.y<0)d.y=h;
     ctx.fillStyle="rgba(77,184,255,.6)";
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,2+audioLevel*4,0,Math.PI*2);
-    ctx.fill();
+    ctx.beginPath();ctx.arc(d.x,d.y,2+audioLevel*3,0,Math.PI*2);ctx.fill();
   });
   requestAnimationFrame(draw);
-}
-draw();
+})();
 
-/* ===== AUDIO REACTIVE ===== */
+/* AUDIO */
 async function enableAudio(){
-  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  const s=await navigator.mediaDevices.getUserMedia({audio:true});
   const ac=new AudioContext(),an=ac.createAnalyser();
-  ac.createMediaStreamSource(stream).connect(an);
+  ac.createMediaStreamSource(s).connect(an);
   const data=new Uint8Array(an.frequencyBinCount);
-  const glow=document.querySelector(".logo-hero .glow");
-
-  function loop(){
+  const glow=document.querySelector(".glow");
+  (function loop(){
     an.getByteFrequencyData(data);
     audioLevel=data.reduce((a,b)=>a+b)/data.length/255;
-    if(glow) glow.style.transform=`scale(${1+audioLevel*.4})`;
+    glow.style.transform=`scale(${1+audioLevel*.4})`;
     requestAnimationFrame(loop);
-  }
-  loop();
+  })();
 }
 
-/* ===== HERO INTERACTIONS ===== */
+/* HERO */
 const hero=document.getElementById("logoHero");
-hero.addEventListener("click",()=>hero.classList.toggle("expanded"));
-addEventListener("scroll",()=>hero.style.transform=`translateY(${scrollY*.15}px)`);
+hero.onclick=()=>hero.classList.toggle("expanded");
 
-/* ===== ORBIT ===== */
-const orbit=document.getElementById("orbit"),octx=orbit.getContext("2d");
-let ow,oh,a=0;
-function r(){ow=orbit.width=orbit.offsetWidth;oh=orbit.height=orbit.offsetHeight}
-addEventListener("resize",r);r();
-function o(){
-  octx.clearRect(0,0,ow,oh);a+=.01;
-  for(let i=0;i<12;i++){
-    const t=a+i*(Math.PI*2/12),r2=ow/2.2;
-    octx.fillStyle="rgba(77,184,255,.8)";
-    octx.beginPath();
-    octx.arc(ow/2+Math.cos(t)*r2,oh/2+Math.sin(t)*r2,2.2,0,Math.PI*2);
-    octx.fill();
-  }
-  requestAnimationFrame(o);
+/* INSTALL LOGIC */
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+});
+
+function openInstall(){
+  analytics.shown++;
+  document.getElementById("installModal").style.display="flex";
 }
-o();
 
-/* ===== SERVICE WORKER + AUTO UPDATE ===== */
+function closeInstall(){
+  analytics.dismissed++;
+  document.getElementById("installModal").style.display="none";
+}
+
+function installApp(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(res=>{
+      if(res.outcome==="accepted"){
+        analytics.installed++;
+        document.getElementById("installButtons").style.display="none";
+      }
+      deferredPrompt=null;
+      closeInstall();
+    });
+  }
+}
+
+/* DETECT INSTALLED */
+window.addEventListener("appinstalled",()=>{
+  document.getElementById("installButtons").style.display="none";
+});
+
+/* SERVICE WORKER */
 if("serviceWorker"in navigator){
-  navigator.serviceWorker.register("sw.js").then(reg=>{
-    reg.onupdatefound=()=>{
-      const nw=reg.installing;
-      nw.onstatechange=()=>{
-        if(nw.state==="installed"&&navigator.serviceWorker.controller){
-          if(confirm("New update available. Reload now?")){
-            nw.postMessage("SKIP_WAITING");
-            location.reload();
-          }
-        }
-      };
-    };
-  });
+  navigator.serviceWorker.register("sw.js");
 }
 </script>
 
