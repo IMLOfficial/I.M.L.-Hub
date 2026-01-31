@@ -3,179 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I.M.L. OFFICIAL | Professional Audiovisual Hub</title>
+    <title>I.M.L. | CYBER-HUB v2.0</title>
     <style>
-        :root { --primary: #00d2ff; --bg: #030303; --card-bg: rgba(20, 20, 20, 0.8); }
+        :root { --primary: #00d2ff; --bg: #020202; --glitch-red: #ff0055; --glitch-blue: #00f7ff; }
         
-        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Inter', 'Segoe UI', sans-serif; overflow-x: hidden; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: white; font-family: 'Courier New', monospace; overflow-x: hidden; }
 
-        /* LIVE INTERACTIVE BACKGROUND */
-        #interactive-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        #canvas-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 
-        /* NAV BAR */
-        .nav-bar { 
-            position: sticky; top: 0; z-index: 1000; 
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px);
-            padding: 15px 5%; border-bottom: 1px solid rgba(0, 210, 255, 0.2);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .nav-links a { color: white; text-decoration: none; margin-left: 25px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; }
-        .nav-links a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        /* CYBER HUD ELEMENTS */
+        .hud-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; border: 1px solid rgba(0, 210, 255, 0.1); }
+        .hud-coords { position: absolute; bottom: 20px; left: 20px; font-size: 10px; color: var(--primary); letter-spacing: 2px; }
+        .hud-status { position: absolute; top: 80px; right: 20px; font-size: 10px; color: var(--primary); text-align: right; line-height: 1.5; }
 
-        /* HERO SECTION */
-        .hero { padding: 80px 20px; text-align: center; }
-        .logo-main { width: 150px; border-radius: 50%; border: 2px solid var(--primary); box-shadow: 0 0 40px var(--primary); margin-bottom: 25px; transition: 0.5s; }
-        .logo-main:hover { transform: scale(1.05) rotate(5deg); }
-        h1 { font-size: 3rem; letter-spacing: 15px; margin: 0; font-weight: 200; text-transform: uppercase; }
-
-        /* THE MISSION BOX */
-        .mission-section { max-width: 900px; margin: 0 auto 80px; padding: 40px; background: var(--card-bg); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
-        .mission-section h2 { color: var(--primary); letter-spacing: 5px; margin-top: 0; }
-        .mission-section p { line-height: 1.8; opacity: 0.8; font-size: 1.1rem; }
-
-        /* PROFESSIONAL VIDEO GRID */
-        .gallery-container { max-width: 1400px; margin: 0 auto; padding: 0 20px 100px; }
-        .section-title { font-size: 1.5rem; letter-spacing: 4px; color: var(--primary); margin-bottom: 30px; border-left: 5px solid var(--primary); padding-left: 20px; }
+        /* GLITCH HEADER */
+        .header-container { padding: 60px 20px; text-align: center; position: relative; }
+        .logo-glitch { width: 140px; border-radius: 50%; filter: drop-shadow(0 0 15px var(--primary)); position: relative; z-index: 5; }
         
-        .video-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
-            gap: 30px; 
-        }
-        .video-card { 
-            background: var(--card-bg); border-radius: 15px; border: 1px solid #222; 
-            overflow: hidden; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .video-card:hover { border-color: var(--primary); transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0, 210, 255, 0.2); }
-        .video-card iframe { width: 100%; aspect-ratio: 16/9; border: 0; }
-        .video-info { padding: 20px; }
-        .video-info h3 { margin: 0; color: var(--primary); font-size: 1.2rem; letter-spacing: 1px; }
-        .video-info p { margin: 10px 0 0; font-size: 0.9rem; opacity: 0.5; line-height: 1.5; }
+        /* GLITCH TEXT EFFECT */
+        .glitch-text { font-size: 4rem; font-weight: 900; text-transform: uppercase; letter-spacing: 15px; position: relative; display: inline-block; }
+        .glitch-text::before, .glitch-text::after { content: 'I.M.L.'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8; }
+        .glitch-text:hover::before { animation: glitch-anim 0.3s infinite; color: var(--glitch-red); left: -2px; }
+        .glitch-text:hover::after { animation: glitch-anim 0.3s infinite reverse; color: var(--glitch-blue); left: 2px; }
 
-        footer { padding: 50px; text-align: center; opacity: 0.3; font-size: 12px; letter-spacing: 2px; }
-
-        @media (max-width: 768px) {
-            h1 { font-size: 1.8rem; letter-spacing: 8px; }
-            .video-grid { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
-<body>
-
-    <canvas id="interactive-canvas"></canvas>
-
-    <nav class="nav-bar">
-        <div style="font-weight: 800; letter-spacing: 3px; color: var(--primary);">I.M.L.</div>
-        <div class="nav-links">
-            <a href="https://www.tiktok.com/@i.m.l._official" target="_blank">TikTok</a>
-            <a href="https://youtube.com/@i.m.l._official" target="_blank">YouTube</a>
-        </div>
-    </nav>
-
-    <div class="hero">
-        <img src="1000032165.png" class="logo-main" alt="I.M.L. Logo">
-        <h1>I.M.L. OFFICIAL</h1>
-    </div>
-
-    <section class="mission-section">
-        <h2>THE MISSION</h2>
-        <p>I.M.L. Official is a digital-first audiovisual project focused on blending high-voltage electronic energy with cinematic storytelling. Every track is a gateway to a new atmosphere, designed for the future of digital sound.</p>
-    </section>
-
-    <main class="gallery-container">
-        <h2 class="section-title">VISUAL DISCOGRAPHY</h2>
-        <div class="video-grid">
-            
-            <div class="video-card">
-                <iframe src="https://www.youtube.com/embed/ZSYhsA1_yL8"></iframe>
-                <div class="video-info">
-                    <h3>No Filter Needed</h3>
-                    <p>A deep dive into raw atmosphere and organic soundscapes. Exploring unrefined electronic emotion.</p>
-                </div>
-            </div>
-
-            <div class="video-card">
-                <iframe src="https://www.youtube.com/embed/irbqdvb9rLY"></iframe>
-                <div class="video-info">
-                    <h3>The View From Here</h3>
-                    <p>Uplifting journey through melodic layers, designed to evoke discovery and perspective.</p>
-                </div>
-            </div>
-
-            <div class="video-card">
-                <iframe src="https://www.youtube.com/embed/8YkRKiAjGO8"></iframe>
-                <div class="video-info">
-                    <h3>L'Éclat et le Chaos</h3>
-                    <p>The signature I.M.L. sound: The perfect balance between blinding light and organized chaos.</p>
-                </div>
-            </div>
-
-            </div>
-    </main>
-
-    <footer>&copy; 2026 I.M.L. | THE SOUND OF THE FUTURE | OPTIMIZED FOR ALL DEVICES</footer>
-
-    <script>
-        // LIVE INTERACTIVE BACKGROUND LOGIC
-        const canvas = document.getElementById('interactive-canvas');
-        const ctx = canvas.getContext('2d');
-        let points = [];
-        const mouse = { x: null, y: null, radius: 150 };
-
-        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
-
-        function init() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            points = [];
-            let particleCount = Math.floor((canvas.width * canvas.height) / 15000);
-            for (let i = 0; i < particleCount; i++) {
-                points.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2 + 1,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5
-                });
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw Grid Lines (Subtle)
-            ctx.strokeStyle = 'rgba(0, 210, 255, 0.03)';
-            ctx.lineWidth = 1;
-            for(let i=0; i<canvas.width; i+=50) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
-            for(let i=0; i<canvas.height; i+=50) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke(); }
-
-            points.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-                ctx.fillStyle = 'rgba(0, 210, 255, 0.3)';
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
-
-                // Interactive Mouse Connection
-                let dx = mouse.x - p.x;
-                let dy = mouse.y - p.y;
-                let distance = Math.sqrt(dx*dx + dy*dy);
-                if(distance < mouse.radius) {
-                    ctx.strokeStyle = `rgba(0, 210, 255, ${1 - distance/mouse.radius})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.beginPath();
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(mouse.x, mouse.y);
-                    ctx.stroke();
-                }
-            });
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', init);
-        init();
-        animate();
-    </script>
-</body>
-</html>
+        @keyframes glitch-anim {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            80% { transform: translate
