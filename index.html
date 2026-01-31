@@ -31,4 +31,113 @@
             20% { transform: translate(-3px, 3px); }
             40% { transform: translate(-3px, -3px); }
             60% { transform: translate(3px, 3px); }
-            80% { transform: translate
+            80% { transform: translate(3px, -3px); }
+            100% { transform: translate(0); }
+        }
+
+        /* PROFESSIONAL GRID WITH CARD GLITCH */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; padding: 40px 10%; position: relative; z-index: 10; }
+        .video-card { background: rgba(10, 10, 10, 0.9); border: 1px solid #333; border-radius: 4px; overflow: hidden; transition: 0.2s; }
+        .video-card:hover { border-color: var(--primary); transform: skewX(-2deg); box-shadow: 5px 5px 0px var(--glitch-red), -5px -5px 0px var(--glitch-blue); }
+        iframe { width: 100%; aspect-ratio: 16/9; border: 0; filter: grayscale(0.5); transition: 0.3s; }
+        .video-card:hover iframe { filter: grayscale(0); }
+
+        .info { padding: 15px; border-top: 1px solid #222; }
+        .info h3 { margin: 0; font-size: 1rem; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-layer"></canvas>
+
+    <div class="hud-overlay">
+        <div class="hud-coords" id="mouse-tracker">LOC: 0.00 / 0.00</div>
+        <div class="hud-status">SYSTEM: ACTIVE<br>SIGNAL: HIGH FREQUENCY<br>MODE: ANALYZING_SOUND</div>
+    </div>
+
+    <div class="header-container">
+        <img src="1000032165.png" class="logo-glitch" alt="IML">
+        <br>
+        <h1 class="glitch-text">I.M.L.</h1>
+    </div>
+
+    <div class="video-grid">
+        <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/ZSYhsA1_yL8"></iframe>
+            <div class="info"><h3>NO FILTER NEEDED</h3></div>
+        </div>
+        <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/irbqdvb9rLY"></iframe>
+            <div class="info"><h3>THE VIEW FROM HERE</h3></div>
+        </div>
+        <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/8YkRKiAjGO8"></iframe>
+            <div class="info"><h3>L'ÉCLAT ET LE CHAOS</h3></div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas-layer');
+        const ctx = canvas.getContext('2d');
+        const tracker = document.getElementById('mouse-tracker');
+        let points = [];
+        let mouse = { x: 0, y: 0 };
+
+        window.onmousemove = (e) => { 
+            mouse.x = e.clientX; 
+            mouse.y = e.clientY;
+            tracker.innerText = `LOC: ${mouse.x}.00 / ${mouse.y}.00`;
+        };
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            points = [];
+            for(let i=0; i<60; i++) points.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vX: (Math.random() - 0.5) * 1.5,
+                vY: (Math.random() - 0.5) * 1.5
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw Scanned Grid
+            ctx.strokeStyle = 'rgba(0, 210, 255, 0.05)';
+            for(let i=0; i<canvas.width; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
+
+            points.forEach(p => {
+                p.x += p.vX; p.y += p.vY;
+                if(p.x < 0 || p.x > canvas.width) p.vX *= -1;
+                if(p.y < 0 || p.y > canvas.height) p.vY *= -1;
+
+                ctx.fillStyle = 'rgba(0, 210, 255, 0.5)';
+                ctx.fillRect(p.x, p.y, 2, 2);
+
+                let dist = Math.hypot(mouse.x - p.x, mouse.y - p.y);
+                if(dist < 200) {
+                    ctx.strokeStyle = `rgba(0, 210, 255, ${1 - dist/200})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(mouse.x, mouse.y);
+                    ctx.stroke();
+                    
+                    // Add small scanning circles
+                    if(dist < 50) {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(draw);
+        }
+
+        window.onresize = init;
+        init(); draw();
+    </script>
+</body>
+</html>
