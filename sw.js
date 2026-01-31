@@ -1,60 +1,27 @@
-const VERSION = "v2.0.0";
-const CACHE_NAME = `iml-cache-${VERSION}`;
-
-const CORE_ASSETS = [
+const CACHE="iml-v3";
+const ASSETS=[
   "./",
   "./index.html",
-  "./offline.html",
   "./manifest.json",
   "./logo.png"
 ];
 
-// INSTALL
-self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS))
-  );
+self.addEventListener("install",e=>{
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
   self.skipWaiting();
 });
 
-// ACTIVATE
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys
-          .filter(key => key !== CACHE_NAME)
-          .map(key => caches.delete(key))
-      )
-    )
+self.addEventListener("activate",e=>{
+  e.waitUntil(
+    caches.keys().then(k=>Promise.all(
+      k.filter(x=>x!==CACHE).map(x=>caches.delete(x))
+    ))
   );
   self.clients.claim();
 });
 
-// FETCH
-self.addEventListener("fetch", event => {
-  if (event.request.method !== "GET") return;
-
-  event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseClone);
-        });
-        return response;
-      })
-      .catch(() =>
-        caches.match(event.request).then(res => {
-          return res || caches.match("./offline.html");
-        })
-      )
+self.addEventListener("fetch",e=>{
+  e.respondWith(
+    fetch(e.request).catch(()=>caches.match(e.request))
   );
-});
-
-// UPDATE NOTIFICATION
-self.addEventListener("message", event => {
-  if (event.data === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
 });
