@@ -5,63 +5,93 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>I.M.L. Official</title>
 
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="logo.png">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./logo.png" type="image/png">
+<link rel="apple-touch-icon" href="./logo.png">
 <meta name="theme-color" content="#0b1220">
+<meta name="description" content="Official I.M.L. hub for music, videos, and app updates.">
 
 <style>
 :root{
   --bg:#eef7ff;
   --fg:#0b1220;
   --accent:#4db8ff;
+  --panel:rgba(255,255,255,.72);
 }
 [data-theme="dark"]{
   --bg:#0b1220;
   --fg:#eef7ff;
+  --panel:rgba(11,18,32,.72);
 }
 
+*{box-sizing:border-box}
+html{min-height:100%}
 body{
   margin:0;
-  font-family:system-ui,Arial;
+  min-height:100%;
+  font-family:system-ui,Arial,sans-serif;
   background:var(--bg);
   color:var(--fg);
   overflow-x:hidden;
 }
-
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 22%,rgba(77,184,255,.28),transparent 32rem),
+    url("./logo.png") center 150px / min(56vw,360px) no-repeat;
+  opacity:.24;
+}
 canvas#bg{
   position:fixed;
   inset:0;
-  z-index:-1;
+  z-index:0;
+  pointer-events:none;
+}
+header,main,#installModal{
+  position:relative;
+  z-index:1;
 }
 
-/* Header */
 header{
   padding:15px;
 }
-.btns button{
-  margin:5px;
+.btns{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.btns button,#installBox button,#installModal button{
   padding:10px 18px;
   border-radius:25px;
-  border:none;
+  border:0;
   background:var(--accent);
   color:#fff;
-  font-weight:600;
+  font-weight:700;
+  cursor:pointer;
   touch-action:manipulation;
 }
+.btns button:hover,#installBox button:hover,#installModal button:hover{
+  filter:brightness(1.08);
+}
 
-/* Hero */
 #hero{
   text-align:center;
-  padding:70px 20px;
+  padding:70px 20px 48px;
 }
 .logo-wrap{
   position:relative;
-  width:160px;
-  height:160px;
-  margin:auto;
+  width:180px;
+  height:180px;
+  margin:0 auto 24px;
 }
 .logo-wrap img{
   width:100%;
+  height:100%;
+  object-fit:contain;
   position:relative;
   z-index:3;
   animation:float 6s ease-in-out infinite;
@@ -69,6 +99,7 @@ header{
 .glow{
   position:absolute;
   inset:-25%;
+  z-index:1;
   border-radius:50%;
   background:radial-gradient(circle,rgba(120,200,255,.9),transparent 70%);
   filter:blur(40px);
@@ -80,43 +111,40 @@ header{
   z-index:2;
 }
 
-@keyframes float{
-  50%{transform:translateY(-12px)}
-}
-@keyframes pulse{
-  50%{opacity:.4}
-}
+@keyframes float{50%{transform:translateY(-12px)}}
+@keyframes pulse{50%{opacity:.4}}
 
-/* Sections */
 section{
   padding:40px 20px;
 }
+section>h2,section>p{
+  max-width:900px;
+  margin-left:auto;
+  margin-right:auto;
+}
 iframe{
-  width:100%;
+  display:block;
+  width:min(100%,900px);
   height:260px;
-  border:none;
+  margin:auto;
+  border:0;
   border-radius:20px;
+  background:#000;
 }
 
-/* Install */
 #installBox{
   text-align:center;
 }
 #installBox button{
   padding:15px 35px;
-  border-radius:30px;
-  border:none;
-  background:var(--accent);
-  color:white;
   font-size:1.1em;
 }
-#iosHint{
-  display:none;
-  opacity:.7;
+#installStatus{
+  min-height:1.5em;
+  opacity:.76;
   margin-top:10px;
 }
 
-/* Modal */
 #installModal{
   display:none;
   position:fixed;
@@ -124,67 +152,68 @@ iframe{
   background:rgba(0,0,0,.6);
   align-items:center;
   justify-content:center;
+  padding:20px;
 }
 #installModal .card{
-  background:var(--bg);
+  width:min(100%,360px);
+  background:var(--panel);
   color:var(--fg);
   padding:25px;
   border-radius:20px;
   text-align:center;
+  backdrop-filter:blur(14px);
 }
 </style>
 </head>
 
 <body>
-
 <canvas id="bg"></canvas>
 
 <header>
   <h2>I.M.L.</h2>
   <div class="btns">
-    <button onclick="toggleTheme()">Light / Dark</button>
-    <button onclick="window.open('https://youtube.com/@i.m.l._official','_blank')">YouTube</button>
-    <button onclick="window.open('https://www.tiktok.com/@i.m.l._official','_blank')">TikTok</button>
+    <button type="button" onclick="toggleTheme()">Light / Dark</button>
+    <button type="button" onclick="window.open('https://youtube.com/@i.m.l._official','_blank')">YouTube</button>
+    <button type="button" onclick="window.open('https://www.tiktok.com/@i.m.l._official','_blank')">TikTok</button>
   </div>
 </header>
 
-<section id="hero">
-  <div class="logo-wrap" id="hero">
-    <img src="./logo.png" alt="I.M.L Logo">
-    <div class="glow"></div>
-    <canvas id="orbit"></canvas>
-  </div>
-  <p>High-voltage sound · Cinematic visuals · I.M.L.</p>
-</section>
+<main>
+  <section id="hero">
+    <div class="logo-wrap">
+      <div class="glow"></div>
+      <canvas id="orbit"></canvas>
+      <img src="./logo.png" alt="I.M.L. Logo">
+    </div>
+    <p>High-voltage sound | Cinematic visuals | I.M.L.</p>
+  </section>
 
-<section>
-<h2>Latest Videos</h2>
-<iframe src="https://www.youtube.com/embed?listType=playlist&list=UUes-oJI1M7Rr6oWIofhK6fg"></iframe>
-</section>
+  <section>
+    <h2>Latest Videos</h2>
+    <iframe title="I.M.L. YouTube videos" src="https://www.youtube.com/embed?listType=playlist&list=UUes-oJI1M7Rr6oWIofhK6fg" allowfullscreen></iframe>
+  </section>
 
-<section id="installBox">
-<h2>Install App</h2>
-<button onclick="openInstall()">Install</button>
-<p id="iosHint">iOS: Share → Add to Home Screen</p>
-</section>
+  <section id="installBox">
+    <h2>Install App</h2>
+    <button type="button" id="installButton">Install</button>
+    <p id="installStatus"></p>
+  </section>
+</main>
 
-<div id="installModal">
+<div id="installModal" aria-hidden="true">
   <div class="card">
     <h3>Install I.M.L. App</h3>
-    <p>Get the full experience offline.</p>
-    <button onclick="doInstall()">Install</button><br><br>
-    <button onclick="closeInstall()">Cancel</button>
+    <p>Open I.M.L. from your home screen.</p>
+    <button type="button" id="confirmInstall">Install</button><br><br>
+    <button type="button" id="cancelInstall">Cancel</button>
   </div>
 </div>
 
 <script>
-/* THEME */
 function toggleTheme(){
-  document.body.dataset.theme =
-    document.body.dataset.theme==="dark"?"":"dark";
+  document.body.dataset.theme = document.body.dataset.theme === "dark" ? "" : "dark";
 }
 
-/* BACKGROUND */
 const bg=document.getElementById("bg"),ctx=bg.getContext("2d");
 let w,h,pts=[];
 function resize(){
@@ -192,7 +221,7 @@ function resize(){
   h=bg.height=innerHeight;
   pts=[...Array(80)].map(()=>({x:Math.random()*w,y:Math.random()*h,s:Math.random()*1+0.5}));
 }
-window.onresize=resize;resize();
+addEventListener("resize",resize);resize();
 function animate(){
   ctx.clearRect(0,0,w,h);
   pts.forEach(p=>{
@@ -207,50 +236,69 @@ function animate(){
 }
 animate();
 
-/* ORBIT */
 const o=document.getElementById("orbit"),ox=o.getContext("2d");
 function orbit(){
   o.width=o.offsetWidth;o.height=o.offsetHeight;
   ox.clearRect(0,0,o.width,o.height);
   for(let i=0;i<12;i++){
-    let a=Date.now()/800+i;
-    let r=o.width/2.2;
+    const a=Date.now()/800+i;
+    const r=o.width/2.2;
     ox.fillStyle="rgba(120,200,255,.9)";
     ox.beginPath();
-    ox.arc(o.width/2+Math.cos(a)*r,o.height/2+Math.sin(a)*r,3,0,7);
+    ox.arc(o.width/2+Math.cos(a)*r,o.height/2+Math.sin(a)*r,3,0,Math.PI*2);
     ox.fill();
   }
   requestAnimationFrame(orbit);
 }
 orbit();
 
-/* INSTALL */
 let deferredPrompt;
+const modal=document.getElementById("installModal");
+const statusText=document.getElementById("installStatus");
+
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
   deferredPrompt=e;
+  statusText.textContent="Ready to install.";
 });
+
+window.addEventListener("appinstalled",()=>{
+  deferredPrompt=null;
+  statusText.textContent="I.M.L. is installed.";
+  closeInstall();
+});
+
 function openInstall(){
   if(deferredPrompt){
-    document.getElementById("installModal").style.display="flex";
-  }else{
-    document.getElementById("iosHint").style.display="block";
+    modal.style.display="flex";
+    modal.setAttribute("aria-hidden","false");
+    return;
   }
+  const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  statusText.textContent=isiOS ? "On iOS, tap Share, then Add to Home Screen." : "Install is available after the site is opened over HTTPS and the browser marks it installable.";
 }
 function closeInstall(){
-  document.getElementById("installModal").style.display="none";
+  modal.style.display="none";
+  modal.setAttribute("aria-hidden","true");
 }
-function doInstall(){
+async function doInstall(){
+  if(!deferredPrompt){
+    openInstall();
+    return;
+  }
   deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
   deferredPrompt=null;
   closeInstall();
 }
 
-/* SERVICE WORKER */
-if("serviceWorker"in navigator){
-  navigator.serviceWorker.register("sw.js");
+document.getElementById("installButton").addEventListener("click",openInstall);
+document.getElementById("confirmInstall").addEventListener("click",doInstall);
+document.getElementById("cancelInstall").addEventListener("click",closeInstall);
+
+if("serviceWorker" in navigator){
+  addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
 }
 </script>
-
 </body>
 </html>
