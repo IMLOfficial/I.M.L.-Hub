@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">I.M.L. Logo</title>
+  <desc id="desc">Circular blue I.M.L. logo with audio wave lines.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="55%">
+      <stop offset="0" stop-color="#1d4f8f"/>
+      <stop offset="0.55" stop-color="#071d3a"/>
+      <stop offset="1" stop-color="#020916"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="90" y1="60" x2="420" y2="450" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f8fbff"/>
+      <stop offset="0.35" stop-color="#52c7ff"/>
+      <stop offset="0.7" stop-color="#0b62c9"/>
+      <stop offset="1" stop-color="#f8fbff"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="256" fill="#020916"/>
+  <circle cx="256" cy="256" r="224" fill="url(#bg)" stroke="url(#ring)" stroke-width="13"/>
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#7bdcff" stroke-width="2" opacity="0.55"/>
+  <circle cx="256" cy="256" r="176" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3"/>
+  <g opacity="0.78" filter="url(#glow)">
+    <path d="M76 261h42l14-26 22 57 22-88 20 111 22-134 23 157 22-157 22 134 20-111 22 88 22-57 14 26h73" fill="none" stroke="#5fd7ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M86 292h340" stroke="#0b62c9" stroke-width="5" stroke-linecap="round" opacity="0.75"/>
+  </g>
+  <text x="256" y="236" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="86" font-weight="800" fill="#f8fbff" letter-spacing="4" filter="url(#glow)">I.M.L.</text>
+  <text x="256" y="318" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#9ee7ff" letter-spacing="6">OFFICIAL</text>
+  <path d="M112 392c78 47 210 48 288 0" fill="none" stroke="#55cfff" stroke-width="7" stroke-linecap="round" opacity="0.75"/>
+</svg>
