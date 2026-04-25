@@ -1,5 +1,5 @@
-const CACHE="iml-v8";
-const ASSETS=["./","./index.html","./manifest.json","./logo.svg"];
+const CACHE="iml-v9";
+const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js"];
 
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
