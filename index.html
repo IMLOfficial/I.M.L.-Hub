@@ -6,8 +6,8 @@
 <title>I.M.L. Official</title>
 
 <link rel="manifest" href="./manifest.json">
-<link rel="icon" href="./logo.png" type="image/png">
-<link rel="apple-touch-icon" href="./logo.png">
+<link rel="icon" href="./logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./logo.svg">
 <meta name="theme-color" content="#0b1220">
 <meta name="description" content="Official I.M.L. hub for music, videos, and app updates.">
 
@@ -42,7 +42,7 @@ body::before{
   pointer-events:none;
   background:
     radial-gradient(circle at 50% 22%,rgba(77,184,255,.28),transparent 32rem),
-    url("./logo.png") center 150px / min(56vw,360px) no-repeat;
+    url("./logo.svg") center 150px / min(56vw,360px) no-repeat;
   opacity:.24;
 }
 canvas#bg{
@@ -183,7 +183,7 @@ iframe{
     <div class="logo-wrap">
       <div class="glow"></div>
       <canvas id="orbit"></canvas>
-      <img src="./logo.png" alt="I.M.L. Logo">
+      <img src="./logo.svg" alt="I.M.L. Logo">
     </div>
     <p>High-voltage sound | Cinematic visuals | I.M.L.</p>
   </section>
@@ -272,7 +272,7 @@ function setInstallStatus(){
     return;
   }
   installButton.textContent="Install";
-  statusText.textContent="If install is not ready yet, replace logo.png with the real logo and open this site over HTTPS.";
+  statusText.textContent="If install is not ready yet, open this site over HTTPS and wait for the browser install prompt.";
 }
 
 window.addEventListener("beforeinstallprompt",event=>{
@@ -298,7 +298,7 @@ function openInstall(){
     return;
   }
   const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  statusText.textContent=isiOS ? "On iOS, tap Share, then Add to Home Screen." : "Install is not ready yet. The app needs HTTPS, the service worker, and a real 192x192 or 512x512 logo.png icon.";
+  statusText.textContent=isiOS ? "On iOS, tap Share, then Add to Home Screen." : "Install is not ready yet. Use Chrome or Edge over HTTPS, then refresh once after the update is live.";
 }
 function closeInstall(){
   modal.style.display="none";
