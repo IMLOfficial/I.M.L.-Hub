@@ -1,4 +1,4 @@
-const CACHE="iml-v13";
+const CACHE="iml-v14";
 const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js"];
 
 self.addEventListener("install",event=>{
