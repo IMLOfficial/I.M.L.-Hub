@@ -1,1 +1,321 @@
-<!doctype html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'><title>I.M.L. Official</title><link rel='manifest' href='./manifest.json'><link rel='icon' href='./logo.svg' type='image/svg+xml'><link rel='apple-touch-icon' href='./logo.svg'><meta name='theme-color' content='#0b1220'><meta name='description' content='Official I.M.L. hub for music, videos, and app updates.'><meta name='mobile-web-app-capable' content='yes'><meta name='apple-mobile-web-app-capable' content='yes'><meta name='apple-mobile-web-app-title' content='I.M.L.'><meta name='apple-mobile-web-app-status-bar-style' content='black-translucent'><meta name='format-detection' content='telephone=no'><style>:root{--bg:#081426;--fg:#eef7ff;--accent:#4db8ff;--panel:rgba(8,20,38,.76);--line:rgba(126,222,255,.22)}*{box-sizing:border-box}html{min-height:100%}body{margin:0;min-height:100%;font-family:system-ui,Arial,sans-serif;background:radial-gradient(circle at 50% 8%,#164a76 0%,#0b2039 28%,#071426 58%,#050b17 100%);color:var(--fg);overflow-x:hidden;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);-webkit-text-size-adjust:100%}body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 50% 22%,rgba(77,184,255,.42),transparent 26rem),radial-gradient(circle at 18% 68%,rgba(89,255,244,.2),transparent 24rem),radial-gradient(circle at 82% 55%,rgba(138,88,255,.22),transparent 27rem),linear-gradient(rgba(90,203,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(90,203,255,.06) 1px,transparent 1px),url('./logo.svg') center 150px/min(56vw,360px) no-repeat;background-size:auto,auto,auto,48px 48px,48px 48px,min(56vw,360px) auto;opacity:.42}body::after{content:'';position:fixed;inset:-25%;z-index:0;pointer-events:none;background:conic-gradient(from 120deg at 50% 28%,transparent 0deg,rgba(0,210,255,.28) 42deg,transparent 92deg,rgba(117,70,255,.22) 155deg,transparent 228deg,rgba(54,255,220,.2) 300deg,transparent 360deg);filter:blur(26px) saturate(1.3);opacity:.86;animation:auroraShift 14s ease-in-out infinite alternate}canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none}header,main,#installModal{position:relative;z-index:1}header{padding:calc(15px + env(safe-area-inset-top)) 15px 15px}.btns,.mood-controls,.video-actions{display:flex;flex-wrap:wrap;gap:10px}.video-actions{justify-content:center;max-width:900px;margin:14px auto 0}.button,button{font:inherit;min-height:44px;-webkit-tap-highlight-color:transparent;padding:10px 18px;border-radius:25px;border:0;background:var(--accent);color:#fff;font-weight:700;cursor:pointer;touch-action:manipulation;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.button:hover,button:hover{filter:brightness(1.08)}#hero{text-align:center;padding:70px 20px 30px}.logo-wrap{position:relative;width:180px;height:180px;margin:0 auto 24px}.logo-wrap img{width:100%;height:100%;object-fit:contain;position:relative;z-index:3;animation:float 6s ease-in-out infinite}.glow{position:absolute;inset:-25%;z-index:1;border-radius:50%;background:radial-gradient(circle,rgba(120,200,255,.9),transparent 70%);filter:blur(40px);animation:pulse 4s infinite}#orbit{position:absolute;inset:0;z-index:2}@keyframes float{50%{transform:translateY(-12px)}}@keyframes pulse{50%{opacity:.4}}@keyframes auroraShift{0%{transform:translate3d(-4%,0,0) rotate(-8deg) scale(1)}100%{transform:translate3d(4%,4%,0) rotate(8deg) scale(1.12)}}section{padding:40px 20px}section>h2,section>p,.hub-panel{max-width:900px;margin-left:auto;margin-right:auto}.hub-panel{padding:20px;border:1px solid var(--line);border-radius:18px;background:rgba(6,18,34,.58);backdrop-filter:blur(16px);box-shadow:0 0 40px rgba(77,184,255,.12)}.hub-panel h2,.hub-panel h3{margin-top:0}.mood-controls{justify-content:center;margin-top:16px}.mood-controls button{background:rgba(77,184,255,.22);border:1px solid rgba(126,222,255,.3)}.mood-controls button.active{background:linear-gradient(135deg,#35d9ff,#7b5dff);box-shadow:0 0 24px rgba(77,184,255,.42)}.action-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;max-width:900px;margin:0 auto}.action-card{padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(6,18,34,.58);backdrop-filter:blur(16px);box-shadow:0 0 28px rgba(77,184,255,.08)}.action-card h3{margin:0 0 8px}.action-card p{opacity:.78;min-height:48px}.action-card .button{width:100%}.now-strip{max-width:900px;margin:16px auto 0;overflow:hidden;border:1px solid var(--line);border-radius:999px;background:rgba(6,18,34,.5);white-space:nowrap}.now-strip span{display:inline-block;padding:10px 0;animation:marquee 18s linear infinite}@keyframes marquee{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}iframe{display:block;width:min(100%,900px);height:clamp(210px,48vw,360px);margin:auto;border:0;border-radius:20px;background:#000;position:relative;z-index:2}#installBox{text-align:center}#installBox button{padding:15px 35px;font-size:1.1em}#installStatus{min-height:1.5em;opacity:.76;margin-top:10px}#installModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px}#installModal .card{width:min(100%,380px);background:var(--panel);color:var(--fg);padding:25px;border-radius:20px;text-align:center;backdrop-filter:blur(14px)}#installHelp{line-height:1.45;opacity:.86}@media (max-width:640px){header{padding-left:12px;padding-right:12px}.btns .button{padding:9px 14px}#hero{padding:48px 14px 24px}.logo-wrap{width:min(58vw,170px);height:min(58vw,170px)}section{padding:28px 12px}.hub-panel,.action-card{border-radius:14px}.mood-controls button{flex:1 1 130px}.action-grid{grid-template-columns:1fr}.now-strip{border-radius:14px}.now-strip span{animation-duration:14s}iframe{border-radius:14px}#installModal{padding:calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom))}}@media (prefers-reduced-motion:reduce){body::after,.logo-wrap img,.glow,.now-strip span{animation:none}}</style></head><body><canvas id='bg'></canvas><header><h2>I.M.L.</h2><div class='btns'><a class='button' href='https://youtube.com/@i.m.l._official' target='_blank' rel='noopener'>YouTube</a><a class='button' href='https://www.tiktok.com/@i.m.l._officially?is_from_webapp=1&sender_device=pc' target='_blank' rel='noopener'>TikTok</a></div></header><main><section id='hero'><div class='logo-wrap'><div class='glow'></div><canvas id='orbit'></canvas><img src='./logo.svg' alt='I.M.L. Logo'></div><p>High-voltage sound | Cinematic visuals | I.M.L.</p><div class='hub-panel'><h2>Choose The Vibe</h2><p>Tap a mood and the background reacts instantly.</p><div class='mood-controls' id='moodControls'><button type='button' class='active' data-mood='0'>Neon Pulse</button><button type='button' data-mood='1'>Blue Drive</button><button type='button' data-mood='2'>Dream Flash</button><button type='button' data-mood='3'>Night Ride</button></div></div><div class='now-strip'><span>New visuals, new music, new I.M.L. drops | Follow on TikTok and YouTube | Install the app for quick access</span></div></section><section><div class='action-grid'><div class='action-card'><h3>Share I.M.L.</h3><p>Send the hub to someone who should hear the next track.</p><button type='button' id='shareButton'>Share Page</button></div><div class='action-card'><h3>Watch Videos</h3><p>Jump straight into the latest I.M.L. visuals on YouTube.</p><a class='button' href='https://youtube.com/@i.m.l._official' target='_blank' rel='noopener'>Open YouTube</a></div><div class='action-card'><h3>Follow The Clips</h3><p>Catch short updates, moments, and drops on TikTok.</p><a class='button' href='https://www.tiktok.com/@i.m.l._officially?is_from_webapp=1&sender_device=pc' target='_blank' rel='noopener'>Open TikTok</a></div></div></section><section><h2>Latest Video</h2><iframe id='latestVideos' title='F.O.C.U.S. - I.M.L. YouTube video' src='https://www.youtube.com/embed/T3W9tOxUOEo?enablejsapi=1&playsinline=1&rel=0&modestbranding=1&origin=https://imlofficial.github.io' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen' allowfullscreen webkitallowfullscreen mozallowfullscreen referrerpolicy='strict-origin-when-cross-origin'></iframe><div class='btns video-actions'><a class='button' href='https://www.youtube.com/watch?v=T3W9tOxUOEo' target='_blank' rel='noopener'>Open Video</a><a class='button' href='https://youtube.com/@i.m.l._official' target='_blank' rel='noopener'>More Videos</a></div></section><section id='installBox'><h2>Install App</h2><button type='button' id='installButton'>Install</button><p id='installStatus'>Tap Install for browser install options.</p></section></main><div id='installModal' aria-hidden='true'><div class='card'><h3>Install I.M.L. App</h3><p id='installHelp'>Checking your browser install options...</p><button type='button' id='confirmInstall'>Install</button><br><br><button type='button' id='cancelInstall'>Close</button></div></div><script src='./video-inspired-bg.js?v=16'></script><script src='https://www.youtube.com/iframe_api'></script><script>const o=document.getElementById('orbit'),ox=o.getContext('2d');let ow=0,oh=0;function sizeOrbit(){const d=Math.min(devicePixelRatio||1,1.5);ow=o.offsetWidth;oh=o.offsetHeight;o.width=Math.floor(ow*d);o.height=Math.floor(oh*d);ox.setTransform(d,0,0,d,0,0)}function orbit(t=0){ox.clearRect(0,0,ow,oh);for(let i=0;i<12;i++){const a=t/800+i,r=ow/2.2;ox.fillStyle='rgba(120,200,255,.9)';ox.beginPath();ox.arc(ow/2+Math.cos(a)*r,oh/2+Math.sin(a)*r,3,0,Math.PI*2);ox.fill()}requestAnimationFrame(orbit)}sizeOrbit();addEventListener('resize',sizeOrbit,{passive:true});orbit();function setVideoEnergy(playing){dispatchEvent(new CustomEvent('iml:video-state',{detail:{playing}}))}function onYouTubeIframeAPIReady(){new YT.Player('latestVideos',{events:{onStateChange:event=>setVideoEnergy(event.data===YT.PlayerState.PLAYING)}})}window.onYouTubeIframeAPIReady=onYouTubeIframeAPIReady;document.querySelectorAll('#moodControls button').forEach(button=>{button.addEventListener('click',()=>{document.querySelectorAll('#moodControls button').forEach(b=>b.classList.remove('active'));button.classList.add('active');dispatchEvent(new CustomEvent('iml:mood',{detail:{mood:button.dataset.mood}}))})});document.getElementById('shareButton').addEventListener('click',async()=>{const url='https://imlofficial.github.io/I.M.L.-Hub/';if(navigator.share){await navigator.share({title:'I.M.L. Official',text:'Check out the I.M.L. music hub',url}).catch(()=>{})}else{await navigator.clipboard.writeText(url).catch(()=>{});document.getElementById('shareButton').textContent='Link Copied';setTimeout(()=>document.getElementById('shareButton').textContent='Share Page',1800)}});let deferredPrompt;const modal=document.getElementById('installModal'),statusText=document.getElementById('installStatus'),installButton=document.getElementById('installButton'),installHelp=document.getElementById('installHelp'),confirmInstall=document.getElementById('confirmInstall');function isStandalone(){return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}function setInstallStatus(){if(isStandalone()){installButton.textContent='Installed';statusText.textContent='I.M.L. is already installed.';return}installButton.textContent='Install';statusText.textContent=deferredPrompt?'Ready to install.':'Tap Install for browser install options.'}function openInstall(){if(isStandalone()){setInstallStatus();return}modal.style.display='flex';modal.setAttribute('aria-hidden','false');if(deferredPrompt){confirmInstall.style.display='inline-block';installHelp.textContent='Your browser is ready to install I.M.L.';return}confirmInstall.style.display='none';installHelp.textContent=isIOS()?'On iPhone or iPad, tap Share, then Add to Home Screen.':'If the browser prompt does not appear, use the install icon in the address bar or open the browser menu and choose Install app. Refresh once if you just updated the site.'}function closeInstall(){modal.style.display='none';modal.setAttribute('aria-hidden','true')}async function doInstall(){if(!deferredPrompt){openInstall();return}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;closeInstall();setInstallStatus()}window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();deferredPrompt=event;setInstallStatus()});window.addEventListener('appinstalled',()=>{deferredPrompt=null;closeInstall();setInstallStatus()});installButton.addEventListener('click',openInstall);confirmInstall.addEventListener('click',doInstall);document.getElementById('cancelInstall').addEventListener('click',closeInstall);setInstallStatus();if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=16'))}</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>I.M.L. Official</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./logo.svg">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Official I.M.L. hub for music, videos, and app updates.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="I.M.L.">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+  <style>
+    :root{--bg:#081426;--fg:#eef7ff;--accent:#4db8ff;--panel:rgba(8,20,38,.76);--line:rgba(126,222,255,.22)}
+    *{box-sizing:border-box}
+    html{min-height:100%}
+    body{margin:0;min-height:100%;font-family:system-ui,Arial,sans-serif;background:radial-gradient(circle at 50% 8%,#164a76 0%,#0b2039 28%,#071426 58%,#050b17 100%);color:var(--fg);overflow-x:hidden;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);-webkit-text-size-adjust:100%}
+    body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 50% 22%,rgba(77,184,255,.42),transparent 26rem),radial-gradient(circle at 18% 68%,rgba(89,255,244,.2),transparent 24rem),radial-gradient(circle at 82% 55%,rgba(138,88,255,.22),transparent 27rem),linear-gradient(rgba(90,203,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(90,203,255,.06) 1px,transparent 1px),url("./logo.svg") center 150px/min(56vw,360px) no-repeat;background-size:auto,auto,auto,48px 48px,48px 48px,min(56vw,360px) auto;opacity:.42}
+    body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;background:conic-gradient(from 120deg at 50% 28%,transparent 0deg,rgba(0,210,255,.28) 42deg,transparent 92deg,rgba(117,70,255,.22) 155deg,transparent 228deg,rgba(54,255,220,.2) 300deg,transparent 360deg);filter:blur(26px) saturate(1.3);opacity:.86;animation:auroraShift 14s ease-in-out infinite alternate}
+    body.video-active::before{opacity:.58}
+    canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+    header,main,#installModal{position:relative;z-index:1}
+    header{padding:calc(15px + env(safe-area-inset-top)) 15px 15px}
+    .btns,.mood-controls,.video-actions{display:flex;flex-wrap:wrap;gap:10px}
+    .video-actions{justify-content:center;max-width:900px;margin:14px auto 0}
+    .button,button{font:inherit;min-height:44px;-webkit-tap-highlight-color:transparent;padding:10px 18px;border-radius:25px;border:0;background:var(--accent);color:#fff;font-weight:700;cursor:pointer;touch-action:manipulation;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+    .button:hover,button:hover{filter:brightness(1.08)}
+    #hero{text-align:center;padding:70px 20px 30px}
+    .logo-wrap{position:relative;width:180px;height:180px;margin:0 auto 24px}
+    .logo-wrap img{width:100%;height:100%;object-fit:contain;position:relative;z-index:3;animation:float 6s ease-in-out infinite}
+    .glow{position:absolute;inset:-25%;z-index:1;border-radius:50%;background:radial-gradient(circle,rgba(120,200,255,.9),transparent 70%);filter:blur(40px);animation:pulse 4s infinite}
+    #orbit{position:absolute;inset:0;z-index:2}
+    @keyframes float{50%{transform:translateY(-12px)}}
+    @keyframes pulse{50%{opacity:.4}}
+    @keyframes auroraShift{0%{transform:translate3d(-4%,0,0) rotate(-8deg) scale(1)}100%{transform:translate3d(4%,4%,0) rotate(8deg) scale(1.12)}}
+    section{padding:40px 20px}
+    main>section:not(#hero){content-visibility:auto;contain-intrinsic-size:520px}
+    section>h2,section>p,.hub-panel{max-width:900px;margin-left:auto;margin-right:auto}
+    .hub-panel{padding:20px;border:1px solid var(--line);border-radius:18px;background:rgba(6,18,34,.58);backdrop-filter:blur(16px);box-shadow:0 0 40px rgba(77,184,255,.12)}
+    .hub-panel h2,.hub-panel h3{margin-top:0}
+    .mood-controls{justify-content:center;margin-top:16px}
+    .mood-controls button{background:rgba(77,184,255,.22);border:1px solid rgba(126,222,255,.3)}
+    .mood-controls button.active{background:linear-gradient(135deg,#35d9ff,#7b5dff);box-shadow:0 0 24px rgba(77,184,255,.42)}
+    .action-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;max-width:900px;margin:0 auto}
+    .action-card{padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(6,18,34,.58);backdrop-filter:blur(16px);box-shadow:0 0 28px rgba(77,184,255,.08)}
+    .action-card h3{margin:0 0 8px}
+    .action-card p{opacity:.78;min-height:48px}
+    .action-card .button{width:100%}
+    .now-strip{max-width:900px;margin:16px auto 0;overflow:hidden;border:1px solid var(--line);border-radius:999px;background:rgba(6,18,34,.5);white-space:nowrap}
+    .now-strip span{display:inline-block;padding:10px 0;animation:marquee 18s linear infinite}
+    @keyframes marquee{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+    iframe{display:block;width:min(100%,900px);height:clamp(210px,48vw,360px);margin:auto;border:0;border-radius:20px;background:#000;position:relative;z-index:2}
+    #installBox{text-align:center}
+    #installBox button{padding:15px 35px;font-size:1.1em}
+    #installStatus{min-height:1.5em;opacity:.76;margin-top:10px}
+    #installModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px}
+    #installModal .card{width:min(100%,380px);background:var(--panel);color:var(--fg);padding:25px;border-radius:20px;text-align:center;backdrop-filter:blur(14px)}
+    #installHelp{line-height:1.45;opacity:.86}
+    @media (max-width:640px){
+      body::before{background:radial-gradient(circle at 50% 20%,rgba(77,184,255,.36),transparent 20rem),radial-gradient(circle at 20% 65%,rgba(89,255,244,.16),transparent 18rem),radial-gradient(circle at 82% 55%,rgba(138,88,255,.16),transparent 20rem),url("./logo.svg") center 132px/min(62vw,260px) no-repeat;opacity:.34}
+      body::after{display:none}
+      header{padding-left:12px;padding-right:12px}
+      .btns .button{padding:9px 14px}
+      #hero{padding:44px 14px 24px}
+      .logo-wrap{width:min(56vw,164px);height:min(56vw,164px)}
+      .logo-wrap img{animation:none}
+      .glow{filter:blur(20px);animation:none;opacity:.65}
+      section{padding:26px 12px}
+      main>section:not(#hero){contain-intrinsic-size:430px}
+      .hub-panel,.action-card,#installModal .card{border-radius:14px;backdrop-filter:none;box-shadow:none;background:rgba(6,18,34,.7)}
+      .mood-controls button{flex:1 1 130px}
+      .action-grid{grid-template-columns:1fr}
+      .now-strip{border-radius:14px;white-space:normal}
+      .now-strip span{display:block;padding:10px 12px;animation:none;line-height:1.35;text-align:center}
+      iframe{border-radius:14px;height:min(56vw,260px)}
+      #installModal{padding:calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom))}
+    }
+    @media (prefers-reduced-motion:reduce){body::after,.logo-wrap img,.glow,.now-strip span{animation:none}}
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+  <header>
+    <h2>I.M.L.</h2>
+    <div class="btns">
+      <a class="button" href="https://youtube.com/@i.m.l._official" target="_blank" rel="noopener">YouTube</a>
+      <a class="button" href="https://www.tiktok.com/@i.m.l._officially?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener">TikTok</a>
+    </div>
+  </header>
+  <main>
+    <section id="hero">
+      <div class="logo-wrap">
+        <div class="glow"></div>
+        <canvas id="orbit"></canvas>
+        <img src="./logo.svg" alt="I.M.L. Logo">
+      </div>
+      <p>High-voltage sound | Cinematic visuals | I.M.L.</p>
+      <div class="hub-panel">
+        <h2>Choose The Vibe</h2>
+        <p>Tap a mood and the background reacts instantly.</p>
+        <div class="mood-controls" id="moodControls">
+          <button type="button" class="active" data-mood="0">Neon Pulse</button>
+          <button type="button" data-mood="1">Blue Drive</button>
+          <button type="button" data-mood="2">Dream Flash</button>
+          <button type="button" data-mood="3">Night Ride</button>
+        </div>
+      </div>
+      <div class="now-strip"><span>New visuals, new music, new I.M.L. drops | Follow on TikTok and YouTube | Install the app for quick access</span></div>
+    </section>
+    <section>
+      <div class="action-grid">
+        <div class="action-card">
+          <h3>Share I.M.L.</h3>
+          <p>Send the hub to someone who should hear the next track.</p>
+          <button type="button" id="shareButton">Share Page</button>
+        </div>
+        <div class="action-card">
+          <h3>Watch Videos</h3>
+          <p>Jump straight into the latest I.M.L. visuals on YouTube.</p>
+          <a class="button" href="https://youtube.com/@i.m.l._official" target="_blank" rel="noopener">Open YouTube</a>
+        </div>
+        <div class="action-card">
+          <h3>Follow The Clips</h3>
+          <p>Catch short updates, moments, and drops on TikTok.</p>
+          <a class="button" href="https://www.tiktok.com/@i.m.l._officially?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener">Open TikTok</a>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>Latest Video</h2>
+      <iframe id="latestVideos" title="F.O.C.U.S. - I.M.L. YouTube video" src="https://www.youtube.com/embed/T3W9tOxUOEo?enablejsapi=1&amp;playsinline=1&amp;rel=0&amp;modestbranding=1&amp;origin=https://imlofficial.github.io" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <div class="btns video-actions">
+        <a class="button" href="https://www.youtube.com/watch?v=T3W9tOxUOEo" target="_blank" rel="noopener">Open Video</a>
+        <a class="button" href="https://youtube.com/@i.m.l._official" target="_blank" rel="noopener">More Videos</a>
+      </div>
+    </section>
+    <section id="installBox">
+      <h2>Install App</h2>
+      <button type="button" id="installButton">Install</button>
+      <p id="installStatus">Tap Install for browser install options.</p>
+    </section>
+  </main>
+  <div id="installModal" aria-hidden="true">
+    <div class="card">
+      <h3>Install I.M.L. App</h3>
+      <p id="installHelp">Checking your browser install options...</p>
+      <button type="button" id="confirmInstall">Install</button><br><br>
+      <button type="button" id="cancelInstall">Close</button>
+    </div>
+  </div>
+  <script src="./video-inspired-bg.js?v=17"></script>
+  <script>
+    const o = document.getElementById("orbit");
+    const ox = o.getContext("2d");
+    const orbitLite = matchMedia("(pointer: coarse), (max-width: 640px)");
+    const orbitReduced = matchMedia("(prefers-reduced-motion: reduce)");
+    let ow = 0;
+    let oh = 0;
+    let orbitRaf = 0;
+    let orbitLast = 0;
+
+    function sizeOrbit() {
+      const d = orbitLite.matches ? 1 : Math.min(devicePixelRatio || 1, 1.35);
+      ow = o.offsetWidth;
+      oh = o.offsetHeight;
+      o.width = Math.floor(ow * d);
+      o.height = Math.floor(oh * d);
+      ox.setTransform(d, 0, 0, d, 0, 0);
+      if (orbitReduced.matches) drawOrbit(0);
+    }
+
+    function drawOrbit(t = 0) {
+      ox.clearRect(0, 0, ow, oh);
+      const dots = orbitLite.matches ? 5 : 12;
+      for (let i = 0; i < dots; i++) {
+        const a = t / (orbitLite.matches ? 1200 : 800) + i;
+        const r = ow / 2.25;
+        ox.fillStyle = "rgba(120,200,255,.85)";
+        ox.beginPath();
+        ox.arc(ow / 2 + Math.cos(a) * r, oh / 2 + Math.sin(a) * r, orbitLite.matches ? 2 : 3, 0, Math.PI * 2);
+        ox.fill();
+      }
+    }
+
+    function orbit(t = 0) {
+      if (document.hidden) {
+        orbitRaf = 0;
+        return;
+      }
+      orbitRaf = requestAnimationFrame(orbit);
+      if (orbitLite.matches && t - orbitLast < 90) return;
+      orbitLast = t;
+      drawOrbit(t);
+    }
+
+    sizeOrbit();
+    addEventListener("resize", sizeOrbit, { passive: true });
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && !orbitReduced.matches && !orbitRaf) orbitRaf = requestAnimationFrame(orbit);
+    });
+    if (orbitReduced.matches) drawOrbit(0);
+    else orbitRaf = requestAnimationFrame(orbit);
+
+    function setVideoEnergy(playing) {
+      document.body.classList.toggle("video-active", playing);
+      dispatchEvent(new CustomEvent("iml:video-state", { detail: { playing } }));
+    }
+
+    function onYouTubeIframeAPIReady() {
+      if (!window.YT || !YT.Player) return;
+      new YT.Player("latestVideos", {
+        events: {
+          onStateChange: event => setVideoEnergy(event.data === YT.PlayerState.PLAYING)
+        }
+      });
+    }
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+    document.querySelectorAll("#moodControls button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("#moodControls button").forEach(b => b.classList.remove("active"));
+        button.classList.add("active");
+        dispatchEvent(new CustomEvent("iml:mood", { detail: { mood: button.dataset.mood } }));
+      });
+    });
+
+    document.getElementById("shareButton").addEventListener("click", async () => {
+      const url = "https://imlofficial.github.io/I.M.L.-Hub/";
+      if (navigator.share) {
+        await navigator.share({ title: "I.M.L. Official", text: "Check out the I.M.L. music hub", url }).catch(() => {});
+      } else {
+        await navigator.clipboard.writeText(url).catch(() => {});
+        document.getElementById("shareButton").textContent = "Link Copied";
+        setTimeout(() => document.getElementById("shareButton").textContent = "Share Page", 1800);
+      }
+    });
+
+    let deferredPrompt;
+    const modal = document.getElementById("installModal");
+    const statusText = document.getElementById("installStatus");
+    const installButton = document.getElementById("installButton");
+    const installHelp = document.getElementById("installHelp");
+    const confirmInstall = document.getElementById("confirmInstall");
+
+    function isStandalone() {
+      return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+    }
+
+    function isIOS() {
+      return /iphone|ipad|ipod/i.test(navigator.userAgent);
+    }
+
+    function setInstallStatus() {
+      if (isStandalone()) {
+        installButton.textContent = "Installed";
+        statusText.textContent = "I.M.L. is already installed.";
+        return;
+      }
+      installButton.textContent = "Install";
+      statusText.textContent = deferredPrompt ? "Ready to install." : "Tap Install for browser install options.";
+    }
+
+    function openInstall() {
+      if (isStandalone()) {
+        setInstallStatus();
+        return;
+      }
+      modal.style.display = "flex";
+      modal.setAttribute("aria-hidden", "false");
+      if (deferredPrompt) {
+        confirmInstall.style.display = "inline-flex";
+        installHelp.textContent = "Your browser is ready to install I.M.L.";
+        return;
+      }
+      confirmInstall.style.display = "none";
+      installHelp.textContent = isIOS() ? "On iPhone or iPad, tap Share, then Add to Home Screen." : "If the browser prompt does not appear, use the install icon in the address bar or open the browser menu and choose Install app. Refresh once if you just updated the site.";
+    }
+
+    function closeInstall() {
+      modal.style.display = "none";
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    async function doInstall() {
+      if (!deferredPrompt) {
+        openInstall();
+        return;
+      }
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      closeInstall();
+      setInstallStatus();
+    }
+
+    window.addEventListener("beforeinstallprompt", event => {
+      event.preventDefault();
+      deferredPrompt = event;
+      setInstallStatus();
+    });
+    window.addEventListener("appinstalled", () => {
+      deferredPrompt = null;
+      closeInstall();
+      setInstallStatus();
+    });
+    installButton.addEventListener("click", openInstall);
+    confirmInstall.addEventListener("click", doInstall);
+    document.getElementById("cancelInstall").addEventListener("click", closeInstall);
+    setInstallStatus();
+
+    if ("serviceWorker" in navigator) {
+      addEventListener("load", () => navigator.serviceWorker.register("./sw.js?v=17"));
+    }
+  </script>
+  <script async src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
