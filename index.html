@@ -196,7 +196,7 @@ iframe{
   <section id="installBox">
     <h2>Install App</h2>
     <button type="button" id="installButton">Install</button>
-    <p id="installStatus"></p>
+    <p id="installStatus">Checking install availability...</p>
   </section>
 </main>
 
@@ -255,27 +255,50 @@ orbit();
 let deferredPrompt;
 const modal=document.getElementById("installModal");
 const statusText=document.getElementById("installStatus");
+const installButton=document.getElementById("installButton");
 
-window.addEventListener("beforeinstallprompt",e=>{
-  e.preventDefault();
-  deferredPrompt=e;
-  statusText.textContent="Ready to install.";
+function isStandalone(){
+  return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+}
+function setInstallStatus(){
+  if(isStandalone()){
+    installButton.textContent="Installed";
+    statusText.textContent="I.M.L. is already installed.";
+    return;
+  }
+  if(deferredPrompt){
+    installButton.textContent="Install";
+    statusText.textContent="Ready to install.";
+    return;
+  }
+  installButton.textContent="Install";
+  statusText.textContent="If install is not ready yet, replace logo.png with the real logo and open this site over HTTPS.";
+}
+
+window.addEventListener("beforeinstallprompt",event=>{
+  event.preventDefault();
+  deferredPrompt=event;
+  setInstallStatus();
 });
 
 window.addEventListener("appinstalled",()=>{
   deferredPrompt=null;
-  statusText.textContent="I.M.L. is installed.";
   closeInstall();
+  setInstallStatus();
 });
 
 function openInstall(){
+  if(isStandalone()){
+    setInstallStatus();
+    return;
+  }
   if(deferredPrompt){
     modal.style.display="flex";
     modal.setAttribute("aria-hidden","false");
     return;
   }
   const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  statusText.textContent=isiOS ? "On iOS, tap Share, then Add to Home Screen." : "Install is available after the site is opened over HTTPS and the browser marks it installable.";
+  statusText.textContent=isiOS ? "On iOS, tap Share, then Add to Home Screen." : "Install is not ready yet. The app needs HTTPS, the service worker, and a real 192x192 or 512x512 logo.png icon.";
 }
 function closeInstall(){
   modal.style.display="none";
@@ -290,11 +313,13 @@ async function doInstall(){
   await deferredPrompt.userChoice;
   deferredPrompt=null;
   closeInstall();
+  setInstallStatus();
 }
 
 document.getElementById("installButton").addEventListener("click",openInstall);
 document.getElementById("confirmInstall").addEventListener("click",doInstall);
 document.getElementById("cancelInstall").addEventListener("click",closeInstall);
+setInstallStatus();
 
 if("serviceWorker" in navigator){
   addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
