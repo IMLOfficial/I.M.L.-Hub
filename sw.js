@@ -1,4 +1,4 @@
-const CACHE="iml-v5";
+const CACHE="iml-v6";
 const ASSETS=["./","./index.html","./manifest.json","./logo.svg"];
 
 self.addEventListener("install",event=>{
