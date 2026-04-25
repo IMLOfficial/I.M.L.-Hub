@@ -1,4 +1,4 @@
-const CACHE="iml-v17";
+const CACHE="iml-v18";
 const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js"];
 
 self.addEventListener("install",event=>{
@@ -14,5 +14,9 @@ self.addEventListener("activate",event=>{
 });
 
 self.addEventListener("fetch",event=>{
+  if(event.request.mode==="navigate"){
+    event.respondWith(fetch(event.request).catch(()=>caches.match("./")||caches.match("./index.html")));
+    return;
+  }
   event.respondWith(caches.match(event.request).then(response=>response||fetch(event.request)));
 });
