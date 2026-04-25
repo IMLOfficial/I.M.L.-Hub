@@ -155,13 +155,17 @@ iframe{
   padding:20px;
 }
 #installModal .card{
-  width:min(100%,360px);
+  width:min(100%,380px);
   background:var(--panel);
   color:var(--fg);
   padding:25px;
   border-radius:20px;
   text-align:center;
   backdrop-filter:blur(14px);
+}
+#installHelp{
+  line-height:1.45;
+  opacity:.86;
 }
 </style>
 </head>
@@ -196,16 +200,16 @@ iframe{
   <section id="installBox">
     <h2>Install App</h2>
     <button type="button" id="installButton">Install</button>
-    <p id="installStatus">Checking install availability...</p>
+    <p id="installStatus">Tap Install for browser install options.</p>
   </section>
 </main>
 
 <div id="installModal" aria-hidden="true">
   <div class="card">
     <h3>Install I.M.L. App</h3>
-    <p>Open I.M.L. from your home screen.</p>
+    <p id="installHelp">Checking your browser install options...</p>
     <button type="button" id="confirmInstall">Install</button><br><br>
-    <button type="button" id="cancelInstall">Cancel</button>
+    <button type="button" id="cancelInstall">Close</button>
   </div>
 </div>
 
@@ -256,9 +260,14 @@ let deferredPrompt;
 const modal=document.getElementById("installModal");
 const statusText=document.getElementById("installStatus");
 const installButton=document.getElementById("installButton");
+const installHelp=document.getElementById("installHelp");
+const confirmInstall=document.getElementById("confirmInstall");
 
 function isStandalone(){
   return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+}
+function isIOS(){
+  return /iphone|ipad|ipod/i.test(navigator.userAgent);
 }
 function setInstallStatus(){
   if(isStandalone()){
@@ -266,39 +275,25 @@ function setInstallStatus(){
     statusText.textContent="I.M.L. is already installed.";
     return;
   }
-  if(deferredPrompt){
-    installButton.textContent="Install";
-    statusText.textContent="Ready to install.";
-    return;
-  }
   installButton.textContent="Install";
-  statusText.textContent="If install is not ready yet, open this site over HTTPS and wait for the browser install prompt.";
+  statusText.textContent=deferredPrompt ? "Ready to install." : "Tap Install for browser install options.";
 }
-
-window.addEventListener("beforeinstallprompt",event=>{
-  event.preventDefault();
-  deferredPrompt=event;
-  setInstallStatus();
-});
-
-window.addEventListener("appinstalled",()=>{
-  deferredPrompt=null;
-  closeInstall();
-  setInstallStatus();
-});
-
 function openInstall(){
   if(isStandalone()){
     setInstallStatus();
     return;
   }
+  modal.style.display="flex";
+  modal.setAttribute("aria-hidden","false");
   if(deferredPrompt){
-    modal.style.display="flex";
-    modal.setAttribute("aria-hidden","false");
+    confirmInstall.style.display="inline-block";
+    installHelp.textContent="Your browser is ready to install I.M.L.";
     return;
   }
-  const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  statusText.textContent=isiOS ? "On iOS, tap Share, then Add to Home Screen." : "Install is not ready yet. Use Chrome or Edge over HTTPS, then refresh once after the update is live.";
+  confirmInstall.style.display="none";
+  installHelp.textContent=isIOS()
+    ? "On iPhone or iPad, tap Share, then Add to Home Screen."
+    : "If the browser prompt does not appear, use the install icon in the address bar or open the browser menu and choose Install app. Refresh once if you just updated the site.";
 }
 function closeInstall(){
   modal.style.display="none";
@@ -316,8 +311,18 @@ async function doInstall(){
   setInstallStatus();
 }
 
-document.getElementById("installButton").addEventListener("click",openInstall);
-document.getElementById("confirmInstall").addEventListener("click",doInstall);
+window.addEventListener("beforeinstallprompt",event=>{
+  event.preventDefault();
+  deferredPrompt=event;
+  setInstallStatus();
+});
+window.addEventListener("appinstalled",()=>{
+  deferredPrompt=null;
+  closeInstall();
+  setInstallStatus();
+});
+installButton.addEventListener("click",openInstall);
+confirmInstall.addEventListener("click",doInstall);
 document.getElementById("cancelInstall").addEventListener("click",closeInstall);
 setInstallStatus();
 
