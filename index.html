@@ -17,18 +17,43 @@
   <style>
     :root{--bg:#081426;--fg:#eef7ff;--accent:#4db8ff;--panel:rgba(8,20,38,.76);--line:rgba(126,222,255,.22)}
     *{box-sizing:border-box}
-    html{min-height:100%}
+    html{min-height:100%;scroll-behavior:smooth}
     body{margin:0;min-height:100%;font-family:system-ui,Arial,sans-serif;background:radial-gradient(circle at 50% 8%,#164a76 0%,#0b2039 28%,#071426 58%,#050b17 100%);color:var(--fg);overflow-x:hidden;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);-webkit-text-size-adjust:100%}
     body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 50% 22%,rgba(77,184,255,.42),transparent 26rem),radial-gradient(circle at 18% 68%,rgba(89,255,244,.2),transparent 24rem),radial-gradient(circle at 82% 55%,rgba(138,88,255,.22),transparent 27rem),linear-gradient(rgba(90,203,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(90,203,255,.06) 1px,transparent 1px),url("./logo.svg") center 150px/min(56vw,360px) no-repeat;background-size:auto,auto,auto,48px 48px,48px 48px,min(56vw,360px) auto;opacity:.42}
     body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;background:conic-gradient(from 120deg at 50% 28%,transparent 0deg,rgba(0,210,255,.28) 42deg,transparent 92deg,rgba(117,70,255,.22) 155deg,transparent 228deg,rgba(54,255,220,.2) 300deg,transparent 360deg);filter:blur(26px) saturate(1.3);opacity:.86;animation:auroraShift 14s ease-in-out infinite alternate}
     body.video-active::before{opacity:.58}
     canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
     header,main,#installModal{position:relative;z-index:1}
-    header{padding:calc(15px + env(safe-area-inset-top)) 15px 15px}
+    .site-header{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:calc(12px + env(safe-area-inset-top)) 14px 12px;isolation:isolate}
+    .site-header::before{content:"";position:absolute;inset:8px 10px 7px;border:1px solid rgba(126,222,255,.22);border-radius:24px;background:linear-gradient(135deg,rgba(7,17,35,.74),rgba(33,77,146,.42));box-shadow:0 14px 32px rgba(0,0,0,.22),inset 0 0 24px rgba(77,184,255,.1);backdrop-filter:blur(18px);pointer-events:none}
+    .brand-chip,.social-links{position:relative;z-index:1}
+    .brand-chip{--mx:50%;--my:50%;position:relative;display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:9px 14px;border-radius:18px;color:#fff;text-decoration:none;font-weight:900;overflow:hidden;border:1px solid rgba(126,222,255,.32);background:linear-gradient(135deg,rgba(14,44,84,.82),rgba(9,18,38,.72));box-shadow:0 0 22px rgba(77,184,255,.18);transform:translateZ(0);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .brand-chip::before{content:"";position:absolute;inset:-1px;background:radial-gradient(circle at var(--mx) var(--my),rgba(127,240,255,.42),transparent 34%),linear-gradient(110deg,transparent 20%,rgba(255,255,255,.18),transparent 58%);opacity:.7;transform:translateX(-28%);transition:opacity .18s ease,transform .35s ease}
+    .brand-chip:hover,.brand-chip:focus-visible{transform:translateY(-2px);border-color:rgba(142,238,255,.72);box-shadow:0 0 28px rgba(77,184,255,.34)}
+    .brand-chip:hover::before,.brand-chip:focus-visible::before{opacity:1;transform:translateX(0)}
+    .brand-chip:active,.brand-chip.is-tapped{transform:scale(.97)}
+    .brand-dot{width:10px;height:10px;border-radius:50%;background:#7ff0ff;box-shadow:0 0 0 5px rgba(127,240,255,.12),0 0 18px rgba(127,240,255,.95);animation:brandBeat 2.3s ease-in-out infinite}
+    .brand-text{position:relative;z-index:1;font-size:1.08rem;letter-spacing:0;text-shadow:0 0 12px rgba(127,240,255,.65)}
+    .brand-text::after{content:attr(data-text);position:absolute;inset:0;color:#9bf7ff;clip-path:inset(0 100% 0 0);animation:brandScan 3.8s ease-in-out infinite;text-shadow:0 0 16px rgba(127,240,255,.9)}
     .btns,.mood-controls,.video-actions{display:flex;flex-wrap:wrap;gap:10px}
+    .social-links{align-items:center;justify-content:flex-end}
     .video-actions{justify-content:center;max-width:900px;margin:14px auto 0}
     .button,button{font:inherit;min-height:44px;-webkit-tap-highlight-color:transparent;padding:10px 18px;border-radius:25px;border:0;background:var(--accent);color:#fff;font-weight:700;cursor:pointer;touch-action:manipulation;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
     .button:hover,button:hover{filter:brightness(1.08)}
+    .social-button{--mx:50%;--my:50%;--brand-a:#4db8ff;--brand-b:#725dff;position:relative;overflow:hidden;gap:9px;border:1px solid rgba(255,255,255,.2);background:linear-gradient(135deg,var(--brand-a),var(--brand-b));box-shadow:0 10px 24px rgba(0,0,0,.18),0 0 22px rgba(77,184,255,.22);isolation:isolate;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;will-change:transform}
+    .social-button::before{content:"";position:absolute;inset:-80%;z-index:-1;background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.5),transparent 27%),linear-gradient(120deg,transparent 32%,rgba(255,255,255,.36),transparent 62%);opacity:.58;transform:translateX(-18%) rotate(12deg);transition:opacity .18s ease,transform .35s ease}
+    .social-button::after{content:"";position:absolute;inset:6px;border-radius:inherit;border:1px solid rgba(255,255,255,.18);opacity:.55;pointer-events:none}
+    .social-button:hover,.social-button:focus-visible{filter:none;transform:translateY(-2px);border-color:rgba(255,255,255,.48);box-shadow:0 14px 28px rgba(0,0,0,.22),0 0 30px rgba(77,184,255,.38)}
+    .social-button:hover::before,.social-button:focus-visible::before{opacity:.95;transform:translateX(10%) rotate(12deg)}
+    .social-button:active,.social-button.is-tapped{transform:scale(.96)}
+    .youtube-link{--brand-a:#ff365c;--brand-b:#35c7ff}
+    .tiktok-link{--brand-a:#20efd9;--brand-b:#8b5dff}
+    .social-icon{position:relative;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:9px;background:rgba(2,8,18,.28);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+    .play-icon::before{content:"";width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #fff;margin-left:2px;filter:drop-shadow(0 0 6px rgba(255,255,255,.75))}
+    .clip-icon::before{content:"";width:8px;height:14px;border-right:3px solid #fff;border-bottom:3px solid #fff;border-radius:2px 2px 7px 7px;transform:rotate(-8deg);filter:drop-shadow(0 0 6px rgba(255,255,255,.75))}
+    .clip-icon::after{content:"";position:absolute;width:7px;height:3px;border-radius:999px;background:#ff5bd7;right:4px;top:5px;box-shadow:-5px 8px 0 #4ff7e8}
+    @keyframes brandBeat{0%,100%{transform:scale(.82);opacity:.76}50%{transform:scale(1.08);opacity:1}}
+    @keyframes brandScan{0%,58%,100%{clip-path:inset(0 100% 0 0)}68%,78%{clip-path:inset(0 0 0 0)}}
     #hero{text-align:center;padding:70px 20px 30px}
     .logo-wrap{position:relative;width:180px;height:180px;margin:0 auto 24px}
     .logo-wrap img{width:100%;height:100%;object-fit:contain;position:relative;z-index:3;animation:float 6s ease-in-out infinite}
@@ -63,7 +88,14 @@
     @media (max-width:640px){
       body::before{background:radial-gradient(circle at 50% 20%,rgba(77,184,255,.36),transparent 20rem),radial-gradient(circle at 20% 65%,rgba(89,255,244,.16),transparent 18rem),radial-gradient(circle at 82% 55%,rgba(138,88,255,.16),transparent 20rem),url("./logo.svg") center 132px/min(62vw,260px) no-repeat;opacity:.34}
       body::after{display:none}
-      header{padding-left:12px;padding-right:12px}
+      .site-header{padding:calc(9px + env(safe-area-inset-top)) 8px 9px;gap:8px}
+      .site-header::before{inset:5px 6px;border-radius:20px;backdrop-filter:none;background:linear-gradient(135deg,rgba(7,17,35,.78),rgba(47,87,160,.36))}
+      .brand-chip{min-height:38px;padding:8px 10px;border-radius:16px;gap:8px}
+      .brand-text{font-size:.96rem}
+      .brand-dot{width:8px;height:8px;box-shadow:0 0 0 4px rgba(127,240,255,.1),0 0 12px rgba(127,240,255,.85)}
+      .social-links{gap:7px}
+      .social-button{min-height:38px;padding:8px 11px;gap:7px;box-shadow:0 8px 18px rgba(0,0,0,.16),0 0 16px rgba(77,184,255,.18)}
+      .social-icon{width:19px;height:19px;border-radius:8px}
       .btns .button{padding:9px 14px}
       #hero{padding:44px 14px 24px}
       .logo-wrap{width:min(56vw,164px);height:min(56vw,164px)}
@@ -79,17 +111,20 @@
       iframe{border-radius:14px;height:min(56vw,260px)}
       #installModal{padding:calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom))}
     }
-    @media (prefers-reduced-motion:reduce){body::after,.logo-wrap img,.glow,.now-strip span{animation:none}}
+    @media (prefers-reduced-motion:reduce){body::after,.brand-dot,.brand-text::after,.logo-wrap img,.glow,.now-strip span{animation:none}}
   </style>
 </head>
 <body>
   <canvas id="bg"></canvas>
-  <header>
-    <h2>I.M.L.</h2>
-    <div class="btns">
-      <a class="button" href="https://youtube.com/@i.m.l._official" target="_blank" rel="noopener">YouTube</a>
-      <a class="button" href="https://www.tiktok.com/@i.m.l._officially?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener">TikTok</a>
-    </div>
+  <header class="site-header">
+    <a class="brand-chip interactive-head" href="#hero" aria-label="I.M.L. home">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <span class="brand-text" data-text="I.M.L.">I.M.L.</span>
+    </a>
+    <nav class="btns social-links" aria-label="Social links">
+      <a class="button social-button youtube-link interactive-head" href="https://youtube.com/@i.m.l._official" target="_blank" rel="noopener"><span class="social-icon play-icon" aria-hidden="true"></span><span>YouTube</span></a>
+      <a class="button social-button tiktok-link interactive-head" href="https://www.tiktok.com/@i.m.l._officially?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener"><span class="social-icon clip-icon" aria-hidden="true"></span><span>TikTok</span></a>
+    </nav>
   </header>
   <main>
     <section id="hero">
@@ -228,6 +263,20 @@
       });
     });
 
+    document.querySelectorAll(".interactive-head").forEach(item => {
+      item.addEventListener("pointermove", event => {
+        if (orbitLite.matches) return;
+        const rect = item.getBoundingClientRect();
+        item.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+        item.style.setProperty("--my", `${event.clientY - rect.top}px`);
+      }, { passive: true });
+      item.addEventListener("pointerdown", event => {
+        item.classList.add("is-tapped");
+        setTimeout(() => item.classList.remove("is-tapped"), 260);
+        dispatchEvent(new CustomEvent("iml:boost", { detail: { x: event.clientX, y: event.clientY } }));
+      }, { passive: true });
+    });
+
     document.getElementById("shareButton").addEventListener("click", async () => {
       const url = "https://imlofficial.github.io/I.M.L.-Hub/";
       if (navigator.share) {
@@ -313,7 +362,7 @@
     setInstallStatus();
 
     if ("serviceWorker" in navigator) {
-      addEventListener("load", () => navigator.serviceWorker.register("./sw.js?v=17"));
+      addEventListener("load", () => navigator.serviceWorker.register("./sw.js?v=19"));
     }
   </script>
   <script async src="https://www.youtube.com/iframe_api"></script>
