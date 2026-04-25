@@ -1,5 +1,5 @@
-const CACHE="iml-v2";
-const ASSETS=["./","./index.html","./manifest.json","./logo.png"];
+const CACHE="iml-v3";
+const ASSETS=["./","./index.html","./manifest.json","./logo.svg"];
 
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
