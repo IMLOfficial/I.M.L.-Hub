@@ -30,7 +30,8 @@ body{
   margin:0;
   min-height:100%;
   font-family:system-ui,Arial,sans-serif;
-  background:var(--bg);
+  background:
+    linear-gradient(145deg,#071121 0%,#0b1220 42%,#071426 100%);
   color:var(--fg);
   overflow-x:hidden;
 }
@@ -41,11 +42,26 @@ body::before{
   z-index:0;
   pointer-events:none;
   background:
-    radial-gradient(circle at 50% 22%,rgba(77,184,255,.3),transparent 30rem),
-    radial-gradient(circle at 18% 68%,rgba(89,255,244,.14),transparent 24rem),
-    radial-gradient(circle at 82% 55%,rgba(83,109,255,.16),transparent 26rem),
+    radial-gradient(circle at 50% 22%,rgba(77,184,255,.34),transparent 28rem),
+    radial-gradient(circle at 18% 68%,rgba(89,255,244,.16),transparent 24rem),
+    radial-gradient(circle at 82% 55%,rgba(83,109,255,.18),transparent 26rem),
+    linear-gradient(rgba(90,203,255,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(90,203,255,.05) 1px,transparent 1px),
     url("./logo.svg") center 150px / min(56vw,360px) no-repeat;
-  opacity:.28;
+  background-size:auto,auto,auto,54px 54px,54px 54px,min(56vw,360px) auto;
+  opacity:.34;
+}
+body::after{
+  content:"";
+  position:fixed;
+  inset:-20%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    conic-gradient(from 110deg at 50% 28%,transparent 0deg,rgba(37,146,255,.14) 58deg,transparent 118deg,rgba(69,242,255,.1) 190deg,transparent 255deg,rgba(93,113,255,.12) 315deg,transparent 360deg);
+  filter:blur(18px);
+  opacity:.72;
+  animation:auroraShift 18s ease-in-out infinite alternate;
 }
 canvas#bg{
   position:fixed;
@@ -115,6 +131,10 @@ header{
 
 @keyframes float{50%{transform:translateY(-12px)}}
 @keyframes pulse{50%{opacity:.4}}
+@keyframes auroraShift{
+  0%{transform:translate3d(-2%,0,0) rotate(-4deg) scale(1)}
+  100%{transform:translate3d(2%,3%,0) rotate(6deg) scale(1.08)}
+}
 
 section{
   padding:40px 20px;
@@ -260,15 +280,46 @@ addEventListener("pointermove",event=>movePointer(event.clientX,event.clientY));
 addEventListener("pointerdown",event=>movePointer(event.clientX,event.clientY));
 addEventListener("pointerleave",()=>{mouse.active=false});
 resize();
+function drawAudioWaves(time){
+  const centerY=Math.min(310,Math.max(190,h*.28));
+  for(let layer=0;layer<4;layer++){
+    const amp=18+layer*9;
+    const gap=26+layer*8;
+    ctx.beginPath();
+    for(let x=-20;x<=w+20;x+=18){
+      const y=centerY+Math.sin(x*.012+time*.0012+layer*1.6)*amp+Math.sin(x*.028-time*.0007)*gap;
+      if(x===-20)ctx.moveTo(x,y);
+      else ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle=`rgba(${80+layer*24},${190+layer*10},255,${0.08+layer*.035})`;
+    ctx.lineWidth=1.5+layer*.5;
+    ctx.stroke();
+  }
+}
+function drawLogoRings(time){
+  const cx=w/2;
+  const cy=Math.min(250,Math.max(170,h*.24));
+  for(let i=0;i<5;i++){
+    const radius=130+i*44+Math.sin(time*.001+i)*6;
+    const start=time*.00028+i*.9;
+    ctx.beginPath();
+    ctx.arc(cx,cy,radius,start,start+Math.PI*(1.05+i*.08));
+    ctx.strokeStyle=`rgba(92,211,255,${0.13-i*.018})`;
+    ctx.lineWidth=1.6;
+    ctx.stroke();
+  }
+}
 function drawBackground(time){
   const sweepX=(Math.sin(time*.00018)+1)*w*.5;
   const sweepY=(Math.cos(time*.00014)+1)*h*.5;
   const bgGlow=ctx.createRadialGradient(sweepX,sweepY,0,sweepX,sweepY,Math.max(w,h)*.72);
-  bgGlow.addColorStop(0,"rgba(51,168,255,.16)");
-  bgGlow.addColorStop(.45,"rgba(25,80,160,.08)");
+  bgGlow.addColorStop(0,"rgba(51,168,255,.18)");
+  bgGlow.addColorStop(.45,"rgba(25,80,160,.09)");
   bgGlow.addColorStop(1,"rgba(4,10,24,0)");
   ctx.fillStyle=bgGlow;
   ctx.fillRect(0,0,w,h);
+  drawAudioWaves(time);
+  drawLogoRings(time);
   if(mouse.active||mouse.pulse>.02){
     const r=180+mouse.pulse*120;
     const glow=ctx.createRadialGradient(mouse.x,mouse.y,0,mouse.x,mouse.y,r);
