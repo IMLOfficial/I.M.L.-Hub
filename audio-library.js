@@ -47,8 +47,8 @@
   shell.innerHTML = `
     <h2>Audio Playlist</h2>
     <p class="section-note">Audio-only listening for the I.M.L. catalog. These tracks use mobile-friendly MP3 files in the audio folder.</p>
-    <audio id="audioPlayer" class="audio-player" controls preload="none"></audio>
-    <p id="audioStatus">Choose a track to start audio-only playback.</p>
+    <audio id="audioPlayer" class="audio-player" controls preload="metadata"></audio>
+    <p id="audioStatus">Checking the published audio files...</p>
     <div class="playlist-grid" id="audioTrackGrid" aria-label="I.M.L. audio playlist">
       ${tracks.map((track, index) => `
         <button type="button" class="playlist-card audio-track" data-audio-index="${index}">
@@ -63,35 +63,94 @@
   const status = shell.querySelector("#audioStatus");
   const grid = shell.querySelector("#audioTrackGrid");
   let currentTrack = null;
+  let currentIndex = -1;
+  let checkId = 0;
 
   function setEnergy(playing) {
     document.body.classList.toggle("video-active", playing);
     dispatchEvent(new CustomEvent("iml:video-state", { detail: { playing } }));
   }
 
+  function stopMissingTrack(track) {
+    if (currentTrack === track) {
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+    }
+    setEnergy(false);
+    status.textContent = `${track.title} cannot play yet because its MP3 file is not uploaded to the website audio folder.`;
+  }
+
+  async function sourceExists(track, id) {
+    try {
+      const response = await fetch(track.src, { method: "HEAD", cache: "no-store" });
+      if (id !== checkId) return false;
+      if (!response.ok) {
+        stopMissingTrack(track);
+        return false;
+      }
+      return true;
+    } catch (_) {
+      if (id === checkId) status.textContent = `Tap play to start: ${track.title}`;
+      return true;
+    }
+  }
+
+  function selectTrack(index, autoPlay = true) {
+    const track = tracks[index];
+    if (!track) return;
+    currentTrack = track;
+    currentIndex = index;
+    const id = ++checkId;
+
+    grid.querySelectorAll(".audio-track").forEach(item => {
+      item.classList.toggle("active", Number(item.dataset.audioIndex) === index);
+    });
+
+    audio.src = track.src;
+    audio.load();
+    status.textContent = `Loading: ${track.title}`;
+
+    sourceExists(track, id).then(exists => {
+      if (!exists || id !== checkId) return;
+      status.textContent = `Tap play to start: ${track.title}`;
+    });
+
+    if (autoPlay) {
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise.then(() => {
+          if (currentTrack === track) status.textContent = `Now playing: ${track.title}`;
+        }).catch(() => {
+          if (currentTrack === track) status.textContent = `Tap play to start: ${track.title}`;
+        });
+      }
+    }
+
+    dispatchEvent(new CustomEvent("iml:boost", { detail: { x: innerWidth / 2, y: Math.min(innerHeight * 0.5, 420) } }));
+  }
+
   grid.addEventListener("click", event => {
     const button = event.target.closest("[data-audio-index]");
     if (!button) return;
-    const track = tracks[Number(button.dataset.audioIndex)];
-    currentTrack = track;
-    grid.querySelectorAll(".audio-track").forEach(item => item.classList.toggle("active", item === button));
-    audio.src = track.src;
-    status.textContent = `Loading: ${track.title}`;
-    audio.play().then(() => {
-      status.textContent = `Now playing: ${track.title}`;
-    }).catch(() => {
-      status.textContent = `Tap play to start: ${track.title}`;
-    });
-    dispatchEvent(new CustomEvent("iml:boost", { detail: { x: innerWidth / 2, y: Math.min(innerHeight * 0.5, 420) } }));
+    selectTrack(Number(button.dataset.audioIndex));
   });
 
-  audio.addEventListener("play", () => setEnergy(true));
+  audio.addEventListener("play", () => {
+    setEnergy(true);
+    if (currentTrack) status.textContent = `Now playing: ${currentTrack.title}`;
+  });
   audio.addEventListener("pause", () => setEnergy(false));
-  audio.addEventListener("ended", () => setEnergy(false));
-  audio.addEventListener("error", () => {
+  audio.addEventListener("ended", () => {
     setEnergy(false);
-    if (currentTrack) {
-      status.textContent = `${currentTrack.title} is ready in the playlist, but its MP3 file still needs to be uploaded into the audio folder.`;
-    }
+    const next = currentIndex + 1;
+    if (tracks[next]) selectTrack(next);
+  });
+  audio.addEventListener("error", () => {
+    if (currentTrack) stopMissingTrack(currentTrack);
+  });
+
+  sourceExists(tracks[0], ++checkId).then(exists => {
+    if (exists && !currentTrack) status.textContent = "Choose a track to start audio-only playback.";
   });
 })();
