@@ -1,9 +1,9 @@
-const CACHE="iml-v25";
+const CACHE="iml-v26";
 const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./video-library.js","./language-widget.js","./audio-library.js"];
 const WIDGET_SCRIPTS=[
-  '<script src="./video-library.js?v=25" defer></script>',
-  '<script src="./audio-library.js?v=25" defer></script>',
-  '<script src="./language-widget.js?v=25" defer></script>'
+  '<script src="./video-library.js?v=26" defer></script>',
+  '<script src="./audio-library.js?v=26" defer></script>',
+  '<script src="./language-widget.js?v=26" defer></script>'
 ];
 
 function withWidgets(html){
