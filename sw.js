@@ -1,6 +1,6 @@
-const CACHE="iml-v21";
+const CACHE="iml-v22";
 const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./language-widget.js"];
-const LANGUAGE_WIDGET='<script src="./language-widget.js?v=21" defer></script>';
+const LANGUAGE_WIDGET='<script src="./language-widget.js?v=22" defer></script>';
 
 function withLanguageWidget(html){
   if(html.includes("language-widget.js")) return html;
