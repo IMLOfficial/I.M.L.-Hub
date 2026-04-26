@@ -1,14 +1,16 @@
-const CACHE="iml-v28";
+const CACHE="iml-v29";
 const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./video-library.js","./language-widget.js","./audio-library.js"];
+const BG_SCRIPT='<script src="./video-inspired-bg.js?v=29"></script>';
 const WIDGET_SCRIPTS=[
-  '<script src="./video-library.js?v=28" defer></script>',
-  '<script src="./audio-library.js?v=28" defer></script>',
-  '<script src="./language-widget.js?v=28" defer></script>'
+  '<script src="./video-library.js?v=29" defer></script>',
+  '<script src="./audio-library.js?v=29" defer></script>',
+  '<script src="./language-widget.js?v=29" defer></script>'
 ];
 
 function withWidgets(html){
-  const cleaned=html.replace(/<script\s+src="\.\/(video-library|audio-library|language-widget)\.js\?v=\d+"\s*(defer)?\s*><\/script>/g,"");
-  return cleaned.replace("</body>",`${WIDGET_SCRIPTS.join("")}</body>`);
+  const withoutBg=html.replace(/<script\s+src="\.\/video-inspired-bg\.js\?v=\d+"\s*><\/script>/g,"");
+  const cleaned=withoutBg.replace(/<script\s+src="\.\/(video-library|audio-library|language-widget)\.js\?v=\d+"\s*(defer)?\s*><\/script>/g,"");
+  return cleaned.replace("</body>",`${BG_SCRIPT}${WIDGET_SCRIPTS.join("")}</body>`);
 }
 
 async function pageResponse(request){
