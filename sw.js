@@ -1,8 +1,9 @@
-const CACHE="iml-v23";
-const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./language-widget.js","./audio-library.js"];
+const CACHE="iml-v24";
+const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./video-library.js","./language-widget.js","./audio-library.js"];
 const WIDGET_SCRIPTS=[
-  '<script src="./audio-library.js?v=23" defer></script>',
-  '<script src="./language-widget.js?v=23" defer></script>'
+  '<script src="./video-library.js?v=24" defer></script>',
+  '<script src="./audio-library.js?v=24" defer></script>',
+  '<script src="./language-widget.js?v=24" defer></script>'
 ];
 
 function withWidgets(html){
@@ -38,9 +39,9 @@ self.addEventListener("fetch",event=>{
     event.respondWith(pageResponse(event.request).catch(()=>caches.match("./").then(response=>response&&response.text?response.text().then(html=>new Response(withWidgets(html),{headers:{"content-type":"text/html; charset=utf-8"}})):caches.match("./index.html"))));
     return;
   }
-  if(path.endsWith("/language-widget.js")||path.endsWith("/audio-library.js")){
-    const file=path.endsWith("/audio-library.js")?"./audio-library.js":"./language-widget.js";
-    event.respondWith(fetch(event.request).catch(()=>caches.match(file)));
+  const widgetFile=["video-library.js","language-widget.js","audio-library.js"].find(file=>path.endsWith(`/${file}`));
+  if(widgetFile){
+    event.respondWith(fetch(event.request).catch(()=>caches.match(`./${widgetFile}`)));
     return;
   }
   event.respondWith(caches.match(event.request).then(response=>response||fetch(event.request)));
