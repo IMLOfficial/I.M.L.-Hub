@@ -1,4 +1,13 @@
 (() => {
+  const youtubeVideosUrl = "https://www.youtube.com/@I.M.L._Official/videos";
+  document.querySelectorAll('a[href="#videoLibrary"]').forEach(link => {
+    link.href = youtubeVideosUrl;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = "Open YouTube";
+    link.setAttribute("aria-label", "Open I.M.L. videos on YouTube");
+  });
+
   const section = document.getElementById("videoLibrary");
   if (!section || section.dataset.ready === "true") return;
   section.dataset.ready = "true";
