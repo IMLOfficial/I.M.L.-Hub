@@ -1,15 +1,14 @@
-const CACHE="iml-v26";
+const CACHE="iml-v27";
 const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./video-library.js","./language-widget.js","./audio-library.js"];
 const WIDGET_SCRIPTS=[
-  '<script src="./video-library.js?v=26" defer></script>',
-  '<script src="./audio-library.js?v=26" defer></script>',
-  '<script src="./language-widget.js?v=26" defer></script>'
+  '<script src="./video-library.js?v=27" defer></script>',
+  '<script src="./audio-library.js?v=27" defer></script>',
+  '<script src="./language-widget.js?v=27" defer></script>'
 ];
 
 function withWidgets(html){
-  const scripts=WIDGET_SCRIPTS.filter(script=>!html.includes(script.match(/\.\/(.+?)\?/)[1]));
-  if(!scripts.length) return html;
-  return html.replace("</body>",`${scripts.join("")}</body>`);
+  const cleaned=html.replace(/<script\s+src="\.\/(video-library|audio-library|language-widget)\.js\?v=\d+"\s*(defer)?\s*><\/script>/g,"");
+  return cleaned.replace("</body>",`${WIDGET_SCRIPTS.join("")}</body>`);
 }
 
 async function pageResponse(request){
