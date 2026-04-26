@@ -4,21 +4,36 @@
   section.dataset.ready = "true";
 
   const videos = [
-    { id: "T3W9tOxUOEo", title: "F.O.C.U.S. - I.M.L.", published: "2026-04-25" },
-    { id: "f_OG5cwJmJs", title: "Mir geht es gut - I.M.L.", published: "2026-04-15" },
-    { id: "4yl1QbrUr4Y", title: "Anker und Licht - I.M.L.", published: "2026-04-10" },
-    { id: "ZWuzotzt__0", title: "Ibiza Träume - I.M.L.", published: "2026-04-09" },
-    { id: "g8blxSr3WiE", title: "Shadow to Sunlight - I.M.L.", published: "2026-03-22" },
-    { id: "q0LXKDD5g60", title: "Tensiune și Ceață - I.M.L.", published: "2026-02-28" },
-    { id: "4wUSFnuqLlo", title: "Unica mea iubire - I.M.L.", published: "2026-02-15" },
-    { id: "QiHRONSHdiA", title: "My Favorite Person - I.M.L.", published: "2026-02-14" },
-    { id: "kZ-qNPaL0pY", title: "The Quiet Kind - I.M.L.", published: "2026-02-14" },
-    { id: "q5s0nIBq7LM", title: "The Secret Sauce - I.M.L.", published: "2026-02-14" },
-    { id: "kD6qHpeUomw", title: "You Are Amazing - I.M.L.", published: "2026-02-08" },
-    { id: "ZSYhsA1_yL8", title: "No Filter Needed - I.M.L.", published: "2026-01-30" },
-    { id: "irbqdvb9rLY", title: "The View From Here - I.M.L.", published: "2026-01-27" },
-    { id: "8YkRKiAjGO8", title: "L'Éclat et le Chaos - I.M.L.", published: "2026-01-27" },
-    { id: "GHqZDmxT8Vg", title: "Flüssige Vernunft - I.M.L.", published: "2026-01-20" }
+    { id: "T3W9tOxUOEo", title: "F.O.C.U.S. - I.M.L.", label: "Latest video" },
+    { id: "f_OG5cwJmJs", title: "Mir geht es gut - I.M.L.", label: "Music video" },
+    { id: "4yl1QbrUr4Y", title: "Anker und Licht - I.M.L.", label: "Music video" },
+    { id: "ZWuzotzt__0", title: "Ibiza Träume - I.M.L.", label: "Music video" },
+    { id: "g8blxSr3WiE", title: "Shadow to Sunlight - I.M.L.", label: "Music video" },
+    { id: "q0LXKDD5g60", title: "Tensiune și Ceață - I.M.L.", label: "Music video" },
+    { id: "4wUSFnuqLlo", title: "Unica mea iubire - I.M.L.", label: "Music video" },
+    { id: "QiHRONSHdiA", title: "My Favorite Person - I.M.L.", label: "Music video" },
+    { id: "kZ-qNPaL0pY", title: "The Quiet Kind - I.M.L.", label: "Music video" },
+    { id: "q5s0nIBq7LM", title: "The Secret Sauce - I.M.L.", label: "Music video" },
+    { id: "kD6qHpeUomw", title: "You Are Amazing - I.M.L.", label: "Music video" },
+    { id: "ZSYhsA1_yL8", title: "No Filter Needed - I.M.L.", label: "Music video" },
+    { id: "irbqdvb9rLY", title: "The View From Here - I.M.L.", label: "Music video" },
+    { id: "8YkRKiAjGO8", title: "L'Éclat et le Chaos - I.M.L.", label: "Music video" },
+    { id: "GHqZDmxT8Vg", title: "Flüssige Vernunft - I.M.L.", label: "Music video" },
+    { id: "SunvIaJZrUw", title: "The Control Room - I.M.L.", label: "Music video" },
+    { id: "8hm2k3WB_bU", title: "We Drive - I.M.L.", label: "Music video" },
+    { id: "CjhDeku4u_c", title: "Parallel Lines (Never Apart) - I.M.L.", label: "Music video" },
+    { id: "yCHU04TI-D4", title: "The Full Spectrum - I.M.L.", label: "Music video" },
+    { id: "_y8V849OuR0", title: "Lotus of the Void - I.M.L.", label: "Music video" },
+    { id: "oxW329BYhL4", title: "Iron Will - I.M.L.", label: "Music video" },
+    { id: "knrct1LA46I", title: "Grass Stains and Golden Hours - I.M.L.", label: "Music video" },
+    { id: "9iYujYr-jFQ", title: "Burnt Rubber & Chrome Dreams - I.M.L.", label: "Music video" },
+    { id: "4mjqXZcKOo0", title: "Monotone - I.M.L.", label: "Music video" },
+    { id: "XhfLkydAhPk", title: "The Clockwork Ghost - I.M.L.", label: "Music video" },
+    { id: "1hSNHGJl1OU", title: "Ink and Echoes - I.M.L.", label: "Music video" },
+    { id: "5JUOMGdwXY0", title: "The Golden Thread - I.M.L.", label: "Music video" },
+    { id: "B7p5bCas5Ak", title: "Beautiful Madness - I.M.L.", label: "Music video" },
+    { id: "Mohh-wCra3o", title: "Analog Hearts - I.M.L.", label: "Music video" },
+    { id: "psk0zzAD_TY", title: "Neon Line - I.M.L.", label: "Music video" }
   ];
 
   const shell = section.querySelector(".library-shell") || section;
@@ -59,7 +74,7 @@
       </span>
       <span class="latest-video-copy">
         <strong>${escapeHtml(latest.title)}</strong>
-        <small>${latest.published} | Tap to play the newest upload</small>
+        <small>Separate latest-video thumbnail | Tap to play the newest upload</small>
       </span>
     </button>
     <iframe id="latestVideos" title="I.M.L. YouTube video playlist" src="${videoSrc(0)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
@@ -67,7 +82,7 @@
       ${videos.map((video, index) => `
         <button type="button" class="playlist-card${index === 0 ? " active" : ""}" data-video-index="${index}">
           <span class="playlist-thumb" style="background-image:url('${thumb(video.id)}')"></span>
-          <span class="playlist-copy"><strong>${escapeHtml(video.title)}</strong><small>${video.published}</small></span>
+          <span class="playlist-copy"><strong>${escapeHtml(video.title)}</strong><small>${video.label}</small></span>
         </button>
       `).join("")}
       <div class="playlist-card is-disabled" aria-label="Future videos">
