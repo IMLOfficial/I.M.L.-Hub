@@ -1,40 +1,41 @@
 (() => {
   const section = document.getElementById("audioLibrary");
-  if (!section) return;
+  if (!section || section.dataset.ready === "true") return;
+  section.dataset.ready = "true";
 
   const tracks = [
-    { title: "Analog Hearts - I.M.L.", file: "Analog Hearts - I.M.L..wav" },
-    { title: "Anker und Licht - I.M.L.", file: "Anker und Licht - I.M.L..wav" },
-    { title: "Beautiful Madness - I.M.L.", file: "Beautiful Madness - I.M.L..wav" },
-    { title: "Burnt Rubber & Chrome Dreams - I.M.L.", file: "Burnt Rubber & Chrome Dreams - I.M.L..wav" },
-    { title: "Das Buch Unserer Zeit (2026)", file: "Das Buch Unserer Zeit (2026).mp3" },
-    { title: "Everything is Borrowed - I.M.L.", file: "Everything is Borrowed - I.M.L..wav" },
-    { title: "F.O.C.U.S. - I.M.L.", file: "F.O.C.U.S..wav" },
-    { title: "Flüssige Vernunft - I.M.L.", file: "Flüssige Vernunft - I.M.L..wav" },
-    { title: "Grass Stains and Golden Hours - I.M.L.", file: "Grass Stains and Golden Hours - I.M.L..wav" },
-    { title: "Ibiza-Träume - I.M.L.", file: "Ibiza-Träume.wav" },
-    { title: "Ink and Echoes - I.M.L.", file: "Ink and Echoes - I.M.L..wav" },
-    { title: "Iron Will - I.M.L.", file: "Iron Will - I.M.L..wav" },
-    { title: "L’Éclat et le Chaos - I.M.L.", file: "L’Éclat et le Chaos - I.M.L..wav" },
-    { title: "Lotus of the Void - I.M.L.", file: "Lotus of the Void - I.M.L..wav" },
-    { title: "Mir geht es gut - I.M.L.", file: "Mir geht es gut.wav" },
-    { title: "Monotone - I.M.L.", file: "Monotone - I.M.L..wav" },
-    { title: "My Favorite Person - I.M.L.", file: "My Favorite Person - I.M.L..wav" },
-    { title: "Neon Line - I.M.L.", file: "Neon Line - I.M.L..wav" },
-    { title: "No Filter Needed - I.M.L.", file: "No Filter Needed - I.M.L..wav" },
-    { title: "Parallel Lines (Never Apart) - I.M.L.", file: "Parallel Lines (Never Apart) - I.M.L..wav" },
-    { title: "Shadow to Sunlight - I.M.L.", file: "Shadow to Sunlight - I.M.L..wav" },
-    { title: "Tensiune și Ceață - I.M.L.", file: "Tensiune și Ceață - I.M.L..wav" },
-    { title: "The Clockwork Ghost - I.M.L.", file: "The Clockwork Ghost - I.M.L..wav" },
-    { title: "The Control Room - I.M.L.", file: "The Control Room - I.M.L..wav" },
-    { title: "The Full Spectrum - I.M.L.", file: "The Full Spectrum - I.M.L..wav" },
-    { title: "The Golden Thread - I.M.L.", file: "The Golden Thread - I.M.L..wav" },
-    { title: "The Quiet Kind - I.M.L.", file: "The Quiet Kind - I.M.L..wav" },
-    { title: "The Secret Sauce - I.M.L.", file: "The Secret Sauce - I.M.L..wav" },
-    { title: "The View From Here - I.M.L.", file: "The View From Here - I.M.L..wav" },
-    { title: "Unica mea iubire - I.M.L.", file: "Unica mea iubire - I.M.L..wav" },
-    { title: "We Drive - I.M.L.", file: "We Drive - I.M.L..wav" },
-    { title: "You Are Amazing - I.M.L.", file: "You Are Amazing - I.M.L..wav" }
+    { title: "Analog Hearts - I.M.L.", src: "./audio/analog-hearts-i-m-l.mp3" },
+    { title: "Anker und Licht - I.M.L.", src: "./audio/anker-und-licht-i-m-l.mp3" },
+    { title: "Beautiful Madness - I.M.L.", src: "./audio/beautiful-madness-i-m-l.mp3" },
+    { title: "Burnt Rubber & Chrome Dreams - I.M.L.", src: "./audio/burnt-rubber-and-chrome-dreams-i-m-l.mp3" },
+    { title: "Das Buch Unserer Zeit (2026)", src: "./audio/das-buch-unserer-zeit-2026.mp3" },
+    { title: "Everything is Borrowed - I.M.L.", src: "./audio/everything-is-borrowed-i-m-l.mp3" },
+    { title: "F.O.C.U.S. - I.M.L.", src: "./audio/f-o-c-u-s-i-m-l.mp3" },
+    { title: "Flüssige Vernunft - I.M.L.", src: "./audio/flussige-vernunft-i-m-l.mp3" },
+    { title: "Grass Stains and Golden Hours - I.M.L.", src: "./audio/grass-stains-and-golden-hours-i-m-l.mp3" },
+    { title: "Ibiza-Träume - I.M.L.", src: "./audio/ibiza-traume-i-m-l.mp3" },
+    { title: "Ink and Echoes - I.M.L.", src: "./audio/ink-and-echoes-i-m-l.mp3" },
+    { title: "Iron Will - I.M.L.", src: "./audio/iron-will-i-m-l.mp3" },
+    { title: "L'Éclat et le Chaos - I.M.L.", src: "./audio/leclat-et-le-chaos-i-m-l.mp3" },
+    { title: "Lotus of the Void - I.M.L.", src: "./audio/lotus-of-the-void-i-m-l.mp3" },
+    { title: "Mir geht es gut - I.M.L.", src: "./audio/mir-geht-es-gut-i-m-l.mp3" },
+    { title: "Monotone - I.M.L.", src: "./audio/monotone-i-m-l.mp3" },
+    { title: "My Favorite Person - I.M.L.", src: "./audio/my-favorite-person-i-m-l.mp3" },
+    { title: "Neon Line - I.M.L.", src: "./audio/neon-line-i-m-l.mp3" },
+    { title: "No Filter Needed - I.M.L.", src: "./audio/no-filter-needed-i-m-l.mp3" },
+    { title: "Parallel Lines (Never Apart) - I.M.L.", src: "./audio/parallel-lines-never-apart-i-m-l.mp3" },
+    { title: "Shadow to Sunlight - I.M.L.", src: "./audio/shadow-to-sunlight-i-m-l.mp3" },
+    { title: "Tensiune și Ceață - I.M.L.", src: "./audio/tensiune-si-ceata-i-m-l.mp3" },
+    { title: "The Clockwork Ghost - I.M.L.", src: "./audio/the-clockwork-ghost-i-m-l.mp3" },
+    { title: "The Control Room - I.M.L.", src: "./audio/the-control-room-i-m-l.mp3" },
+    { title: "The Full Spectrum - I.M.L.", src: "./audio/the-full-spectrum-i-m-l.mp3" },
+    { title: "The Golden Thread - I.M.L.", src: "./audio/the-golden-thread-i-m-l.mp3" },
+    { title: "The Quiet Kind - I.M.L.", src: "./audio/the-quiet-kind-i-m-l.mp3" },
+    { title: "The Secret Sauce - I.M.L.", src: "./audio/the-secret-sauce-i-m-l.mp3" },
+    { title: "The View From Here - I.M.L.", src: "./audio/the-view-from-here-i-m-l.mp3" },
+    { title: "Unica mea iubire - I.M.L.", src: "./audio/unica-mea-iubire-i-m-l.mp3" },
+    { title: "We Drive - I.M.L.", src: "./audio/we-drive-i-m-l.mp3" },
+    { title: "You Are Amazing - I.M.L.", src: "./audio/you-are-amazing-i-m-l.mp3" }
   ];
 
   const shell = section.querySelector(".library-shell") || section;
@@ -43,24 +44,16 @@
     return value.replace(/[&<>"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[char]));
   }
 
-  function audioSrc(file) {
-    return `./audio/${encodeURIComponent(file)}`;
-  }
-
-  function audioType(file) {
-    return file.toLowerCase().endsWith(".mp3") ? "MP3 audio" : "WAV audio";
-  }
-
   shell.innerHTML = `
     <h2>Audio Playlist</h2>
-    <p class="section-note">Audio-only listening for the I.M.L. catalog. The playlist now uses your provided WAV and MP3 song files from the audio folder.</p>
+    <p class="section-note">Audio-only listening for the I.M.L. catalog. These tracks use mobile-friendly MP3 files in the audio folder.</p>
     <audio id="audioPlayer" class="audio-player" controls preload="none"></audio>
     <p id="audioStatus">Choose a track to start audio-only playback.</p>
     <div class="playlist-grid" id="audioTrackGrid" aria-label="I.M.L. audio playlist">
       ${tracks.map((track, index) => `
         <button type="button" class="playlist-card audio-track" data-audio-index="${index}">
           <span class="playlist-thumb audio-thumb"></span>
-          <span class="playlist-copy"><strong>${escapeHtml(track.title)}</strong><small>${audioType(track.file)}</small></span>
+          <span class="playlist-copy"><strong>${escapeHtml(track.title)}</strong><small>MP3 audio</small></span>
         </button>
       `).join("")}
     </div>
@@ -82,7 +75,7 @@
     const track = tracks[Number(button.dataset.audioIndex)];
     currentTrack = track;
     grid.querySelectorAll(".audio-track").forEach(item => item.classList.toggle("active", item === button));
-    audio.src = audioSrc(track.file);
+    audio.src = track.src;
     status.textContent = `Loading: ${track.title}`;
     audio.play().then(() => {
       status.textContent = `Now playing: ${track.title}`;
@@ -98,7 +91,7 @@
   audio.addEventListener("error", () => {
     setEnergy(false);
     if (currentTrack) {
-      status.textContent = `${currentTrack.title} is in the playlist, but the audio file still needs to be uploaded to the site's audio folder.`;
+      status.textContent = `${currentTrack.title} is ready in the playlist, but its MP3 file still needs to be uploaded into the audio folder.`;
     }
   });
 })();
