@@ -13,7 +13,8 @@
     .iml-language-title{margin:0 0 8px;font-size:1rem;font-weight:900}
     .iml-language-help{margin:10px 0 0;color:#b9d5e8;font-size:.86rem;line-height:1.35}
     #google_translate_element{min-height:42px}
-    #google_translate_element select{width:100%;min-height:42px;border:1px solid rgba(126,222,255,.34);border-radius:12px;background:#0a1a30;color:#102033;font:inherit;padding:8px}
+    #google_translate_element select{width:100%;min-height:42px;border:1px solid rgba(126,222,255,.34);border-radius:12px;background:#0a1a30;color:#eef7ff;font:inherit;padding:8px}
+    #google_translate_element select option{color:#102033;background:#fff}
     #google_translate_element .goog-te-gadget{color:#b9d5e8;font-size:.82rem}
     #google_translate_element .goog-te-gadget span{display:none}
     body > .skiptranslate{display:none!important}
