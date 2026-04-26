@@ -15,7 +15,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
   <style>
-    :root{--bg:#081426;--fg:#eef7ff;--accent:#4db8ff;--panel:rgba(8,20,38,.76);--line:rgba(126,222,255,.22)}
+    :root{--bg:#081426;--fg:#eef7ff;--muted:#b9d5e8;--accent:#4db8ff;--panel:rgba(8,20,38,.76);--line:rgba(126,222,255,.22)}
     *{box-sizing:border-box}
     html{min-height:100%;scroll-behavior:smooth}
     body{margin:0;min-height:100%;font-family:system-ui,Arial,sans-serif;background:radial-gradient(circle at 50% 8%,#164a76 0%,#0b2039 28%,#071426 58%,#050b17 100%);color:var(--fg);overflow-x:hidden;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);-webkit-text-size-adjust:100%}
@@ -37,7 +37,6 @@
     .brand-text::after{content:attr(data-text);position:absolute;inset:0;color:#9bf7ff;clip-path:inset(0 100% 0 0);animation:brandScan 3.8s ease-in-out infinite;text-shadow:0 0 16px rgba(127,240,255,.9)}
     .btns,.mood-controls,.video-actions{display:flex;flex-wrap:wrap;gap:10px}
     .social-links{align-items:center;justify-content:flex-end}
-    .video-actions{justify-content:center;max-width:900px;margin:14px auto 0}
     .button,button{font:inherit;min-height:44px;-webkit-tap-highlight-color:transparent;padding:10px 18px;border-radius:25px;border:0;background:var(--accent);color:#fff;font-weight:700;cursor:pointer;touch-action:manipulation;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
     .button:hover,button:hover{filter:brightness(1.08)}
     .social-button{--mx:50%;--my:50%;--brand-a:#4db8ff;--brand-b:#725dff;position:relative;overflow:hidden;gap:9px;border:1px solid rgba(255,255,255,.2);background:linear-gradient(135deg,var(--brand-a),var(--brand-b));box-shadow:0 10px 24px rgba(0,0,0,.18),0 0 22px rgba(77,184,255,.22);isolation:isolate;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;will-change:transform}
@@ -64,9 +63,10 @@
     @keyframes auroraShift{0%{transform:translate3d(-4%,0,0) rotate(-8deg) scale(1)}100%{transform:translate3d(4%,4%,0) rotate(8deg) scale(1.12)}}
     section{padding:40px 20px}
     main>section:not(#hero){content-visibility:auto;contain-intrinsic-size:520px}
-    section>h2,section>p,.hub-panel{max-width:900px;margin-left:auto;margin-right:auto}
-    .hub-panel{padding:20px;border:1px solid var(--line);border-radius:18px;background:rgba(6,18,34,.58);backdrop-filter:blur(16px);box-shadow:0 0 40px rgba(77,184,255,.12)}
-    .hub-panel h2,.hub-panel h3{margin-top:0}
+    section>h2,section>p,.hub-panel,.library-shell{max-width:900px;margin-left:auto;margin-right:auto}
+    .hub-panel,.library-shell{padding:20px;border:1px solid var(--line);border-radius:18px;background:rgba(6,18,34,.58);backdrop-filter:blur(16px);box-shadow:0 0 40px rgba(77,184,255,.12)}
+    .hub-panel h2,.hub-panel h3,.library-shell h2{margin-top:0}
+    .section-note{color:var(--muted);line-height:1.45}
     .mood-controls{justify-content:center;margin-top:16px}
     .mood-controls button{background:rgba(77,184,255,.22);border:1px solid rgba(126,222,255,.3)}
     .mood-controls button.active{background:linear-gradient(135deg,#35d9ff,#7b5dff);box-shadow:0 0 24px rgba(77,184,255,.42)}
@@ -78,7 +78,21 @@
     .now-strip{max-width:900px;margin:16px auto 0;overflow:hidden;border:1px solid var(--line);border-radius:999px;background:rgba(6,18,34,.5);white-space:nowrap}
     .now-strip span{display:inline-block;padding:10px 0;animation:marquee 18s linear infinite}
     @keyframes marquee{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
-    iframe{display:block;width:min(100%,900px);height:clamp(210px,48vw,360px);margin:auto;border:0;border-radius:20px;background:#000;position:relative;z-index:2}
+    iframe{display:block;width:100%;height:clamp(210px,48vw,380px);margin:16px auto 0;border:0;border-radius:20px;background:#000;position:relative;z-index:2}
+    .playlist-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:16px}
+    .playlist-card{position:relative;width:100%;min-height:104px;padding:12px;border:1px solid rgba(126,222,255,.22);border-radius:16px;background:linear-gradient(135deg,rgba(11,29,52,.82),rgba(5,13,26,.72));color:#fff;text-align:left;text-decoration:none;display:grid;grid-template-columns:74px 1fr;gap:12px;align-items:center;box-shadow:0 12px 28px rgba(0,0,0,.18);overflow:hidden;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .playlist-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 15%,rgba(77,184,255,.26),transparent 38%);opacity:.55;pointer-events:none}
+    .playlist-card:hover,.playlist-card:focus-visible,.playlist-card.active{filter:none;transform:translateY(-2px);border-color:rgba(126,222,255,.62);box-shadow:0 14px 30px rgba(0,0,0,.24),0 0 24px rgba(77,184,255,.18)}
+    .playlist-card.is-disabled{opacity:.72;cursor:default}
+    .playlist-thumb{position:relative;z-index:1;display:grid;place-items:center;width:74px;aspect-ratio:16/10;border-radius:12px;background:#071426 center/cover no-repeat;border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 0 18px rgba(77,184,255,.16)}
+    .playlist-thumb::after{content:"";width:0;height:0;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:14px solid #fff;margin-left:4px;filter:drop-shadow(0 0 8px rgba(255,255,255,.72))}
+    .audio-thumb::after{width:26px;height:26px;border:0;border-radius:50%;background:radial-gradient(circle,#fff 0 18%,transparent 19%),conic-gradient(from 90deg,#79efff,#725dff,#ff4fd8,#79efff)}
+    .future-thumb::after{content:"+";width:auto;height:auto;border:0;font-size:1.7rem;font-weight:900;color:#fff}
+    .playlist-copy{position:relative;z-index:1;display:grid;gap:5px}
+    .playlist-copy strong{font-size:.98rem;line-height:1.15}
+    .playlist-copy small{color:var(--muted);line-height:1.25}
+    .audio-player{width:100%;margin:10px 0 4px;accent-color:#4db8ff}
+    #audioStatus{min-height:1.5em;color:var(--muted)}
     #installBox{text-align:center}
     #installBox button{padding:15px 35px;font-size:1.1em}
     #installStatus{min-height:1.5em;opacity:.76;margin-top:10px}
@@ -103,9 +117,10 @@
       .glow{filter:blur(20px);animation:none;opacity:.65}
       section{padding:26px 12px}
       main>section:not(#hero){contain-intrinsic-size:430px}
-      .hub-panel,.action-card,#installModal .card{border-radius:14px;backdrop-filter:none;box-shadow:none;background:rgba(6,18,34,.7)}
+      .hub-panel,.action-card,.library-shell,#installModal .card{border-radius:14px;backdrop-filter:none;box-shadow:none;background:rgba(6,18,34,.7)}
       .mood-controls button{flex:1 1 130px}
-      .action-grid{grid-template-columns:1fr}
+      .action-grid,.playlist-grid{grid-template-columns:1fr}
+      .playlist-card{min-height:92px;border-radius:14px}
       .now-strip{border-radius:14px;white-space:normal}
       .now-strip span{display:block;padding:10px 12px;animation:none;line-height:1.35;text-align:center}
       iframe{border-radius:14px;height:min(56vw,260px)}
@@ -156,7 +171,7 @@
         <div class="action-card">
           <h3>Watch Videos</h3>
           <p>Jump straight into the latest I.M.L. visuals on YouTube.</p>
-          <a class="button" href="https://youtube.com/@i.m.l._official" target="_blank" rel="noopener">Open YouTube</a>
+          <a class="button" href="#videoLibrary">Open Playlist</a>
         </div>
         <div class="action-card">
           <h3>Follow The Clips</h3>
@@ -165,12 +180,47 @@
         </div>
       </div>
     </section>
-    <section>
-      <h2>Latest Video</h2>
-      <iframe id="latestVideos" title="F.O.C.U.S. - I.M.L. YouTube video" src="https://www.youtube.com/embed/T3W9tOxUOEo?enablejsapi=1&amp;playsinline=1&amp;rel=0&amp;modestbranding=1&amp;origin=https://imlofficial.github.io" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-      <div class="btns video-actions">
-        <a class="button" href="https://www.youtube.com/watch?v=T3W9tOxUOEo" target="_blank" rel="noopener">Open Video</a>
-        <a class="button" href="https://youtube.com/@i.m.l._official" target="_blank" rel="noopener">More Videos</a>
+    <section id="videoLibrary">
+      <div class="library-shell">
+        <h2>All Videos</h2>
+        <p class="section-note">Play the I.M.L. video playlist directly here. Tap any track below to load it in the player.</p>
+        <iframe id="latestVideos" title="I.M.L. YouTube video playlist" src="https://www.youtube.com/embed/T3W9tOxUOEo?enablejsapi=1&amp;playsinline=1&amp;rel=0&amp;modestbranding=1&amp;origin=https://imlofficial.github.io&amp;playlist=f_OG5cwJmJs" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <div class="playlist-grid" aria-label="I.M.L. video playlist">
+          <button type="button" class="playlist-card active" data-video-index="0">
+            <span class="playlist-thumb" style="background-image:url('https://i.ytimg.com/vi/T3W9tOxUOEo/hqdefault.jpg')"></span>
+            <span class="playlist-copy"><strong>F.O.C.U.S. - I.M.L.</strong><small>Latest video</small></span>
+          </button>
+          <button type="button" class="playlist-card" data-video-index="1">
+            <span class="playlist-thumb" style="background-image:url('https://i.ytimg.com/vi/f_OG5cwJmJs/hqdefault.jpg')"></span>
+            <span class="playlist-copy"><strong>Mir geht es gut - I.M.L.</strong><small>Music video</small></span>
+          </button>
+          <div class="playlist-card is-disabled" aria-label="Future videos">
+            <span class="playlist-thumb future-thumb"></span>
+            <span class="playlist-copy"><strong>Future videos</strong><small>New releases can be added to this playlist when they go public.</small></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="audioLibrary">
+      <div class="library-shell">
+        <h2>Audio Playlist</h2>
+        <p class="section-note">This is the same track list for audio-only listening. Add your MP3 or M4A files and the tracks will play here without the video.</p>
+        <audio id="audioPlayer" class="audio-player" controls preload="metadata"></audio>
+        <p id="audioStatus">Choose an audio track after the audio files are added.</p>
+        <div class="playlist-grid" aria-label="I.M.L. audio playlist">
+          <button type="button" class="playlist-card audio-track" data-audio-index="0">
+            <span class="playlist-thumb audio-thumb"></span>
+            <span class="playlist-copy"><strong>F.O.C.U.S. - I.M.L.</strong><small>Audio file needed</small></span>
+          </button>
+          <button type="button" class="playlist-card audio-track" data-audio-index="1">
+            <span class="playlist-thumb audio-thumb"></span>
+            <span class="playlist-copy"><strong>Mir geht es gut - I.M.L.</strong><small>Audio file needed</small></span>
+          </button>
+          <div class="playlist-card is-disabled" aria-label="Future audio">
+            <span class="playlist-thumb future-thumb"></span>
+            <span class="playlist-copy"><strong>Future audio</strong><small>Future audio files can be added here with new releases.</small></span>
+          </div>
+        </div>
       </div>
     </section>
     <section id="installBox">
@@ -187,8 +237,17 @@
       <button type="button" id="cancelInstall">Close</button>
     </div>
   </div>
-  <script src="./video-inspired-bg.js?v=17"></script>
+  <script src="./video-inspired-bg.js?v=20"></script>
   <script>
+    const VIDEO_TRACKS = [
+      { id: "T3W9tOxUOEo", title: "F.O.C.U.S. - I.M.L." },
+      { id: "f_OG5cwJmJs", title: "Mir geht es gut - I.M.L." }
+    ];
+    const AUDIO_TRACKS = [
+      { title: "F.O.C.U.S. - I.M.L.", src: "" },
+      { title: "Mir geht es gut - I.M.L.", src: "" }
+    ];
+
     const o = document.getElementById("orbit");
     const ox = o.getContext("2d");
     const orbitLite = matchMedia("(pointer: coarse), (max-width: 640px)");
@@ -197,6 +256,7 @@
     let oh = 0;
     let orbitRaf = 0;
     let orbitLast = 0;
+    let ytPlayer;
 
     function sizeOrbit() {
       const d = orbitLite.matches ? 1 : Math.min(devicePixelRatio || 1, 1.35);
@@ -245,15 +305,68 @@
       dispatchEvent(new CustomEvent("iml:video-state", { detail: { playing } }));
     }
 
+    function playlistIds(startIndex = 0) {
+      return VIDEO_TRACKS.slice(startIndex).concat(VIDEO_TRACKS.slice(0, startIndex)).map(video => video.id);
+    }
+
+    function videoSrc(index = 0) {
+      const ids = playlistIds(index);
+      const first = ids[0];
+      const rest = ids.slice(1).join(",");
+      return `https://www.youtube.com/embed/${first}?enablejsapi=1&playsinline=1&rel=0&modestbranding=1&origin=https://imlofficial.github.io${rest ? `&playlist=${rest}` : ""}`;
+    }
+
+    function markActiveVideo(index) {
+      document.querySelectorAll("[data-video-index]").forEach(button => button.classList.toggle("active", Number(button.dataset.videoIndex) === index));
+    }
+
+    function loadVideoTrack(index) {
+      markActiveVideo(index);
+      setVideoEnergy(false);
+      if (ytPlayer && ytPlayer.loadPlaylist) {
+        ytPlayer.loadPlaylist({ playlist: playlistIds(index), index: 0 });
+      } else {
+        document.getElementById("latestVideos").src = videoSrc(index);
+      }
+    }
+
     function onYouTubeIframeAPIReady() {
       if (!window.YT || !YT.Player) return;
-      new YT.Player("latestVideos", {
+      ytPlayer = new YT.Player("latestVideos", {
         events: {
           onStateChange: event => setVideoEnergy(event.data === YT.PlayerState.PLAYING)
         }
       });
     }
     window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+    document.querySelectorAll("[data-video-index]").forEach(button => {
+      button.addEventListener("click", () => {
+        loadVideoTrack(Number(button.dataset.videoIndex));
+        dispatchEvent(new CustomEvent("iml:boost", { detail: { x: innerWidth / 2, y: Math.min(innerHeight * 0.42, 360) } }));
+      });
+    });
+
+    const audioPlayer = document.getElementById("audioPlayer");
+    const audioStatus = document.getElementById("audioStatus");
+    document.querySelectorAll("[data-audio-index]").forEach(button => {
+      button.addEventListener("click", () => {
+        const index = Number(button.dataset.audioIndex);
+        const track = AUDIO_TRACKS[index];
+        document.querySelectorAll("[data-audio-index]").forEach(item => item.classList.toggle("active", item === button));
+        if (!track.src) {
+          audioStatus.textContent = `${track.title} needs an MP3 or M4A file before audio-only playback can work.`;
+          return;
+        }
+        audioPlayer.src = track.src;
+        audioStatus.textContent = `Now playing: ${track.title}`;
+        audioPlayer.play().catch(() => audioStatus.textContent = `Tap play to start: ${track.title}`);
+        dispatchEvent(new CustomEvent("iml:video-state", { detail: { playing: true } }));
+      });
+    });
+    audioPlayer.addEventListener("play", () => setVideoEnergy(true));
+    audioPlayer.addEventListener("pause", () => setVideoEnergy(false));
+    audioPlayer.addEventListener("ended", () => setVideoEnergy(false));
 
     document.querySelectorAll("#moodControls button").forEach(button => {
       button.addEventListener("click", () => {
@@ -362,7 +475,7 @@
     setInstallStatus();
 
     if ("serviceWorker" in navigator) {
-      addEventListener("load", () => navigator.serviceWorker.register("./sw.js?v=19"));
+      addEventListener("load", () => navigator.serviceWorker.register("./sw.js?v=20"));
     }
   </script>
   <script async src="https://www.youtube.com/iframe_api"></script>
