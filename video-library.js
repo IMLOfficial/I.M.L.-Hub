@@ -56,12 +56,8 @@
     return `https://i.ytimg.com/vi/${id}/${quality}.jpg`;
   }
 
-  function playlistIds(startIndex = 0) {
-    return videos.slice(startIndex).concat(videos.slice(0, startIndex)).map(video => video.id);
-  }
-
   function videoSrc(index = 0, autoplay = false) {
-    const ids = playlistIds(index);
+    const video = videos[index] || videos[0];
     const params = new URLSearchParams({
       enablejsapi: "1",
       playsinline: "1",
@@ -69,15 +65,14 @@
       modestbranding: "1",
       origin: location.origin
     });
-    if (ids.length > 1) params.set("playlist", ids.slice(1).join(","));
     if (autoplay) params.set("autoplay", "1");
-    return `https://www.youtube.com/embed/${ids[0]}?${params.toString()}`;
+    return `https://www.youtube.com/embed/${video.id}?${params.toString()}`;
   }
 
   shell.innerHTML = `
     <h2>All Videos</h2>
-    <p class="section-note">Play the public I.M.L. YouTube videos directly here. Tap any video below to load it in the player.</p>
-    <button type="button" class="latest-video-card" data-video-index="0" aria-label="Play latest video: ${escapeHtml(latest.title)}">
+    <p class="section-note">Play the public I.M.L. YouTube videos directly here. Tap any video below to load that exact video in the player.</p>
+    <button type="button" class="latest-video-card active" data-video-index="0" aria-label="Play latest video: ${escapeHtml(latest.title)}">
       <span class="latest-video-art" style="background-image:url('${thumb(latest.id, "maxresdefault")}'),url('${thumb(latest.id)}')">
         <span>Latest Video</span>
       </span>
@@ -86,7 +81,7 @@
         <small>Separate latest-video thumbnail | Tap to play the newest upload</small>
       </span>
     </button>
-    <iframe id="latestVideos" title="I.M.L. YouTube video playlist" src="${videoSrc(0)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    <iframe id="latestVideos" title="I.M.L. YouTube video player" src="${videoSrc(0)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen webkitallowfullscreen mozallowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
     <div class="playlist-grid" aria-label="I.M.L. video playlist">
       ${videos.map((video, index) => `
         <button type="button" class="playlist-card${index === 0 ? " active" : ""}" data-video-index="${index}">
@@ -104,10 +99,14 @@
   const iframe = shell.querySelector("#latestVideos");
   const buttons = [...shell.querySelectorAll("[data-video-index]")];
 
+  function setActive(index) {
+    buttons.forEach(item => item.classList.toggle("active", Number(item.dataset.videoIndex) === index));
+  }
+
   buttons.forEach(button => {
     button.addEventListener("click", () => {
       const index = Number(button.dataset.videoIndex);
-      buttons.forEach(item => item.classList.toggle("active", item === button));
+      setActive(index);
       iframe.src = videoSrc(index, true);
       document.body.classList.add("video-active");
       dispatchEvent(new CustomEvent("iml:video-state", { detail: { playing: true } }));
