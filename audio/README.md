@@ -1,40 +1,40 @@
 # I.M.L. audio files
 
-Upload the audio files for the on-page audio playlist into this folder.
+Upload the MP3 files for the on-page audio playlist into this folder.
 
-The website now uses the original WAV/MP3 song files directly, so no audio needs to be extracted from the videos. Keep the filenames exactly like this:
+The website is wired to mobile-friendly MP3 copies of the songs. I prepared these MP3 filenames locally in the workspace audio folder; keep the names exactly like this when uploading them here:
 
-- `audio/Analog Hearts - I.M.L..wav`
-- `audio/Anker und Licht - I.M.L..wav`
-- `audio/Beautiful Madness - I.M.L..wav`
-- `audio/Burnt Rubber & Chrome Dreams - I.M.L..wav`
-- `audio/Das Buch Unserer Zeit (2026).mp3`
-- `audio/Everything is Borrowed - I.M.L..wav`
-- `audio/F.O.C.U.S..wav`
-- `audio/Flüssige Vernunft - I.M.L..wav`
-- `audio/Grass Stains and Golden Hours - I.M.L..wav`
-- `audio/Ibiza-Träume.wav`
-- `audio/Ink and Echoes - I.M.L..wav`
-- `audio/Iron Will - I.M.L..wav`
-- `audio/L’Éclat et le Chaos - I.M.L..wav`
-- `audio/Lotus of the Void - I.M.L..wav`
-- `audio/Mir geht es gut.wav`
-- `audio/Monotone - I.M.L..wav`
-- `audio/My Favorite Person - I.M.L..wav`
-- `audio/Neon Line - I.M.L..wav`
-- `audio/No Filter Needed - I.M.L..wav`
-- `audio/Parallel Lines (Never Apart) - I.M.L..wav`
-- `audio/Shadow to Sunlight - I.M.L..wav`
-- `audio/Tensiune și Ceață - I.M.L..wav`
-- `audio/The Clockwork Ghost - I.M.L..wav`
-- `audio/The Control Room - I.M.L..wav`
-- `audio/The Full Spectrum - I.M.L..wav`
-- `audio/The Golden Thread - I.M.L..wav`
-- `audio/The Quiet Kind - I.M.L..wav`
-- `audio/The Secret Sauce - I.M.L..wav`
-- `audio/The View From Here - I.M.L..wav`
-- `audio/Unica mea iubire - I.M.L..wav`
-- `audio/We Drive - I.M.L..wav`
-- `audio/You Are Amazing - I.M.L..wav`
+- `audio/analog-hearts-i-m-l.mp3`
+- `audio/anker-und-licht-i-m-l.mp3`
+- `audio/beautiful-madness-i-m-l.mp3`
+- `audio/burnt-rubber-and-chrome-dreams-i-m-l.mp3`
+- `audio/das-buch-unserer-zeit-2026.mp3`
+- `audio/everything-is-borrowed-i-m-l.mp3`
+- `audio/f-o-c-u-s-i-m-l.mp3`
+- `audio/flussige-vernunft-i-m-l.mp3`
+- `audio/grass-stains-and-golden-hours-i-m-l.mp3`
+- `audio/ibiza-traume-i-m-l.mp3`
+- `audio/ink-and-echoes-i-m-l.mp3`
+- `audio/iron-will-i-m-l.mp3`
+- `audio/leclat-et-le-chaos-i-m-l.mp3`
+- `audio/lotus-of-the-void-i-m-l.mp3`
+- `audio/mir-geht-es-gut-i-m-l.mp3`
+- `audio/monotone-i-m-l.mp3`
+- `audio/my-favorite-person-i-m-l.mp3`
+- `audio/neon-line-i-m-l.mp3`
+- `audio/no-filter-needed-i-m-l.mp3`
+- `audio/parallel-lines-never-apart-i-m-l.mp3`
+- `audio/shadow-to-sunlight-i-m-l.mp3`
+- `audio/tensiune-si-ceata-i-m-l.mp3`
+- `audio/the-clockwork-ghost-i-m-l.mp3`
+- `audio/the-control-room-i-m-l.mp3`
+- `audio/the-full-spectrum-i-m-l.mp3`
+- `audio/the-golden-thread-i-m-l.mp3`
+- `audio/the-quiet-kind-i-m-l.mp3`
+- `audio/the-secret-sauce-i-m-l.mp3`
+- `audio/the-view-from-here-i-m-l.mp3`
+- `audio/unica-mea-iubire-i-m-l.mp3`
+- `audio/we-drive-i-m-l.mp3`
+- `audio/you-are-amazing-i-m-l.mp3`
 
-For faster mobile playback later, MP3 or AAC copies would be lighter than WAV files, but the page is now wired to the filenames above.
+The current MP3 set is about 100 MB total, much better for Android and iOS than the original WAV files.
