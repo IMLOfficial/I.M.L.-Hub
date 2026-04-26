@@ -1,10 +1,14 @@
-const CACHE="iml-v22";
-const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./language-widget.js"];
-const LANGUAGE_WIDGET='<script src="./language-widget.js?v=22" defer></script>';
+const CACHE="iml-v23";
+const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./language-widget.js","./audio-library.js"];
+const WIDGET_SCRIPTS=[
+  '<script src="./audio-library.js?v=23" defer></script>',
+  '<script src="./language-widget.js?v=23" defer></script>'
+];
 
-function withLanguageWidget(html){
-  if(html.includes("language-widget.js")) return html;
-  return html.replace("</body>",`${LANGUAGE_WIDGET}</body>`);
+function withWidgets(html){
+  const scripts=WIDGET_SCRIPTS.filter(script=>!html.includes(script.match(/\.\/(.+?)\?/)[1]));
+  if(!scripts.length) return html;
+  return html.replace("</body>",`${scripts.join("")}</body>`);
 }
 
 async function pageResponse(request){
@@ -13,7 +17,7 @@ async function pageResponse(request){
   if(!type.includes("text/html")) return response;
   const headers=new Headers(response.headers);
   headers.set("content-type","text/html; charset=utf-8");
-  return new Response(withLanguageWidget(await response.text()),{status:response.status,statusText:response.statusText,headers});
+  return new Response(withWidgets(await response.text()),{status:response.status,statusText:response.statusText,headers});
 }
 
 self.addEventListener("install",event=>{
@@ -29,12 +33,14 @@ self.addEventListener("activate",event=>{
 });
 
 self.addEventListener("fetch",event=>{
+  const path=new URL(event.request.url).pathname;
   if(event.request.mode==="navigate"){
-    event.respondWith(pageResponse(event.request).catch(()=>caches.match("./").then(response=>response&&response.text?response.text().then(html=>new Response(withLanguageWidget(html),{headers:{"content-type":"text/html; charset=utf-8"}})):caches.match("./index.html"))));
+    event.respondWith(pageResponse(event.request).catch(()=>caches.match("./").then(response=>response&&response.text?response.text().then(html=>new Response(withWidgets(html),{headers:{"content-type":"text/html; charset=utf-8"}})):caches.match("./index.html"))));
     return;
   }
-  if(new URL(event.request.url).pathname.endsWith("/language-widget.js")){
-    event.respondWith(fetch(event.request).catch(()=>caches.match("./language-widget.js")));
+  if(path.endsWith("/language-widget.js")||path.endsWith("/audio-library.js")){
+    const file=path.endsWith("/audio-library.js")?"./audio-library.js":"./language-widget.js";
+    event.respondWith(fetch(event.request).catch(()=>caches.match(file)));
     return;
   }
   event.respondWith(caches.match(event.request).then(response=>response||fetch(event.request)));
