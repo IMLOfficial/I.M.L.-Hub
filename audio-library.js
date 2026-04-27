@@ -1,4 +1,37 @@
 (() => {
+  const ENHANCEMENT_VERSION = "35";
+
+  function scriptAlreadyPresent(fileName) {
+    return [...document.scripts].some(script => script.src.includes(fileName));
+  }
+
+  function loadEnhancement(fileName, id, onReady) {
+    if (document.getElementById(id) || scriptAlreadyPresent(fileName)) {
+      if (onReady) onReady();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = id;
+    script.src = `./${fileName}?v=${ENHANCEMENT_VERSION}`;
+    script.async = false;
+    if (onReady) script.addEventListener("load", onReady, { once: true });
+    (document.head || document.documentElement).appendChild(script);
+  }
+
+  function ensureSiteEnhancements() {
+    loadEnhancement("music-theme.js", "imlDirectMusicTheme");
+    loadEnhancement("promo-ads.js", "imlDirectPromoAds", () => {
+      loadEnhancement("promo-live-files.js", "imlDirectPromoLive");
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ensureSiteEnhancements, { once: true });
+  } else {
+    ensureSiteEnhancements();
+  }
+
   const section = document.getElementById("audioLibrary");
   if (!section || section.dataset.ready === "true") return;
   section.dataset.ready = "true";
@@ -41,7 +74,8 @@
   const shell = section.querySelector(".library-shell") || section;
 
   function escapeHtml(value) {
-    return value.replace(/[&<>"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[char]));
+    const entities = { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" };
+    return value.replace(/[&<>"]/g, char => entities[char]);
   }
 
   shell.innerHTML = `
