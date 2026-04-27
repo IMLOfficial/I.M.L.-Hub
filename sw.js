@@ -1,13 +1,13 @@
-const CACHE="iml-v36";
+const CACHE="iml-v37";
 const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./video-library.js","./language-widget.js","./audio-library.js","./music-theme.js","./promo-ads.js","./promo-live-files.js"];
-const BG_SCRIPT='<script src="./video-inspired-bg.js?v=36"></script>';
+const BG_SCRIPT='<script src="./video-inspired-bg.js?v=37"></script>';
 const WIDGET_SCRIPTS=[
-  '<script src="./video-library.js?v=36" defer></script>',
-  '<script src="./audio-library.js?v=36" defer></script>',
-  '<script src="./language-widget.js?v=36" defer></script>',
-  '<script src="./music-theme.js?v=36" defer></script>',
-  '<script src="./promo-ads.js?v=36" defer></script>',
-  '<script src="./promo-live-files.js?v=36" defer></script>'
+  '<script src="./video-library.js?v=37" defer></script>',
+  '<script src="./audio-library.js?v=37" defer></script>',
+  '<script src="./language-widget.js?v=37" defer></script>',
+  '<script src="./music-theme.js?v=37" defer></script>',
+  '<script src="./promo-ads.js?v=37" defer></script>',
+  '<script src="./promo-live-files.js?v=37" defer></script>'
 ];
 
 function withWidgets(html){
