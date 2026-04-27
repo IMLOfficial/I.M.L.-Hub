@@ -1,5 +1,5 @@
 (() => {
-  const ENHANCEMENT_VERSION = "38";
+  const ENHANCEMENT_VERSION = "39";
 
   function scriptAlreadyPresent(fileName) {
     return [...document.scripts].some(script => script.src.includes(fileName));
@@ -21,7 +21,9 @@
 
   function ensureSiteEnhancements() {
     loadEnhancement("music-theme.js", "imlDirectMusicTheme", () => {
-      loadEnhancement("music-polish.js", "imlDirectMusicPolish");
+      loadEnhancement("music-polish.js", "imlDirectMusicPolish", () => {
+        loadEnhancement("site-features.js", "imlDirectSiteFeatures");
+      });
     });
     loadEnhancement("promo-ads.js", "imlDirectPromoAds", () => {
       loadEnhancement("promo-live-files.js", "imlDirectPromoLive");
@@ -46,12 +48,12 @@
     { title: "Das Buch Unserer Zeit (2026)", src: "./Das Buch Unserer Zeit (2026).mp3" },
     { title: "Everything is Borrowed - I.M.L.", src: "./audio/Everything is Borrowed - I.M.L..mp3" },
     { title: "F.O.C.U.S. - I.M.L.", src: "./audio/F.O.C.U.S..mp3" },
-    { title: "Flüssige Vernunft - I.M.L.", src: "./audio/Flüssige Vernunft - I.M.L..mp3" },
+    { title: "Fl\u00fcssige Vernunft - I.M.L.", src: "./audio/Fl\u00fcssige Vernunft - I.M.L..mp3" },
     { title: "Grass Stains and Golden Hours - I.M.L.", src: "./audio/Grass Stains and Golden Hours - I.M.L..mp3" },
-    { title: "Ibiza-Träume - I.M.L.", src: "./audio/Ibiza-Träume.mp3" },
+    { title: "Ibiza-Tr\u00e4ume - I.M.L.", src: "./audio/Ibiza-Tr\u00e4ume.mp3" },
     { title: "Ink and Echoes - I.M.L.", src: "./audio/Ink and Echoes - I.M.L..mp3" },
     { title: "Iron Will - I.M.L.", src: "./audio/Iron Will - I.M.L..mp3" },
-    { title: "L'Éclat et le Chaos - I.M.L.", src: "./audio/L’Éclat et le Chaos - I.M.L..mp3" },
+    { title: "L'\u00c9clat et le Chaos - I.M.L.", src: "./audio/L\u2019\u00c9clat et le Chaos - I.M.L..mp3" },
     { title: "Lotus of the Void - I.M.L.", src: "./audio/Lotus of the Void - I.M.L..mp3" },
     { title: "Mir geht es gut - I.M.L.", src: "./audio/Mir geht es gut.mp3" },
     { title: "Monotone - I.M.L.", src: "./audio/Monotone - I.M.L..mp3" },
@@ -60,7 +62,7 @@
     { title: "No Filter Needed - I.M.L.", src: "./audio/No Filter Needed - I.M.L..mp3" },
     { title: "Parallel Lines (Never Apart) - I.M.L.", src: "./audio/Parallel Lines (Never Apart) - I.M.L..mp3" },
     { title: "Shadow to Sunlight - I.M.L.", src: "./audio/Shadow to Sunlight - I.M.L..mp3" },
-    { title: "Tensiune și Ceață - I.M.L.", src: "./audio/Tensiune și Ceață - I.M.L..mp3" },
+    { title: "Tensiune \u0219i Cea\u021b\u0103 - I.M.L.", src: "./audio/Tensiune \u0219i Cea\u021b\u0103 - I.M.L..mp3" },
     { title: "The Clockwork Ghost - I.M.L.", src: "./audio/The Clockwork Ghost - I.M.L..mp3" },
     { title: "The Control Room - I.M.L.", src: "./audio/The Control Room - I.M.L..mp3" },
     { title: "The Full Spectrum - I.M.L.", src: "./audio/The Full Spectrum - I.M.L..mp3" },
