@@ -145,7 +145,7 @@
   function cardTemplate(promo, index) {
     return `
       <article class="promo-ad-card" data-promo-index="${index}">
-        <video muted loop playsinline preload="metadata" poster="./logo.svg" aria-label="${promo.title}">
+        <video muted loop playsinline preload="none" poster="./logo.svg" aria-label="${promo.title}">
           <source src="${promo.src}" type="video/mp4">
         </video>
         <span class="promo-ad-copy">
@@ -166,9 +166,20 @@
     if (!video || !sound || card.dataset.ready === "true") return;
     card.dataset.ready = "true";
 
-    const tryPlay = () => video.play().catch(() => {});
-    video.addEventListener("loadedmetadata", tryPlay, { once: true });
-    video.addEventListener("canplay", tryPlay, { once: true });
+    const coarse = matchMedia("(pointer: coarse)");
+    let visible = false;
+    let userStarted = false;
+    const tryPlay = () => {
+      video.preload = "metadata";
+      return video.play().catch(() => {});
+    };
+    const pauseQuietly = () => {
+      if (video.muted && !userStarted) video.pause();
+    };
+    const playWhenUseful = () => {
+      if (document.hidden || !visible) return;
+      if (!coarse.matches || userStarted) tryPlay();
+    };
     video.addEventListener("error", () => card.classList.add("is-missing"));
     card.addEventListener("pointermove", event => {
       if (innerWidth <= 760) return;
@@ -176,7 +187,18 @@
       card.style.setProperty("--mx", `${event.clientX - rect.left}px`);
       card.style.setProperty("--my", `${event.clientY - rect.top}px`);
     }, { passive: true });
-    card.addEventListener("pointerenter", tryPlay, { passive: true });
+    card.addEventListener("pointerenter", () => {
+      visible = true;
+      tryPlay();
+    }, { passive: true });
+    card.addEventListener("pointerleave", () => {
+      if (!coarse.matches) pauseQuietly();
+    }, { passive: true });
+    card.addEventListener("click", () => {
+      userStarted = true;
+      visible = true;
+      tryPlay();
+    }, { passive: true });
     sound.addEventListener("click", event => {
       event.preventDefault();
       event.stopPropagation();
@@ -184,11 +206,25 @@
         if (item !== video) item.muted = true;
       });
       video.muted = !video.muted;
+      userStarted = !video.muted || userStarted;
       sound.textContent = video.muted ? "Sound" : "Mute";
       tryPlay();
       dispatchEvent(new CustomEvent("iml:boost", { detail: { x: event.clientX || innerWidth / 2, y: event.clientY || innerHeight * 0.35, power: 0.85 } }));
     });
-    tryPlay();
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          visible = entry.isIntersecting && entry.intersectionRatio > 0.32;
+          if (visible) playWhenUseful();
+          else pauseQuietly();
+        });
+      }, { threshold: [0, 0.32, 0.7] });
+      observer.observe(card);
+    }
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) video.pause();
+      else playWhenUseful();
+    });
   }
 
   function buildPromos() {
