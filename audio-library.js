@@ -1,5 +1,5 @@
 (() => {
-  const ENHANCEMENT_VERSION = "36";
+  const ENHANCEMENT_VERSION = "37";
 
   function scriptAlreadyPresent(fileName) {
     return [...document.scripts].some(script => script.src.includes(fileName));
@@ -167,7 +167,7 @@
   grid.addEventListener("click", event => {
     const button = event.target.closest("[data-audio-index]");
     if (!button) return;
-    selectTrack(Number(button.dataset.audioIndex));
+    selectTrack(Number(button.datasetAudioIndex || button.dataset.audioIndex));
   });
 
   audio.addEventListener("play", () => {
