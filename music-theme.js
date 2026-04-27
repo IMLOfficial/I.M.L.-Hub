@@ -246,6 +246,10 @@
     document.head.appendChild(style);
   }
 
+  function setText(element, value) {
+    if (element && element.textContent !== value) element.textContent = value;
+  }
+
   function getSelectedAudioTitle() {
     const selected = document.querySelector("#audioLibrary .audio-track.active .playlist-copy strong");
     return selected?.textContent?.trim() || "Choose a song";
@@ -276,10 +280,8 @@
 
   function updateMiniPlayer() {
     const mini = ensureMiniPlayer();
-    const title = mini.querySelector(".music-mini-title");
-    const status = mini.querySelector(".music-mini-status");
-    if (title) title.textContent = getSelectedAudioTitle();
-    if (status) status.textContent = getAudioStatus();
+    setText(mini.querySelector(".music-mini-title"), getSelectedAudioTitle());
+    setText(mini.querySelector(".music-mini-status"), getAudioStatus());
   }
 
   function decorateAudio() {
@@ -327,7 +329,7 @@
 
     const heroTitle = shell.querySelector(".music-now-title");
     const refresh = () => {
-      if (heroTitle) heroTitle.textContent = getSelectedAudioTitle();
+      setText(heroTitle, getSelectedAudioTitle());
       updateMiniPlayer();
     };
 
@@ -347,9 +349,22 @@
   function boot() {
     document.body?.classList.add("music-theme");
     ensureMiniPlayer();
-    decorateAudio();
-    const observer = new MutationObserver(() => decorateAudio());
-    observer.observe(document.body, { childList: true, subtree: true });
+    if (decorateAudio()) return;
+
+    let scheduled = false;
+    let observer;
+    const scheduleDecorate = () => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        if (decorateAudio()) observer?.disconnect();
+      });
+    };
+
+    observer = new MutationObserver(scheduleDecorate);
+    observer.observe(document.getElementById("audioLibrary") || document.body, { childList: true, subtree: true });
+    setTimeout(() => observer.disconnect(), 7000);
   }
 
   if (document.readyState === "loading") {
