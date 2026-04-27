@@ -1,5 +1,5 @@
 const CACHE="iml-v38";
-const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./video-library.js","./language-widget.js","./audio-library.js","music-theme.js","./music-polish.js","./promo-ads.js","./promo-live-files.js"];
+const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./video-library.js","./language-widget.js","./audio-library.js","./music-theme.js","./music-polish.js","./promo-ads.js","./promo-live-files.js"];
 const BG_SCRIPT='<script src="./video-inspired-bg.js?v=38"></script>';
 const WIDGET_SCRIPTS=[
   '<script src="./video-library.js?v=38" defer></script>',
