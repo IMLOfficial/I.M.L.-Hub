@@ -1,15 +1,15 @@
-const CACHE="iml-v39";
+const CACHE="iml-v40";
 const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./video-library.js","./language-widget.js","./audio-library.js","./music-theme.js","./music-polish.js","./site-features.js","./promo-ads.js","./promo-live-files.js"];
-const BG_SCRIPT='<script src="./video-inspired-bg.js?v=39"></script>';
+const BG_SCRIPT='<script src="./video-inspired-bg.js?v=40"></script>';
 const WIDGET_SCRIPTS=[
-  '<script src="./video-library.js?v=39" defer></script>',
-  '<script src="./audio-library.js?v=39" defer></script>',
-  '<script src="./language-widget.js?v=39" defer></script>',
-  '<script src="./music-theme.js?v=39" defer></script>',
-  '<script src="./music-polish.js?v=39" defer></script>',
-  '<script src="./site-features.js?v=39" defer></script>',
-  '<script src="./promo-ads.js?v=39" defer></script>',
-  '<script src="./promo-live-files.js?v=39" defer></script>'
+  '<script src="./video-library.js?v=40" defer></script>',
+  '<script src="./promo-ads.js?v=40" defer></script>',
+  '<script src="./promo-live-files.js?v=40" defer></script>',
+  '<script src="./audio-library.js?v=40" defer></script>',
+  '<script src="./language-widget.js?v=40" defer></script>',
+  '<script src="./music-theme.js?v=40" defer></script>',
+  '<script src="./music-polish.js?v=40" defer></script>',
+  '<script src="./site-features.js?v=40" defer></script>'
 ];
 
 function withWidgets(html){
