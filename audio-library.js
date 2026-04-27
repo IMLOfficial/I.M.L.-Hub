@@ -1,5 +1,5 @@
 (() => {
-  const ENHANCEMENT_VERSION = "37";
+  const ENHANCEMENT_VERSION = "38";
 
   function scriptAlreadyPresent(fileName) {
     return [...document.scripts].some(script => script.src.includes(fileName));
@@ -20,7 +20,9 @@
   }
 
   function ensureSiteEnhancements() {
-    loadEnhancement("music-theme.js", "imlDirectMusicTheme");
+    loadEnhancement("music-theme.js", "imlDirectMusicTheme", () => {
+      loadEnhancement("music-polish.js", "imlDirectMusicPolish");
+    });
     loadEnhancement("promo-ads.js", "imlDirectPromoAds", () => {
       loadEnhancement("promo-live-files.js", "imlDirectPromoLive");
     });
@@ -167,7 +169,7 @@
   grid.addEventListener("click", event => {
     const button = event.target.closest("[data-audio-index]");
     if (!button) return;
-    selectTrack(Number(button.datasetAudioIndex || button.dataset.audioIndex));
+    selectTrack(Number(button.dataset.audioIndex));
   });
 
   audio.addEventListener("play", () => {
