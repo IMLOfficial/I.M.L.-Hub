@@ -85,6 +85,21 @@
     return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   }
 
+  function removeAudioCaptions() {
+    const exactText = new Set([
+      "Audio-only listening, built for mobile and desktop.",
+      "These tracks use the MP3 files published on this website.",
+      "Audio-only listening for the I.M.L. catalog. These tracks use the MP3 files published on this website."
+    ]);
+
+    document.querySelectorAll("#audioLibrary .section-note, #audioLibrary .music-subtitle").forEach(element => {
+      const text = element.textContent.trim();
+      if (exactText.has(text) || text.includes("These tracks use the MP3 files published on this website.")) {
+        element.remove();
+      }
+    });
+  }
+
   function ensureToolbar(sectionId, config) {
     const section = document.getElementById(sectionId);
     const shell = section?.querySelector(".library-shell");
@@ -172,7 +187,9 @@
 
   function boot() {
     ensureScrollTop();
+    removeAudioCaptions();
     const tryDecorate = () => {
+      removeAudioCaptions();
       const audioReady = ensureToolbar("audioLibrary", {
         placeholder: "Search songs",
         randomLabel: "Shuffle",
@@ -199,6 +216,7 @@
       scheduled = true;
       requestAnimationFrame(() => {
         scheduled = false;
+        removeAudioCaptions();
         if (tryDecorate()) observer.disconnect();
       });
     });
