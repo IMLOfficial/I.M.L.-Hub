@@ -1,18 +1,19 @@
-const CACHE="iml-v37";
-const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./video-library.js","./language-widget.js","./audio-library.js","./music-theme.js","./promo-ads.js","./promo-live-files.js"];
-const BG_SCRIPT='<script src="./video-inspired-bg.js?v=37"></script>';
+const CACHE="iml-v38";
+const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./video-library.js","./language-widget.js","./audio-library.js","music-theme.js","./music-polish.js","./promo-ads.js","./promo-live-files.js"];
+const BG_SCRIPT='<script src="./video-inspired-bg.js?v=38"></script>';
 const WIDGET_SCRIPTS=[
-  '<script src="./video-library.js?v=37" defer></script>',
-  '<script src="./audio-library.js?v=37" defer></script>',
-  '<script src="./language-widget.js?v=37" defer></script>',
-  '<script src="./music-theme.js?v=37" defer></script>',
-  '<script src="./promo-ads.js?v=37" defer></script>',
-  '<script src="./promo-live-files.js?v=37" defer></script>'
+  '<script src="./video-library.js?v=38" defer></script>',
+  '<script src="./audio-library.js?v=38" defer></script>',
+  '<script src="./language-widget.js?v=38" defer></script>',
+  '<script src="./music-theme.js?v=38" defer></script>',
+  '<script src="./music-polish.js?v=38" defer></script>',
+  '<script src="./promo-ads.js?v=38" defer></script>',
+  '<script src="./promo-live-files.js?v=38" defer></script>'
 ];
 
 function withWidgets(html){
   const withoutBg=html.replace(/<script\s+src="\.\/video-inspired-bg\.js\?v=\d+"\s*><\/script>/g,"");
-  const cleaned=withoutBg.replace(/<script\s+src="\.\/(video-library|audio-library|language-widget|music-theme|promo-ads|promo-live-files)\.js\?v=\d+"\s*(defer)?\s*><\/script>/g,"");
+  const cleaned=withoutBg.replace(/<script\s+src="\.\/(video-library|audio-library|language-widget|music-theme|music-polish|promo-ads|promo-live-files)\.js\?v=\d+"\s*(defer)?\s*><\/script>/g,"");
   return cleaned.replace("</body>",`${BG_SCRIPT}${WIDGET_SCRIPTS.join("")}</body>`);
 }
 
@@ -44,7 +45,7 @@ self.addEventListener("fetch",event=>{
     event.respondWith(pageResponse(event.request).catch(()=>caches.match("./index.html").then(response=>response&&response.text?response.text().then(html=>new Response(withWidgets(html),{headers:{"content-type":"text/html; charset=utf-8"}})):response)));
     return;
   }
-  const widgetFile=["video-library.js","language-widget.js","audio-library.js","video-inspired-bg.js","music-theme.js","promo-ads.js","promo-live-files.js"].find(file=>path.endsWith(`/${file}`));
+  const widgetFile=["video-library.js","language-widget.js","audio-library.js","video-inspired-bg.js","music-theme.js","music-polish.js","promo-ads.js","promo-live-files.js"].find(file=>path.endsWith(`/${file}`));
   if(widgetFile){
     event.respondWith(fetch(event.request,{cache:"no-store"}).catch(()=>caches.match(`./${widgetFile}`)));
     return;
