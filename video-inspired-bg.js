@@ -30,6 +30,7 @@
   let rings = [];
   let sparks = [];
   let streaks = [];
+  let filaments = [];
   const pointer = { x: innerWidth / 2, y: innerHeight * 0.32, active: false, last: 0 };
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const rand = (min, max) => min + Math.random() * (max - min);
@@ -49,14 +50,25 @@
     canvas.style.width = `${w}px`;
     canvas.style.height = `${h}px`;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const count = clamp(Math.floor((w * h) / (lite ? 46000 : 28000)), lite ? 16 : 32, lite ? 34 : 70);
+    const count = clamp(Math.floor((w * h) / (lite ? 33000 : 16500)), lite ? 28 : 72, lite ? 68 : 150);
     particles = Array.from({ length: count }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
-      vx: rand(-0.22, 0.22),
-      vy: rand(-0.22, 0.22),
-      r: rand(0.8, lite ? 1.7 : 2.2),
-      hue: rand(185, 225)
+      vx: rand(-0.16, 0.16),
+      vy: rand(-0.16, 0.16),
+      r: rand(0.55, lite ? 1.55 : 2.25),
+      depth: rand(0.35, 1.35),
+      phase: rand(0, Math.PI * 2),
+      twinkle: rand(0.7, 1.65),
+      hue: rand(182, 232),
+      magnet: Math.random() > 0.72
+    }));
+    filaments = Array.from({ length: lite ? 3 : 7 }, (_, index) => ({
+      offset: index / (lite ? 3 : 7),
+      speed: rand(0.00022, 0.00048),
+      bend: rand(0.08, 0.28),
+      hue: rand(184, 316),
+      width: rand(lite ? 1.4 : 2.1, lite ? 3.2 : 6.2)
     }));
   }
 
@@ -211,6 +223,10 @@
     pointer.active = true;
     boost = Math.max(boost, power);
     strike(pointer.x, pointer.y, power);
+    if (!reduced.matches) {
+      addSparks(pointer.x, pointer.y, lite ? 10 : 24, Math.max(0.72, power * 0.75), 196 + mood * 18);
+      if (power > 0.82) addRings(pointer.x, pointer.y, lite ? 1 : 2, power * 0.72, 198 + mood * 18);
+    }
     document.body.classList.add("iml-boosting");
     document.getElementById("energyMeter")?.classList.add("boost");
     document.getElementById("boostButton")?.classList.add("flash");
@@ -362,31 +378,95 @@
     ctx.fillRect(0, 0, w, h);
   }
 
-  function drawParticles() {
+  function drawFilaments(time) {
+    if (lowPower) return;
+    const colors = palettes[mood];
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
+    filaments.forEach((line, index) => {
+      const drift = time * line.speed + line.offset * Math.PI * 2;
+      const anchorY = h * (0.18 + line.offset * 0.68);
+      const pullX = pointer.active ? (pointer.x - w / 2) * (lite ? 0.035 : 0.07) : 0;
+      const pullY = pointer.active ? (pointer.y - h / 2) * (lite ? 0.018 : 0.035) : 0;
+      const startX = -w * 0.12;
+      const endX = w * 1.12;
+      const y1 = anchorY + Math.sin(drift) * h * line.bend + pullY;
+      const y2 = anchorY + Math.cos(drift * 1.18 + index) * h * line.bend * 1.35 - pullY * 0.45;
+      const midX = w * (0.42 + Math.sin(drift * 0.7) * 0.2) + pullX;
+      const midY = anchorY + Math.sin(drift * 1.45 + index) * h * line.bend * 1.7 + pullY;
+      const grad = ctx.createLinearGradient(startX, y1, endX, y2);
+      grad.addColorStop(0, "rgba(0,0,0,0)");
+      grad.addColorStop(0.24, `${colors[0]}24`);
+      grad.addColorStop(0.52, `hsla(${line.hue + mood * 12},100%,70%,${0.18 + videoEnergy * 0.12 + boost * 0.09})`);
+      grad.addColorStop(0.78, `${colors[2]}20`);
+      grad.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = line.width + boost * 2.2 + videoEnergy * 1.7;
+      ctx.shadowColor = colors[index % colors.length];
+      ctx.shadowBlur = lite ? 10 : 24;
+      ctx.beginPath();
+      ctx.moveTo(startX, y1);
+      ctx.bezierCurveTo(w * 0.18, y1 - h * 0.12, midX, midY, endX, y2);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  function drawParticles(time = 0) {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    let links = 0;
+    if (!lite) {
+      ctx.lineWidth = 0.8;
+      for (let i = 0; i < particles.length; i++) {
+        const a = particles[i];
+        for (let j = i + 1; j < particles.length && links < 520; j++) {
+          const b = particles[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 112) {
+            const alpha = (1 - dist / 112) * (0.12 + boost * 0.04 + videoEnergy * 0.08);
+            ctx.strokeStyle = `hsla(${(a.hue + b.hue) / 2 + mood * 14},100%,72%,${alpha})`;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+            links++;
+          }
+        }
+      }
+    }
     particles.forEach(p => {
-      if (pointer.active && !lite) {
+      const wave = time * 0.00045 * p.twinkle + p.phase;
+      p.vx += Math.sin(wave) * 0.0028 * p.depth;
+      p.vy += Math.cos(wave * 1.23) * 0.0022 * p.depth;
+      if (pointer.active) {
         const dx = p.x - pointer.x;
         const dy = p.y - pointer.y;
         const dist = Math.hypot(dx, dy) || 1;
-        if (dist < 190) {
-          const push = (190 - dist) / 190;
-          p.vx += (dx / dist) * push * 0.018;
-          p.vy += (dy / dist) * push * 0.018;
+        const range = lite ? 145 : 270;
+        if (dist < range) {
+          const push = (range - dist) / range;
+          const swirl = (p.magnet ? -1 : 1) * push * (lite ? 0.006 : 0.014);
+          p.vx += (-dy / dist) * swirl + (dx / dist) * push * (p.magnet ? -0.004 : 0.007);
+          p.vy += (dx / dist) * swirl + (dy / dist) * push * (p.magnet ? -0.004 : 0.007);
         }
       }
       p.x += p.vx;
       p.y += p.vy;
-      p.vx *= 0.992;
-      p.vy *= 0.992;
+      p.vx *= 0.988;
+      p.vy *= 0.988;
       if (p.x < -10) p.x = w + 10;
       if (p.x > w + 10) p.x = -10;
       if (p.y < -10) p.y = h + 10;
       if (p.y > h + 10) p.y = -10;
-      ctx.fillStyle = `hsla(${p.hue + mood * 16},100%,74%,.58)`;
+      const pulse = 0.56 + Math.sin(time * 0.003 * p.twinkle + p.phase) * 0.24 + videoEnergy * 0.22 + boost * 0.16;
+      ctx.fillStyle = `hsla(${p.hue + mood * 16},100%,74%,${clamp(pulse, 0.18, 0.95)})`;
+      ctx.shadowColor = `hsla(${p.hue + mood * 16},100%,72%,${clamp(pulse, 0.12, 0.82)})`;
+      ctx.shadowBlur = lite ? 3 : 8 + p.depth * 6 + boost * 6;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r + boost * 0.35, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, p.r + boost * 0.45 + videoEnergy * 0.3, 0, Math.PI * 2);
       ctx.fill();
     });
     ctx.restore();
@@ -523,11 +603,12 @@
     videoEnergy += ((videoPlaying ? 1 : 0) - videoEnergy) * 0.07;
     ctx.clearRect(0, 0, w, h);
     drawBackground(time);
+    drawFilaments(time);
     drawFlashes();
     drawReactions();
     drawEqualizer(time);
     drawBolts(time);
-    drawParticles();
+    drawParticles(time);
     const interval = (lite ? 3800 : 2300) - videoEnergy * 650 - boost * 520;
     if (time - lastStrike > Math.max(900, interval)) {
       lastStrike = time;
