@@ -1,5 +1,5 @@
 (() => {
-  const ENHANCEMENT_VERSION = "41";
+  const ENHANCEMENT_VERSION = "42";
 
   function scriptAlreadyPresent(fileName) {
     return [...document.scripts].some(script => script.src.includes(fileName));
