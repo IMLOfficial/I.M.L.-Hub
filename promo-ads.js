@@ -124,6 +124,116 @@
         min-height:310px;
         scroll-snap-align:start;
       }
+      .promo-motion-bg{
+        --mx:50%;
+        --my:32%;
+        --px:0px;
+        --py:0px;
+        position:fixed;
+        inset:0;
+        z-index:0;
+        pointer-events:none;
+        overflow:hidden;
+        opacity:.62;
+        mix-blend-mode:screen;
+        perspective:900px;
+      }
+      .promo-motion-bg::before{
+        content:"";
+        position:absolute;
+        inset:-16%;
+        background:
+          radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.2),transparent 16rem),
+          radial-gradient(circle at calc(100% - var(--mx)) 72%,rgba(255,0,51,.18),transparent 18rem),
+          linear-gradient(115deg,transparent 0 34%,rgba(77,184,255,.12) 45%,transparent 58% 100%);
+        filter:saturate(1.25);
+        opacity:.9;
+      }
+      .promo-motion-bg::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:
+          repeating-linear-gradient(90deg,rgba(255,255,255,.035) 0 1px,transparent 1px 64px),
+          radial-gradient(circle at 50% 50%,transparent 0 45%,rgba(0,0,0,.78) 100%);
+        opacity:.46;
+      }
+      .promo-motion-stage{
+        position:absolute;
+        inset:0;
+        transform:translate3d(calc(var(--px) * -.18),calc(var(--py) * -.14),0) rotateX(calc(var(--py) * -.018deg)) rotateY(calc(var(--px) * .018deg));
+        transform-style:preserve-3d;
+      }
+      .promo-motion-tile{
+        --x:0%;
+        --y:0%;
+        --r:0deg;
+        --depth:.1;
+        position:absolute;
+        left:var(--x);
+        top:var(--y);
+        width:clamp(280px,32vw,560px);
+        aspect-ratio:16/10;
+        border-radius:30px;
+        overflow:hidden;
+        opacity:.28;
+        border:1px solid rgba(255,255,255,.12);
+        background:#050505 url("./logo.svg") center/46% no-repeat;
+        box-shadow:0 26px 90px rgba(0,0,0,.42),0 0 46px rgba(77,184,255,.14);
+        transform:translate3d(calc(var(--px) * var(--depth)),calc(var(--py) * var(--depth)),0) rotate(var(--r)) scale(.96);
+        transition:opacity .45s ease,filter .45s ease,transform .45s ease,box-shadow .45s ease;
+        filter:saturate(.92) contrast(1.08) brightness(.72) blur(.2px);
+      }
+      .promo-motion-tile:nth-child(1){--x:-7%;--y:10%;--r:-7deg;--depth:-.11}
+      .promo-motion-tile:nth-child(2){--x:68%;--y:5%;--r:8deg;--depth:.09}
+      .promo-motion-tile:nth-child(3){--x:-5%;--y:62%;--r:7deg;--depth:.13}
+      .promo-motion-tile:nth-child(4){--x:64%;--y:58%;--r:-8deg;--depth:-.08}
+      .promo-motion-tile video{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        opacity:.9;
+        transform:scale(1.12);
+        transition:transform 1.8s ease,opacity .35s ease,filter .35s ease;
+      }
+      .promo-motion-tile::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        z-index:1;
+        background:
+          radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.22),transparent 30%),
+          linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.68));
+        opacity:.72;
+      }
+      .promo-motion-tile::after{
+        content:"";
+        position:absolute;
+        inset:-40%;
+        z-index:2;
+        background:conic-gradient(from 120deg,transparent,rgba(77,184,255,.16),transparent,rgba(255,0,51,.14),transparent);
+        opacity:.36;
+        animation:promoMotionSpin 18s linear infinite;
+      }
+      .promo-motion-tile.is-active{
+        opacity:.58;
+        filter:saturate(1.35) contrast(1.12) brightness(.96);
+        transform:translate3d(calc(var(--px) * var(--depth)),calc(var(--py) * var(--depth)),0) rotate(var(--r)) scale(1.05);
+        box-shadow:0 30px 110px rgba(0,0,0,.48),0 0 70px rgba(77,184,255,.28),0 0 46px rgba(255,0,51,.18);
+      }
+      .promo-motion-tile.is-active video{
+        transform:scale(1.02);
+        opacity:1;
+      }
+      .promo-motion-tile.is-burst{animation:promoMotionBurst .7s ease-out}
+      body.video-active .promo-motion-bg,body.iml-boosting .promo-motion-bg{opacity:.78}
+      body.video-active .promo-motion-tile.is-active,body.iml-boosting .promo-motion-tile.is-active{filter:saturate(1.65) contrast(1.18) brightness(1.05)}
+      @keyframes promoMotionSpin{to{transform:rotate(360deg)}}
+      @keyframes promoMotionBurst{
+        0%{box-shadow:0 0 0 rgba(255,255,255,0),0 0 0 rgba(255,0,51,0)}
+        38%{box-shadow:0 0 0 12px rgba(255,255,255,.1),0 0 90px rgba(255,0,51,.34)}
+        100%{box-shadow:0 30px 110px rgba(0,0,0,.48),0 0 70px rgba(77,184,255,.28)}
+      }
       @media (max-width:1199px){
         .promo-rail{display:none}
         .promo-mobile-strip{display:block}
@@ -141,10 +251,34 @@
         .promo-mobile-grid .promo-ad-card{min-height:360px}
         .promo-ad-card::after{font-size:.58rem}
         .promo-ad-copy strong{font-size:1rem}
+        .promo-motion-bg{opacity:.34}
+        .promo-motion-bg::after{background:radial-gradient(circle at 50% 38%,transparent 0 34%,rgba(0,0,0,.82) 100%);opacity:.62}
+        .promo-motion-stage{transform:translate3d(calc(var(--px) * -.05),calc(var(--py) * -.04),0)}
+        .promo-motion-tile{
+          display:none;
+          left:-12vw;
+          top:86px;
+          width:124vw;
+          height:42vh;
+          aspect-ratio:auto;
+          border-radius:0 0 36px 36px;
+          opacity:.36;
+          filter:saturate(1.1) contrast(1.08) brightness(.82);
+          transform:translate3d(calc(var(--px) * -.03),calc(var(--py) * -.02),0) scale(1);
+        }
+        .promo-motion-tile.is-active{
+          display:block;
+          opacity:.44;
+          transform:translate3d(calc(var(--px) * -.03),calc(var(--py) * -.02),0) scale(1);
+        }
+        .promo-motion-tile::after{animation-duration:26s;opacity:.2}
       }
       @media (prefers-reduced-motion:reduce){
         .promo-ad-card video{transition:none}
         .promo-ad-card:hover video,.promo-ad-card:focus-within video{transform:none}
+        .promo-motion-bg{opacity:.18}
+        .promo-motion-tile video{display:none}
+        .promo-motion-tile::after{animation:none}
       }
     `;
     document.head.appendChild(style);
@@ -211,7 +345,103 @@
     });
   }
 
+  function buildMotionBackground() {
+    if (document.getElementById("promoMotionBg")) return;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    const coarse = matchMedia("(pointer: coarse)");
+    const saveData = Boolean(navigator.connection?.saveData);
+    let activeIndex = 0;
+    let raf = 0;
+    let cycleTimer = 0;
+    let multiVideo = false;
+
+    const wall = document.createElement("div");
+    wall.id = "promoMotionBg";
+    wall.className = "promo-motion-bg";
+    wall.setAttribute("aria-hidden", "true");
+    wall.innerHTML = `
+      <div class="promo-motion-stage">
+        ${promos.map((promo, index) => `
+          <div class="promo-motion-tile${index === 0 ? " is-active" : ""}" data-motion-index="${index}">
+            <video muted loop playsinline preload="metadata" src="${promo.src}"></video>
+          </div>
+        `).join("")}
+      </div>
+    `;
+    document.body.prepend(wall);
+    document.body.classList.add("has-motion-promos");
+
+    const shouldPlayMultiple = () => !reduced.matches && !saveData && !coarse.matches && innerWidth >= 860 && (navigator.hardwareConcurrency || 8) >= 5;
+    const playVideo = video => {
+      if (!video || reduced.matches) return;
+      const result = video.play();
+      if (result && typeof result.catch === "function") result.catch(() => {});
+    };
+    const setActive = (index, pulse = false) => {
+      activeIndex = (Number(index) + promos.length) % promos.length;
+      wall.querySelectorAll(".promo-motion-tile").forEach((tile, tileIndex) => {
+        const isActive = tileIndex === activeIndex;
+        tile.classList.toggle("is-active", isActive);
+        if (pulse && isActive) {
+          tile.classList.remove("is-burst");
+          tile.offsetWidth;
+          tile.classList.add("is-burst");
+          setTimeout(() => tile.classList.remove("is-burst"), 720);
+        }
+        const video = tile.querySelector("video");
+        if (multiVideo || isActive) playVideo(video);
+        else video?.pause();
+      });
+    };
+    const updateMode = () => {
+      multiVideo = shouldPlayMultiple();
+      setActive(activeIndex);
+      clearInterval(cycleTimer);
+      if (coarse.matches || innerWidth <= 760) {
+        cycleTimer = setInterval(() => {
+          if (!document.hidden) setActive(activeIndex + 1, true);
+        }, 9000);
+      }
+    };
+    const renderPointer = (x, y) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        wall.style.setProperty("--mx", `${x}%`);
+        wall.style.setProperty("--my", `${y}%`);
+        wall.style.setProperty("--px", `${(x - 50) * 1.2}px`);
+        wall.style.setProperty("--py", `${(y - 50) * 1.2}px`);
+      });
+    };
+
+    addEventListener("pointermove", event => {
+      const x = Math.max(0, Math.min(100, (event.clientX / innerWidth) * 100));
+      const y = Math.max(0, Math.min(100, (event.clientY / innerHeight) * 100));
+      renderPointer(x, y);
+      if (!coarse.matches) setActive(x < 50 ? (y < 50 ? 0 : 2) : (y < 50 ? 1 : 3));
+    }, { passive: true });
+    addEventListener("pointerdown", event => {
+      renderPointer(Math.max(0, Math.min(100, (event.clientX / innerWidth) * 100)), Math.max(0, Math.min(100, (event.clientY / innerHeight) * 100)));
+      setActive(activeIndex + 1, true);
+    }, { passive: true });
+    addEventListener("iml:mood", event => setActive(event.detail?.mood || 0, true));
+    addEventListener("iml:boost", () => setActive(activeIndex + 1, true));
+    addEventListener("iml:video-state", event => {
+      document.body.classList.toggle("video-active", Boolean(event.detail?.playing));
+      if (event.detail?.playing) setActive(activeIndex + 1, true);
+    });
+    addEventListener("resize", updateMode, { passive: true });
+    document.addEventListener("visibilitychange", () => {
+      wall.querySelectorAll("video").forEach(video => {
+        if (document.hidden) video.pause();
+        else if (multiVideo || video.closest(".is-active")) playVideo(video);
+      });
+    });
+    updateMode();
+  }
+
   function buildPromos() {
+    buildMotionBackground();
     if (document.getElementById("promoAdLeft")) return;
     document.body.classList.add("has-promo-ads");
 
