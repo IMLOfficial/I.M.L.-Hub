@@ -27,9 +27,13 @@
   let particles = [];
   let bolts = [];
   let flashes = [];
+  let rings = [];
+  let sparks = [];
+  let streaks = [];
   const pointer = { x: innerWidth / 2, y: innerHeight * 0.32, active: false, last: 0 };
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const rand = (min, max) => min + Math.random() * (max - min);
+  const moodEffects = ["pulse-hit", "drive-hit", "dream-hit", "night-hit"];
 
   function updateMode() {
     lite = lowPower || coarse.matches || innerWidth < 760 || (navigator.hardwareConcurrency || 8) < 5;
@@ -71,7 +75,17 @@
       points.push({ x: x1 + dx * t + nx * offset, y: y1 + dy * t + ny * offset });
     }
     const colors = palettes[mood];
-    return { points, life: 1, width: (branch ? 1 : 2.1) + power * (branch ? 1.2 : 2.2), color: colors[Math.floor(Math.random() * 2)], glow: colors[2] };
+    return {
+      points,
+      life: 1,
+      age: 0,
+      flicker: rand(0.72, 1.16),
+      drift: rand(-0.55, 0.55),
+      branch,
+      width: (branch ? 1 : 2.1) + power * (branch ? 1.2 : 2.2),
+      color: colors[Math.floor(Math.random() * 2)],
+      glow: colors[2]
+    };
   }
 
   function strike(x = rand(w * 0.12, w * 0.88), y = rand(h * 0.08, h * 0.55), power = 1) {
@@ -88,6 +102,107 @@
     flashes.push({ x, y, life: 1, power });
     bolts = bolts.slice(lite ? -9 : -20);
     flashes = flashes.slice(-7);
+  }
+
+  function pointFrom(source, fallbackX = w / 2, fallbackY = h * 0.32) {
+    const rect = source?.getBoundingClientRect?.();
+    return {
+      x: rect ? rect.left + rect.width / 2 : fallbackX,
+      y: rect ? rect.top + rect.height / 2 : fallbackY
+    };
+  }
+
+  function hitButton(button, effectClass) {
+    if (!button || !effectClass) return;
+    button.classList.remove("pulse-hit", "drive-hit", "dream-hit", "night-hit", "boost-hit", "surprise-hit", "saver-hit");
+    button.offsetWidth;
+    button.classList.add(effectClass);
+    setTimeout(() => button.classList.remove(effectClass), 900);
+  }
+
+  function addRings(x, y, count, power = 1, hue = 190) {
+    const amount = lite ? Math.max(1, Math.ceil(count * 0.55)) : count;
+    for (let i = 0; i < amount; i++) rings.push({ x, y, radius: i * (lite ? 16 : 24), life: 1 - i * 0.08, power, hue: hue + i * 18 });
+    rings = rings.slice(lite ? -10 : -22);
+  }
+
+  function addSparks(x, y, count, power = 1, hue = 190) {
+    const amount = lite ? Math.max(6, Math.ceil(count * 0.45)) : count;
+    for (let i = 0; i < amount; i++) {
+      const angle = rand(0, Math.PI * 2);
+      const speed = rand(lite ? 1.5 : 2.4, lite ? 5.2 : 8.5) * power;
+      sparks.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: 1, size: rand(1, lite ? 2.2 : 3.6), hue: hue + rand(-18, 42) });
+    }
+    sparks = sparks.slice(lite ? -58 : -140);
+  }
+
+  function addStreaks(kind, count, power = 1, hue = 195) {
+    const amount = lite ? Math.max(5, Math.ceil(count * 0.45)) : count;
+    for (let i = 0; i < amount; i++) {
+      const isNight = kind === "night";
+      const fromLeft = Math.random() > 0.5;
+      streaks.push({
+        x: isNight ? rand(w * 0.08, w * 0.92) : (fromLeft ? rand(-w * 0.18, w * 0.35) : rand(w * 0.65, w * 1.18)),
+        y: isNight ? rand(-40, h * 0.45) : rand(h * 0.18, h * 0.82),
+        vx: isNight ? rand(-1.2, 1.2) : (fromLeft ? rand(7, 16) : -rand(7, 16)) * power,
+        vy: isNight ? rand(7, 15) * power : rand(-0.9, 0.9),
+        length: rand(lite ? 48 : 80, lite ? 120 : 230) * power,
+        life: 1,
+        width: rand(1.2, lite ? 2.2 : 3.4),
+        hue: hue + rand(-18, 34)
+      });
+    }
+    streaks = streaks.slice(lite ? -36 : -92);
+  }
+
+  function moodReaction(index, source) {
+    const point = pointFrom(source);
+    pointer.x = point.x;
+    pointer.y = point.y;
+    pointer.active = true;
+    hitButton(source, moodEffects[index]);
+    flashes.push({ x: point.x, y: point.y, life: 1, power: 0.6 + index * 0.08 });
+
+    if (index === 0) {
+      boost = Math.max(boost, 0.8);
+      addRings(point.x, point.y, 4, 1.08, 192);
+      addSparks(point.x, point.y, 28, 0.86, 192);
+    } else if (index === 1) {
+      boost = Math.max(boost, 0.62);
+      addStreaks("drive", 28, 1.05, 198);
+      flashes.push({ x: w * 0.18, y: point.y, life: 0.9, power: 0.55 });
+    } else if (index === 2) {
+      boost = Math.max(boost, 0.74);
+      addSparks(point.x, point.y, 46, 1.04, 304);
+      addRings(w / 2, h * 0.24, 3, 0.92, 292);
+    } else {
+      boost = Math.max(boost, 0.92);
+      addStreaks("night", 22, 1.08, 205);
+      addSparks(point.x, point.y, 22, 0.78, 218);
+      strike(point.x, point.y, 1.04);
+    }
+
+    if (lite) setTimeout(() => { pointer.active = false; }, 700);
+  }
+
+  function lightningReaction(source, event) {
+    const point = event?.clientX ? { x: event.clientX, y: event.clientY } : pointFrom(source);
+    hitButton(source, "boost-hit");
+    boostAt(point.x, point.y, 1.5);
+    addRings(point.x, point.y, 5, 1.35, 208);
+    addSparks(point.x, point.y, 42, 1.18, 208);
+    const extra = lite ? 1 : 4;
+    for (let i = 0; i < extra; i++) strike(rand(w * 0.12, w * 0.88), rand(h * 0.08, h * 0.5), 0.82 + i * 0.12);
+  }
+
+  function surpriseReaction(source) {
+    const point = pointFrom(source);
+    hitButton(source, "surprise-hit");
+    addRings(point.x, point.y, 4, 1.1, 286);
+    addSparks(point.x, point.y, 36, 1.04, 286);
+    addStreaks("drive", 18, 0.82, 186);
+    if (!lite) strike(rand(w * 0.2, w * 0.8), rand(h * 0.1, h * 0.44), 0.86);
+    boost = Math.max(boost, 1.05);
   }
 
   function boostAt(x = pointer.x, y = pointer.y, power = 1.1) {
@@ -107,7 +222,7 @@
     }, 650);
   }
 
-  function setMood(index, source) {
+  function setMood(index, source, react = true) {
     mood = clamp(Number(index || 0), 0, palettes.length - 1);
     const colors = palettes[mood];
     document.querySelectorAll("#moodControls [data-mood]").forEach(button => button.classList.toggle("active", Number(button.dataset.mood) === mood));
@@ -117,8 +232,8 @@
       panel.style.setProperty("--vibe-b", colors[1]);
       panel.style.setProperty("--vibe-c", colors[2]);
     }
-    const rect = source?.getBoundingClientRect?.();
-    boostAt(rect ? rect.left + rect.width / 2 : w / 2, rect ? rect.top + rect.height / 2 : h * 0.3, 0.86);
+    if (react) moodReaction(mood, source);
+    else boost = Math.max(boost, 0.22);
   }
 
   function addControls() {
@@ -132,19 +247,33 @@
       style.textContent = `
         .hub-panel{position:relative;overflow:hidden;--vibe-a:#29d9ff;--vibe-b:#7d5dff;--vibe-c:#ff3fb4}
         .hub-panel::before{content:"";position:absolute;inset:-1px;z-index:-1;background:radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--vibe-a) 28%,transparent),transparent 44%),linear-gradient(120deg,transparent,color-mix(in srgb,var(--vibe-c) 18%,transparent),transparent);opacity:.86}
-        .vibe-deck button{position:relative;isolation:isolate;overflow:hidden;gap:8px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);box-shadow:none;transition:transform .16s ease,border-color .16s ease,background .16s ease}
+        .vibe-deck button{position:relative;isolation:isolate;overflow:hidden;gap:8px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);box-shadow:none;transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease}
+        .vibe-deck button::before{content:"";position:absolute;inset:-60%;z-index:-1;background:radial-gradient(circle at 32% 36%,color-mix(in srgb,var(--vibe-a) 42%,transparent),transparent 28%),linear-gradient(115deg,transparent 35%,rgba(255,255,255,.22),transparent 62%);opacity:.34;transform:translateX(-28%) rotate(12deg);transition:transform .36s ease,opacity .2s ease}
         .vibe-deck button:hover,.vibe-deck button:focus-visible,.vibe-deck button.active{filter:none;transform:translateY(-2px);border-color:rgba(255,255,255,.34)}
+        .vibe-deck button:hover::before,.vibe-deck button:focus-visible::before,.vibe-deck button.active::before{opacity:.92;transform:translateX(7%) rotate(12deg)}
         .vibe-deck button.active{background:linear-gradient(135deg,var(--vibe-a),var(--vibe-b))}
         .vibe-dot{width:10px;height:10px;border-radius:50%;background:var(--vibe-a);box-shadow:0 0 0 4px color-mix(in srgb,var(--vibe-a) 18%,transparent),0 0 13px var(--vibe-a);flex:0 0 auto}
         .vibe-bolt{position:absolute;right:10px;top:7px;width:8px;height:14px;transform:skew(-18deg);background:linear-gradient(180deg,#fff,var(--vibe-c));box-shadow:0 0 12px var(--vibe-c);clip-path:polygon(40% 0,100% 0,62% 46%,100% 46%,25% 100%,45% 56%,0 56%)}
         .vibe-deck button.utility{--vibe-a:#fff;--vibe-b:#ff0033;--vibe-c:#83eaff}
-        #boostButton.flash{animation:boostButtonPop .62s ease-out;box-shadow:0 0 30px rgba(255,255,255,.22),0 0 44px rgba(255,0,51,.5)}
+        .vibe-deck button.pulse-hit{animation:pulseHit .82s ease-out}
+        .vibe-deck button.drive-hit{animation:driveHit .74s ease-out}
+        .vibe-deck button.dream-hit{animation:dreamHit .9s ease-out}
+        .vibe-deck button.night-hit{animation:nightHit .82s ease-out}
+        .vibe-deck button.boost-hit,#boostButton.flash{animation:boostButtonPop .72s ease-out;box-shadow:0 0 30px rgba(255,255,255,.22),0 0 44px rgba(255,0,51,.5),0 0 70px rgba(83,234,255,.34)}
+        .vibe-deck button.surprise-hit{animation:surpriseHit .92s ease-out}
+        .vibe-deck button.saver-hit{animation:saverHit .66s ease-out}
         #lowPowerButton[aria-pressed="true"]{background:#fff;color:#050505}
         .energy-meter{display:grid;grid-template-columns:repeat(14,1fr);align-items:end;gap:4px;width:min(100%,380px);height:34px;margin:16px auto 0;padding:0 6px}
         .energy-meter span{display:block;height:100%;border-radius:999px;background:linear-gradient(180deg,#fff,#54d9ff 44%,rgba(255,0,51,.25));transform:scaleY(.24);transform-origin:bottom;animation:meterPulse 1.6s ease-in-out infinite;animation-delay:calc(var(--i)*-.06s)}
         .energy-meter.boost span{animation-duration:.42s}
         @keyframes meterPulse{0%,100%{transform:scaleY(.24);opacity:.48}45%{transform:scaleY(calc(.36 + var(--level)*.58));opacity:.94}70%{transform:scaleY(calc(.22 + var(--level)*.78));opacity:1}}
         @keyframes boostButtonPop{0%{transform:scale(.95)}40%{transform:scale(1.1)}100%{transform:scale(1)}}
+        @keyframes pulseHit{0%{transform:scale(.96);box-shadow:0 0 0 0 color-mix(in srgb,var(--vibe-c) 70%,transparent)}38%{transform:scale(1.08);box-shadow:0 0 0 10px color-mix(in srgb,var(--vibe-c) 22%,transparent),0 0 34px var(--vibe-c)}100%{transform:scale(1);box-shadow:none}}
+        @keyframes driveHit{0%{transform:translateX(-4px)}34%{transform:translateX(9px);box-shadow:22px 0 28px color-mix(in srgb,var(--vibe-a) 36%,transparent)}68%{transform:translateX(-2px)}100%{transform:translateX(0)}}
+        @keyframes dreamHit{0%{filter:saturate(1);transform:scale(.98)}45%{filter:saturate(1.45) brightness(1.18);transform:scale(1.07) rotate(-1deg);box-shadow:0 0 28px color-mix(in srgb,var(--vibe-c) 58%,transparent)}100%{filter:saturate(1);transform:scale(1) rotate(0)}}
+        @keyframes nightHit{0%,100%{filter:brightness(1);transform:scale(1)}22%{filter:brightness(1.6);transform:translateY(-3px)}35%{filter:brightness(.7)}54%{filter:brightness(1.35);box-shadow:0 0 30px color-mix(in srgb,var(--vibe-a) 55%,transparent)}}
+        @keyframes surpriseHit{0%{transform:scale(.92) rotate(-3deg)}30%{transform:scale(1.1) rotate(3deg);box-shadow:0 0 36px #ff7adf}58%{transform:scale(1.02) rotate(-2deg);box-shadow:0 0 36px #54eaff}100%{transform:scale(1) rotate(0)}}
+        @keyframes saverHit{0%{transform:scale(.98)}50%{transform:scale(1.04);filter:brightness(1.25)}100%{transform:scale(1);filter:brightness(1)}}
         @media (max-width:640px){.vibe-deck button{flex:1 1 128px}.energy-meter{height:26px;gap:3px}.energy-meter span{animation-duration:2.2s}}
         @media (prefers-reduced-motion:reduce){.vibe-deck button,.energy-meter span{animation:none;transition:none}.energy-meter span{transform:scaleY(.42)}}
       `;
@@ -179,7 +308,7 @@
       return button;
     };
 
-    const lightning = addButton("boostButton", "Lightning");
+    const lightning = addButton("boostButton", "Boost");
     const surprise = addButton("randomMoodButton", "Surprise");
     const saver = addButton("lowPowerButton", "Saver");
     saver.setAttribute("aria-pressed", String(lowPower));
@@ -202,22 +331,24 @@
       const moodButton = event.target.closest("[data-mood]");
       if (moodButton) setMood(moodButton.dataset.mood, moodButton);
     });
-    lightning.addEventListener("click", event => boostAt(event.clientX || w / 2, event.clientY || h * 0.34, 1.4));
+    lightning.addEventListener("click", event => lightningReaction(lightning, event));
     surprise.addEventListener("click", () => {
       const buttons = [...controls.querySelectorAll("[data-mood]")];
       const current = Number(controls.querySelector("[data-mood].active")?.dataset.mood || mood);
       const choices = buttons.filter(button => Number(button.dataset.mood) !== current);
       const next = choices[Math.floor(Math.random() * choices.length)] || buttons[0];
       if (next) setMood(next.dataset.mood, next);
+      surpriseReaction(surprise);
     });
     saver.addEventListener("click", () => {
       lowPower = !lowPower;
       localStorage.setItem("imlLowPower", String(lowPower));
       saver.setAttribute("aria-pressed", String(lowPower));
       resize();
+      hitButton(saver, "saver-hit");
       boostAt(w / 2, h * 0.3, 0.7);
     });
-    setMood(controls.querySelector("[data-mood].active")?.dataset.mood || 0, controls.querySelector("[data-mood].active"));
+    setMood(controls.querySelector("[data-mood].active")?.dataset.mood || 0, controls.querySelector("[data-mood].active"), false);
   }
 
   function drawBackground(time) {
@@ -261,25 +392,43 @@
     ctx.restore();
   }
 
-  function drawBolts() {
+  function drawBolts(time = 0) {
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
-    bolts = bolts.filter(bolt => (bolt.life *= lite ? 0.72 : 0.78) > 0.04);
+    bolts = bolts.filter(bolt => (bolt.life *= lite ? 0.74 : 0.82) > 0.04);
     bolts.forEach(bolt => {
+      bolt.age += lite ? 0.16 : 0.24;
+      const flicker = clamp((0.72 + Math.sin(time * 0.035 + bolt.flicker * 7) * 0.22) * (0.9 + Math.random() * 0.18), 0.35, 1.2);
+      const animated = bolt.points.map((point, index) => {
+        if (index === 0 || index === bolt.points.length - 1) return point;
+        const wave = Math.sin(time * 0.016 + index * 1.7 + bolt.flicker * 5);
+        const jitter = (lite ? 1.4 : 3.4) * (bolt.branch ? 0.55 : 1) * wave;
+        return {
+          x: point.x + jitter + bolt.drift * bolt.age,
+          y: point.y + Math.cos(time * 0.014 + index) * jitter * 0.35
+        };
+      });
+      const drawPath = () => {
+        ctx.beginPath();
+        animated.forEach((point, index) => index ? ctx.lineTo(point.x, point.y) : ctx.moveTo(point.x, point.y));
+        ctx.stroke();
+      };
       ctx.lineJoin = "round";
       ctx.lineCap = "round";
       ctx.shadowColor = bolt.glow;
-      ctx.shadowBlur = lite ? 8 : 18;
+      ctx.shadowBlur = lite ? 10 : 24;
+      ctx.strokeStyle = bolt.glow;
+      ctx.globalAlpha = bolt.life * 0.42 * flicker;
+      ctx.lineWidth = bolt.width * (lite ? 2.4 : 3.4);
+      drawPath();
       ctx.strokeStyle = bolt.color;
-      ctx.globalAlpha = bolt.life;
-      ctx.lineWidth = bolt.width;
-      ctx.beginPath();
-      bolt.points.forEach((point, index) => index ? ctx.lineTo(point.x, point.y) : ctx.moveTo(point.x, point.y));
-      ctx.stroke();
-      ctx.globalAlpha = bolt.life * 0.9;
+      ctx.globalAlpha = bolt.life * 0.82 * flicker;
+      ctx.lineWidth = bolt.width * 1.06;
+      drawPath();
+      ctx.globalAlpha = bolt.life * flicker;
       ctx.strokeStyle = "#fff";
       ctx.lineWidth = Math.max(0.8, bolt.width * 0.34);
-      ctx.stroke();
+      drawPath();
     });
     ctx.restore();
   }
@@ -296,6 +445,49 @@
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
     });
+  }
+
+  function drawReactions() {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    rings = rings.filter(ring => (ring.life *= lite ? 0.82 : 0.88) > 0.035);
+    rings.forEach(ring => {
+      ring.radius += (lite ? 8 : 13) * ring.power + boost * 7;
+      ctx.strokeStyle = `hsla(${ring.hue},100%,72%,${ring.life * 0.7})`;
+      ctx.lineWidth = (lite ? 1.6 : 2.4) + ring.life * 4;
+      ctx.beginPath();
+      ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+
+    streaks = streaks.filter(streak => (streak.life *= lite ? 0.82 : 0.88) > 0.04);
+    streaks.forEach(streak => {
+      streak.x += streak.vx;
+      streak.y += streak.vy;
+      ctx.strokeStyle = `hsla(${streak.hue},100%,70%,${streak.life * 0.78})`;
+      ctx.lineWidth = streak.width;
+      ctx.shadowColor = `hsla(${streak.hue},100%,70%,${streak.life})`;
+      ctx.shadowBlur = lite ? 6 : 16;
+      ctx.beginPath();
+      ctx.moveTo(streak.x, streak.y);
+      ctx.lineTo(streak.x - Math.sign(streak.vx || 1) * streak.length, streak.y - streak.vy * 7);
+      ctx.stroke();
+    });
+
+    sparks = sparks.filter(spark => (spark.life *= lite ? 0.84 : 0.9) > 0.035);
+    sparks.forEach(spark => {
+      spark.x += spark.vx;
+      spark.y += spark.vy;
+      spark.vx *= 0.965;
+      spark.vy *= 0.965;
+      ctx.fillStyle = `hsla(${spark.hue},100%,73%,${spark.life})`;
+      ctx.shadowColor = `hsla(${spark.hue},100%,73%,${spark.life})`;
+      ctx.shadowBlur = lite ? 5 : 13;
+      ctx.beginPath();
+      ctx.arc(spark.x, spark.y, spark.size + spark.life * (lite ? 1.2 : 2.3), 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.restore();
   }
 
   function drawEqualizer(time) {
@@ -332,8 +524,9 @@
     ctx.clearRect(0, 0, w, h);
     drawBackground(time);
     drawFlashes();
+    drawReactions();
     drawEqualizer(time);
-    drawBolts();
+    drawBolts(time);
     drawParticles();
     const interval = (lite ? 3800 : 2300) - videoEnergy * 650 - boost * 520;
     if (time - lastStrike > Math.max(900, interval)) {
@@ -344,13 +537,21 @@
   }
 
   function movePointer(event) {
+    const previousX = pointer.x;
+    const previousY = pointer.y;
     pointer.x = event.clientX;
     pointer.y = event.clientY;
     pointer.active = true;
     const now = performance.now();
-    if (!lite && now - pointer.last > 850) {
+    const distance = Math.hypot(pointer.x - previousX, pointer.y - previousY);
+    if (!lite && distance > 42 && now - pointer.last > 150) {
       pointer.last = now;
-      strike(pointer.x, pointer.y, 0.62);
+      bolts.push(lightning(previousX, previousY, pointer.x, pointer.y, 0.36 + Math.min(distance / 420, 0.32), true));
+      bolts = bolts.slice(-22);
+      boost = Math.max(boost, 0.22);
+    } else if (!lite && now - pointer.last > 950) {
+      pointer.last = now;
+      strike(pointer.x, pointer.y, 0.58);
     }
   }
 
@@ -364,7 +565,10 @@
     if (videoPlaying) boostAt(w / 2, Math.min(280, h * 0.3), 1);
   });
   if (!coarse.matches) addEventListener("pointermove", movePointer, { passive: true });
-  addEventListener("pointerdown", event => boostAt(event.clientX, event.clientY, 1.18), { passive: true });
+  addEventListener("pointerdown", event => {
+    if (event.target?.closest?.("#moodControls")) return;
+    boostAt(event.clientX, event.clientY, 1.18);
+  }, { passive: true });
   addEventListener("pointerleave", () => { pointer.active = false; }, { passive: true });
   addEventListener("resize", () => requestAnimationFrame(resize), { passive: true });
   document.addEventListener("visibilitychange", () => {

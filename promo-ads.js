@@ -17,7 +17,7 @@
         top:92px;
         bottom:82px;
         z-index:5;
-        width:clamp(158px,13vw,238px);
+        width:clamp(188px,15vw,270px);
         display:grid;
         align-content:start;
         gap:16px;
@@ -28,7 +28,7 @@
         --mx:50%;--my:50%;
         position:relative;
         display:block;
-        min-height:clamp(230px,38vh,330px);
+        min-height:clamp(270px,42vh,380px);
         border:1px solid rgba(255,255,255,.14);
         border-radius:18px;
         overflow:hidden;
@@ -45,24 +45,12 @@
         inset:0;
         z-index:2;
         pointer-events:none;
-        background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.22),transparent 30%),linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.7));
-        opacity:.9;
+        background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.18),transparent 28%);
+        opacity:.72;
       }
       .promo-ad-card::after{
-        content:"GIF Loop";
-        position:absolute;
-        right:10px;
-        top:10px;
-        z-index:4;
-        padding:6px 8px;
-        border-radius:999px;
-        background:rgba(0,0,0,.62);
-        color:#fff;
-        font-size:.65rem;
-        font-weight:950;
-        letter-spacing:.08em;
-        text-transform:uppercase;
-        border:1px solid rgba(255,255,255,.14);
+        content:"";
+        display:none;
       }
       .promo-ad-card video{
         position:absolute;
@@ -79,15 +67,7 @@
         opacity:1;
         filter:saturate(1.2) contrast(1.06);
       }
-      .promo-ad-copy{
-        position:absolute;
-        left:12px;
-        right:12px;
-        bottom:12px;
-        z-index:3;
-        display:grid;
-        gap:8px;
-      }
+      .promo-ad-copy{display:none}
       .promo-ad-copy strong{
         font-size:1.08rem;
         line-height:1.05;
@@ -158,7 +138,7 @@
       @media (max-width:720px){
         .promo-mobile-strip{margin:16px 12px 0;border-radius:16px;padding:12px}
         .promo-mobile-grid{grid-template-columns:repeat(4,minmax(260px,82vw))}
-        .promo-mobile-grid .promo-ad-card{min-height:330px}
+        .promo-mobile-grid .promo-ad-card{min-height:360px}
         .promo-ad-card::after{font-size:.58rem}
         .promo-ad-copy strong{font-size:1rem}
       }
@@ -176,11 +156,6 @@
         <video class="promo-gif-video" muted loop playsinline autoplay preload="metadata" poster="./logo.svg" aria-label="${promo.title} animated promo">
           <source src="${promo.src}" type="video/mp4">
         </video>
-        <span class="promo-ad-copy">
-          <strong>${promo.title}</strong>
-          <small>Silent animated I.M.L. promo</small>
-          <span class="promo-ad-pill">Looping</span>
-        </span>
       </article>
     `;
   }
