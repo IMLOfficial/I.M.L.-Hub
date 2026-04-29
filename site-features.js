@@ -100,6 +100,10 @@
     });
   }
 
+  function removeVibeChooser() {
+    document.getElementById("moodControls")?.closest(".hub-panel")?.remove();
+  }
+
   function ensureToolbar(sectionId, config) {
     const section = document.getElementById(sectionId);
     const shell = section?.querySelector(".library-shell");
@@ -187,8 +191,10 @@
 
   function boot() {
     ensureScrollTop();
+    removeVibeChooser();
     removeAudioCaptions();
     const tryDecorate = () => {
+      removeVibeChooser();
       removeAudioCaptions();
       const audioReady = ensureToolbar("audioLibrary", {
         placeholder: "Search songs",
@@ -216,6 +222,7 @@
       scheduled = true;
       requestAnimationFrame(() => {
         scheduled = false;
+        removeVibeChooser();
         removeAudioCaptions();
         if (tryDecorate()) observer.disconnect();
       });
