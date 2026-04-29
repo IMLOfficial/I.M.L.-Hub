@@ -1,32 +1,13 @@
 (() => {
-  const livePromos = [
-    "./promo/I.M.L.%201.mp4",
-    "./promo/I.M.L.%202.mp4",
-    "./promo/I.M.L.%203.mp4",
-    "./promo/I.M.L.%204.mp4"
-  ];
-
-  function applyLivePromoSources() {
-    document.querySelectorAll(".promo-ad-card[data-promo-index]").forEach(card => {
-      const index = Number(card.dataset.promoIndex);
-      const src = livePromos[index];
-      const video = card.querySelector("video");
-      const source = card.querySelector("source");
-      if (!src || !video || !source || source.dataset.liveSource === "true") return;
-
-      source.src = src;
-      source.dataset.liveSource = "true";
-      card.classList.remove("is-missing");
-      video.load();
-      video.play().catch(() => {});
-    });
+  function removePromos() {
+    document.querySelectorAll("#promoMotionBg,#promoAdLeft,#promoAdRight,#promoAdStrip").forEach(element => element.remove());
+    document.querySelectorAll('a[href="#promoAdStrip"],[data-mobile-section="promoAdStrip"]').forEach(element => element.remove());
+    document.body.classList.remove("has-promo-ads", "has-motion-promos");
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", applyLivePromoSources, { once: true });
+    document.addEventListener("DOMContentLoaded", removePromos, { once: true });
   } else {
-    applyLivePromoSources();
+    removePromos();
   }
-
-  new MutationObserver(applyLivePromoSources).observe(document.documentElement, { childList: true, subtree: true });
 })();
