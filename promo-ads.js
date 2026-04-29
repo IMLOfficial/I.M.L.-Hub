@@ -5,15 +5,13 @@
     { title: "I.M.L. Promo 3", src: "./promo/I.M.L.%203.mp4" },
     { title: "I.M.L. Promo 4", src: "./promo/I.M.L.%204.mp4" }
   ];
-  const SECTION_ID = "promoGifStrip";
-  const STYLE_ID = "imlPromoGifStyles";
-  let observerStarted = false;
-  let scheduled = false;
+
+  const STYLE_ID = "imlPromoAdStyles";
 
   function removeOldPromos() {
-    document.querySelectorAll("#promoMotionBg,#promoAdLeft,#promoAdRight,#promoAdStrip").forEach(element => element.remove());
-    document.querySelectorAll('a[href="#promoAdStrip"],[data-mobile-section="promoAdStrip"]').forEach(element => element.remove());
-    document.body.classList.remove("has-promo-ads", "has-motion-promos");
+    document.querySelectorAll("#promoMotionBg,#promoGifStrip,#promoAdLeft,#promoAdRight,#promoAdStrip").forEach(element => element.remove());
+    document.querySelectorAll('a[href="#promoAdStrip"],[data-mobile-section="promoAdStrip"],a[href="#promoGifStrip"],[data-mobile-section="promoGifStrip"]').forEach(element => element.remove());
+    document.body.classList.remove("has-motion-promos", "has-promo-gifs");
   }
 
   function ensureStyles() {
@@ -21,88 +19,127 @@
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
-      .promo-gif-strip{
-        position:relative;
-        z-index:2;
-        max-width:1180px;
-        margin:6px auto 10px;
-        padding:0 20px 10px;
-      }
-      .promo-gif-grid{
+      body.has-promo-ads{--promo-rail-width:clamp(118px,9.6vw,168px)}
+      .promo-rail{
+        position:fixed;
+        top:104px;
+        bottom:92px;
+        z-index:5;
+        width:var(--promo-rail-width);
         display:grid;
-        grid-template-columns:repeat(4,minmax(0,1fr));
+        align-content:center;
         gap:14px;
+        pointer-events:none;
       }
-      .promo-gif-card{
+      .promo-rail.left{left:10px}
+      .promo-rail.right{right:10px}
+      .promo-ad-card{
+        --mx:50%;--my:44%;
         position:relative;
-        width:100%;
-        min-height:0;
-        padding:0;
         display:block;
-        aspect-ratio:1/1;
-        border-radius:18px;
+        width:100%;
+        aspect-ratio:3/4.25;
+        min-height:172px;
+        padding:0;
+        border:1px solid rgba(255,255,255,.14);
+        border-radius:16px;
         overflow:hidden;
-        border:1px solid rgba(255,255,255,.12);
-        background:#050505 url("./logo.svg") center/46% no-repeat;
-        box-shadow:0 18px 46px rgba(0,0,0,.32),0 0 24px rgba(77,184,255,.1);
+        background:#050505 url("./logo.svg") center/50% no-repeat;
+        box-shadow:0 18px 50px rgba(0,0,0,.36),0 0 28px rgba(77,184,255,.12);
+        pointer-events:auto;
         transform:translateZ(0);
         isolation:isolate;
         cursor:pointer;
       }
-      .promo-gif-card::after{
+      .promo-ad-card::after{
         content:"";
         position:absolute;
         inset:0;
+        z-index:2;
         pointer-events:none;
         background:
-          radial-gradient(circle at var(--mx,50%) var(--my,42%),rgba(255,255,255,.14),transparent 28%),
-          linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.18));
-        opacity:.58;
+          radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.16),transparent 30%),
+          linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.24));
+        opacity:.62;
         transition:opacity .18s ease;
       }
-      .promo-gif-card video{
+      .promo-ad-card video{
+        position:absolute;
+        inset:0;
         display:block;
         width:100%;
         height:100%;
         object-fit:cover;
         opacity:.96;
-        transform:scale(1.02);
-        transition:transform .32s ease,filter .32s ease,opacity .18s ease;
+        transform:scale(1.04);
+        transition:transform .36s ease,filter .28s ease,opacity .18s ease;
         pointer-events:none;
       }
-      .promo-gif-card:hover video,
-      .promo-gif-card:focus-visible video{
-        transform:scale(1.08);
-        filter:saturate(1.18) contrast(1.06);
+      .promo-ad-card:hover video,
+      .promo-ad-card:focus-visible video{
+        transform:scale(1.11);
+        filter:saturate(1.18) contrast(1.08);
       }
-      .promo-gif-card:hover::after,
-      .promo-gif-card:focus-visible::after{opacity:.82}
-      .promo-gif-card.is-missing{display:none}
-      .mobile-music-nav{grid-template-columns:repeat(4,1fr)!important}
-      @media (max-width:760px){
-        .promo-gif-strip{
-          margin:4px 0 8px;
-          padding:0 12px 8px;
+      .promo-ad-card:hover::after,
+      .promo-ad-card:focus-visible::after{opacity:.86}
+      .promo-ad-card.is-missing{display:none}
+      .promo-mobile-strip{
+        position:relative;
+        z-index:2;
+        display:none;
+        max-width:1120px;
+        margin:16px auto 0;
+        padding:0 14px;
+      }
+      .promo-mobile-grid{
+        display:grid;
+        grid-template-columns:repeat(4,minmax(150px,1fr));
+        gap:10px;
+        overflow-x:auto;
+        scroll-snap-type:x mandatory;
+        scrollbar-width:none;
+        padding:4px 2px 8px;
+      }
+      .promo-mobile-grid::-webkit-scrollbar{display:none}
+      .promo-mobile-grid .promo-ad-card{
+        aspect-ratio:3/4;
+        min-height:210px;
+        scroll-snap-align:start;
+      }
+      @media (max-width:1199px){
+        .promo-rail{display:none}
+        .promo-mobile-strip{display:block}
+        .promo-mobile-grid{grid-template-columns:repeat(4,minmax(170px,1fr))}
+      }
+      @media (min-width:1200px){
+        body.has-promo-ads main>section>h2,
+        body.has-promo-ads main>section>p,
+        body.has-promo-ads .hub-panel,
+        body.has-promo-ads .library-shell,
+        body.has-promo-ads .action-grid,
+        body.has-promo-ads .now-strip{
+          max-width:min(1040px,calc(100vw - 360px));
         }
-        .promo-gif-grid{
-          display:flex;
-          gap:10px;
-          overflow-x:auto;
-          scroll-snap-type:x mandatory;
-          scrollbar-width:none;
-          padding:2px 2px 6px;
+      }
+      @media (min-width:1500px){
+        body.has-promo-ads{--promo-rail-width:clamp(148px,10vw,210px)}
+        body.has-promo-ads main>section>h2,
+        body.has-promo-ads main>section>p,
+        body.has-promo-ads .hub-panel,
+        body.has-promo-ads .library-shell,
+        body.has-promo-ads .action-grid,
+        body.has-promo-ads .now-strip{
+          max-width:min(1120px,calc(100vw - 470px));
         }
-        .promo-gif-grid::-webkit-scrollbar{display:none}
-        .promo-gif-card{
-          flex:0 0 min(42vw,176px);
-          border-radius:16px;
-          scroll-snap-align:start;
-          box-shadow:0 14px 34px rgba(0,0,0,.28);
-        }
+      }
+      @media (max-width:720px){
+        .promo-mobile-strip{margin:14px 0 0;padding:0 12px}
+        .promo-mobile-grid{grid-template-columns:repeat(4,minmax(142px,42vw))}
+        .promo-mobile-grid .promo-ad-card{min-height:178px;border-radius:14px}
       }
       @media (prefers-reduced-motion:reduce){
-        .promo-gif-card video{transition:none}
-        .promo-gif-card:hover video,.promo-gif-card:focus-visible video{transform:scale(1.02);filter:none}
+        .promo-ad-card video{transition:none}
+        .promo-ad-card:hover video,.promo-ad-card:focus-visible video{transform:scale(1.04);filter:none}
       }
     `;
     document.head.appendChild(style);
@@ -110,7 +147,7 @@
 
   function cardTemplate(promo, index) {
     return `
-      <button type="button" class="promo-gif-card" data-promo-index="${index}" aria-label="${promo.title}">
+      <button type="button" class="promo-ad-card" data-promo-index="${index}" aria-label="${promo.title}">
         <video muted loop playsinline autoplay preload="metadata" poster="./logo.svg">
           <source src="${promo.src}" type="video/mp4">
         </video>
@@ -150,19 +187,19 @@
 
     card.addEventListener("pointerdown", event => {
       dispatchEvent(new CustomEvent("iml:boost", {
-        detail: { x: event.clientX || innerWidth / 2, y: event.clientY || innerHeight * 0.35, power: 0.55 }
+        detail: { x: event.clientX || innerWidth / 2, y: event.clientY || innerHeight * 0.35, power: 0.58 }
       }));
     }, { passive: true });
 
     if ("IntersectionObserver" in window) {
-      const view = new IntersectionObserver(entries => {
+      const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           visible = entry.isIntersecting && entry.intersectionRatio > 0.18;
           if (visible) play();
           else pause();
         });
       }, { rootMargin: "120px 0px", threshold: [0, 0.18, 0.6] });
-      view.observe(card);
+      observer.observe(card);
     } else {
       visible = true;
       play();
@@ -174,45 +211,44 @@
     });
   }
 
-  function buildGifStrip() {
+  function buildPromos() {
     removeOldPromos();
     ensureStyles();
-    if (document.getElementById(SECTION_ID)) return;
-    const section = document.createElement("section");
-    section.id = SECTION_ID;
-    section.className = "promo-gif-strip";
-    section.setAttribute("aria-label", "I.M.L. animated promo GIFs");
-    section.innerHTML = `<div class="promo-gif-grid">${promos.map(cardTemplate).join("")}</div>`;
+    if (document.getElementById("promoAdLeft")) return;
+    document.body.classList.add("has-promo-ads");
+
+    const left = document.createElement("aside");
+    left.id = "promoAdLeft";
+    left.className = "promo-rail left";
+    left.setAttribute("aria-label", "I.M.L. left animated promos");
+    left.innerHTML = [promos[0], promos[2]].map((promo, index) => cardTemplate(promo, index === 0 ? 0 : 2)).join("");
+
+    const right = document.createElement("aside");
+    right.id = "promoAdRight";
+    right.className = "promo-rail right";
+    right.setAttribute("aria-label", "I.M.L. right animated promos");
+    right.innerHTML = [promos[1], promos[3]].map((promo, index) => cardTemplate(promo, index === 0 ? 1 : 3)).join("");
+
+    document.body.append(left, right);
+
+    const mobile = document.createElement("section");
+    mobile.id = "promoAdStrip";
+    mobile.className = "promo-mobile-strip";
+    mobile.setAttribute("aria-label", "I.M.L. animated promos");
+    mobile.innerHTML = `<div class="promo-mobile-grid">${promos.map(cardTemplate).join("")}</div>`;
 
     const hero = document.getElementById("hero");
     const actionSection = document.querySelector(".action-grid")?.closest("section");
-    if (hero) hero.insertAdjacentElement("afterend", section);
-    else if (actionSection) actionSection.insertAdjacentElement("beforebegin", section);
-    else document.querySelector("main")?.prepend(section);
+    if (hero) hero.insertAdjacentElement("afterend", mobile);
+    else if (actionSection) actionSection.insertAdjacentElement("afterend", mobile);
+    else document.querySelector("main")?.appendChild(mobile);
 
-    section.querySelectorAll(".promo-gif-card").forEach(hydrateCard);
-  }
-
-  function startObserver() {
-    if (observerStarted) return;
-    observerStarted = true;
-    new MutationObserver(() => {
-      if (scheduled) return;
-      scheduled = true;
-      requestAnimationFrame(() => {
-        scheduled = false;
-        removeOldPromos();
-      });
-    }).observe(document.documentElement, { childList: true, subtree: true });
+    document.querySelectorAll(".promo-ad-card").forEach(hydrateCard);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-      buildGifStrip();
-      startObserver();
-    }, { once: true });
+    document.addEventListener("DOMContentLoaded", buildPromos, { once: true });
   } else {
-    buildGifStrip();
-    startObserver();
+    buildPromos();
   }
 })();
