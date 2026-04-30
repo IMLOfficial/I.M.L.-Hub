@@ -68,16 +68,6 @@
     <section id="hero">
       <div class="logo-wrap"><div class="glow"></div><canvas id="orbit"></canvas><img src="./logo.svg" alt="I.M.L. Logo"></div>
       <p>High-voltage sound | Cinematic visuals | I.M.L.</p>
-      <div class="hub-panel">
-        <h2>Choose The Vibe</h2>
-        <p>Tap a mood and the background reacts instantly.</p>
-        <div class="mood-controls" id="moodControls">
-          <button type="button" class="active" data-mood="0">Neon Pulse</button>
-          <button type="button" data-mood="1">Blue Drive</button>
-          <button type="button" data-mood="2">Dream Flash</button>
-          <button type="button" data-mood="3">Night Ride</button>
-        </div>
-      </div>
       <div class="now-strip"><span>New visuals, new music, new I.M.L. drops | Follow on TikTok and YouTube | Install the app for quick access</span></div>
     </section>
     <section>
@@ -92,7 +82,7 @@
     <section id="installBox"><h2>Install App</h2><button type="button" id="installButton">Install</button><p id="installStatus">Tap Install for browser install options.</p></section>
   </main>
   <div id="installModal" aria-hidden="true"><div class="card"><h3>Install I.M.L. App</h3><p id="installHelp">Checking your browser install options...</p><button type="button" id="confirmInstall">Install</button><br><br><button type="button" id="cancelInstall">Close</button></div></div>
-  <script src="./video-inspired-bg.js?v=42"></script>
+  <script src="./video-inspired-bg.js?v=59"></script>
   <script>
     const orbitCanvas=document.getElementById("orbit");
     const orbitCtx=orbitCanvas.getContext("2d");
@@ -113,16 +103,20 @@
     function openInstall(){if(isStandalone()){setInstallStatus();return}modal.style.display="flex";modal.setAttribute("aria-hidden","false");if(deferredPrompt){confirmInstall.style.display="inline-flex";installHelp.textContent="Your browser is ready to install I.M.L.";return}confirmInstall.style.display="none";installHelp.textContent=isIOS()?"On iPhone or iPad, tap Share, then Add to Home Screen.":"If the browser prompt does not appear, use the install icon in the address bar or open the browser menu and choose Install app."}
     function closeInstall(){modal.style.display="none";modal.setAttribute("aria-hidden","true")}async function doInstall(){if(!deferredPrompt){openInstall();return}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;closeInstall();setInstallStatus()}
     window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();deferredPrompt=event;setInstallStatus()});window.addEventListener("appinstalled",()=>{deferredPrompt=null;closeInstall();setInstallStatus()});installButton.addEventListener("click",openInstall);confirmInstall.addEventListener("click",doInstall);document.getElementById("cancelInstall").addEventListener("click",closeInstall);setInstallStatus();
-    if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=42"))}
+    if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=59"))}
   </script>
-  <script src="./video-library.js?v=42"></script>
-  <script src="./promo-ads.js?v=42"></script>
-  <script src="./promo-live-files.js?v=42"></script>
-  <script src="./audio-library.js?v=42"></script>
-  <script src="./language-widget.js?v=42"></script>
-  <script src="./music-theme.js?v=42"></script>
-  <script src="./music-polish.js?v=42"></script>
-  <script src="./site-features.js?v=42"></script>
-  <script src="./mobile-music-app.js?v=42"></script>
+  <script src="./video-library.js?v=59"></script>
+  <script src="./promo-ads.js?v=59"></script>
+  <script src="./promo-live-files.js?v=59"></script>
+  <script src="./audio-library.js?v=59"></script>
+  <script src="./playlist-toggle.js?v=59"></script>
+  <script src="./language-widget.js?v=59"></script>
+  <script src="./music-theme.js?v=59"></script>
+  <script src="./music-polish.js?v=59"></script>
+  <script src="./site-features.js?v=59"></script>
+  <script src="./mobile-music-app.js?v=59"></script>
+  <script src="./youtube-music-redesign.js?v=59"></script>
+  <script src="./mobile-ytm-experience.js?v=59"></script>
+  <script src="./mobile-compact-fix.js?v=59"></script>
 </body>
 </html>
