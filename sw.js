@@ -1,23 +1,23 @@
-const CACHE = "iml-v64";
+const CACHE = "iml-v65";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./logo.svg",
-  "./video-inspired-bg.js",
+  "./promo-ads.js",
   "./video-library.js",
-  "./language-widget.js",
   "./audio-library.js",
   "./playlist-toggle.js",
+  "./language-widget.js",
+  "./mobile-compact-fix.js",
+  "./video-inspired-bg.js",
   "./music-theme.js",
   "./music-polish.js",
   "./site-features.js",
   "./mobile-music-app.js",
-  "./promo-ads.js",
   "./promo-live-files.js",
   "./youtube-music-redesign.js",
-  "./mobile-ytm-experience.js",
-  "./mobile-compact-fix.js"
+  "./mobile-ytm-experience.js"
 ];
 
 self.addEventListener("install", event => {
@@ -39,6 +39,11 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   const request = event.request;
+  const url = new URL(request.url);
+
+  if (request.headers.has("range") || /\.(mp3|mp4|m4a|wav|webm)$/i.test(url.pathname)) {
+    return;
+  }
 
   if (request.mode === "navigate") {
     event.respondWith(
