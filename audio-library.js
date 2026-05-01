@@ -1,41 +1,4 @@
 (() => {
-  const ENHANCEMENT_VERSION = "45";
-
-  function scriptAlreadyPresent(fileName) {
-    return [...document.scripts].some(script => script.src.includes(fileName));
-  }
-
-  function loadEnhancement(fileName, id, onReady) {
-    if (document.getElementById(id) || scriptAlreadyPresent(fileName)) {
-      if (onReady) onReady();
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.id = id;
-    script.src = `./${fileName}?v=${ENHANCEMENT_VERSION}`;
-    script.async = false;
-    if (onReady) script.addEventListener("load", onReady, { once: true });
-    (document.head || document.documentElement).appendChild(script);
-  }
-
-  function ensureSiteEnhancements() {
-    loadEnhancement("music-theme.js", "imlDirectMusicTheme", () => {
-      loadEnhancement("music-polish.js", "imlDirectMusicPolish", () => {
-        loadEnhancement("site-features.js", "imlDirectSiteFeatures");
-      });
-    });
-    loadEnhancement("promo-ads.js", "imlDirectPromoAds", () => {
-      loadEnhancement("promo-live-files.js", "imlDirectPromoLive");
-    });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", ensureSiteEnhancements, { once: true });
-  } else {
-    ensureSiteEnhancements();
-  }
-
   const section = document.getElementById("audioLibrary");
   if (!section || section.dataset.ready === "true") return;
   section.dataset.ready = "true";
@@ -43,12 +6,17 @@
   const tracks = [
     { title: "Everything is Borrowed - I.M.L.", src: "./audio/Everything%20is%20Borrowed%20-%20I.M.L..mp3" },
     { title: "F.O.C.U.S. - I.M.L.", src: "./audio/F.O.C.U.S..mp3" },
-    { title: "Fl\u00fcssige Vernunft - I.M.L.", src: "./audio/Fl%C3%BCssige%20Vernunft%20-%20I.M.L..mp3" },
+    { title: "Analog Hearts - I.M.L.", src: "./audio/Analog%20Hearts%20-%20I.M.L..mp3" },
+    { title: "Anker und Licht - I.M.L.", src: "./audio/Anker%20und%20Licht%20-%20I.M.L..mp3" },
+    { title: "Beautiful Madness - I.M.L.", src: "./audio/Beautiful%20Madness%20-%20I.M.L..mp3" },
+    { title: "Burnt Rubber & Chrome Dreams - I.M.L.", src: "./audio/Burnt%20Rubber%20%26%20Chrome%20Dreams%20-%20I.M.L..mp3" },
+    { title: "Das Buch Unserer Zeit (2026)", src: "./audio/Das%20Buch%20Unserer%20Zeit%20%282026%29.mp3" },
+    { title: "Flüssige Vernunft - I.M.L.", src: "./audio/Fl%C3%BCssige%20Vernunft%20-%20I.M.L..mp3" },
     { title: "Grass Stains and Golden Hours - I.M.L.", src: "./audio/Grass%20Stains%20and%20Golden%20Hours%20-%20I.M.L..mp3" },
-    { title: "Ibiza-Tr\u00e4ume - I.M.L.", src: "./audio/Ibiza-Tr%C3%A4ume.mp3" },
+    { title: "Ibiza-Träume - I.M.L.", src: "./audio/Ibiza-Tr%C3%A4ume.mp3" },
     { title: "Ink and Echoes - I.M.L.", src: "./audio/Ink%20and%20Echoes%20-%20I.M.L..mp3" },
     { title: "Iron Will - I.M.L.", src: "./audio/Iron%20Will%20-%20I.M.L..mp3" },
-    { title: "L'\u00c9clat et le Chaos - I.M.L.", src: "./audio/L%E2%80%99%C3%89clat%20et%20le%20Chaos%20-%20I.M.L..mp3" },
+    { title: "L'Éclat et le Chaos - I.M.L.", src: "./audio/L%E2%80%99%C3%89clat%20et%20le%20Chaos%20-%20I.M.L..mp3" },
     { title: "Lotus of the Void - I.M.L.", src: "./audio/Lotus%20of%20the%20Void%20-%20I.M.L..mp3" },
     { title: "Mir geht es gut - I.M.L.", src: "./audio/Mir%20geht%20es%20gut.mp3" },
     { title: "Monotone - I.M.L.", src: "./audio/Monotone%20-%20I.M.L..mp3" },
@@ -57,7 +25,7 @@
     { title: "No Filter Needed - I.M.L.", src: "./audio/No%20Filter%20Needed%20-%20I.M.L..mp3" },
     { title: "Parallel Lines (Never Apart) - I.M.L.", src: "./audio/Parallel%20Lines%20%28Never%20Apart%29%20-%20I.M.L..mp3" },
     { title: "Shadow to Sunlight - I.M.L.", src: "./audio/Shadow%20to%20Sunlight%20-%20I.M.L..mp3" },
-    { title: "Tensiune \u0219i Cea\u021b\u0103 - I.M.L.", src: "./audio/Tensiune%20%C8%99i%20Cea%C8%9B%C4%83%20-%20I.M.L..mp3" },
+    { title: "Tensiune și Ceață - I.M.L.", src: "./audio/Tensiune%20%C8%99i%20Cea%C8%9B%C4%83%20-%20I.M.L..mp3" },
     { title: "The Clockwork Ghost - I.M.L.", src: "./audio/The%20Clockwork%20Ghost%20-%20I.M.L..mp3" },
     { title: "The Control Room - I.M.L.", src: "./audio/The%20Control%20Room%20-%20I.M.L..mp3" },
     { title: "The Full Spectrum - I.M.L.", src: "./audio/The%20Full%20Spectrum%20-%20I.M.L..mp3" },
@@ -67,291 +35,96 @@
     { title: "The View From Here - I.M.L.", src: "./audio/The%20View%20From%20Here%20-%20I.M.L..mp3" },
     { title: "Unica mea iubire - I.M.L.", src: "./audio/Unica%20mea%20iubire%20-%20I.M.L..mp3" },
     { title: "We Drive - I.M.L.", src: "./audio/We%20Drive%20-%20I.M.L..mp3" },
-    { title: "You Are Amazing - I.M.L.", src: "./audio/You%20Are%20Amazing%20-%20I.M.L..mp3" },
-    { title: "Analog Hearts - I.M.L.", src: "./audio/Analog%20Hearts%20-%20I.M.L..mp3" },
-    { title: "Anker und Licht - I.M.L.", src: "./audio/Anker%20und%20Licht%20-%20I.M.L..mp3" },
-    { title: "Beautiful Madness - I.M.L.", src: "./audio/Beautiful%20Madness%20-%20I.M.L..mp3" },
-    { title: "Burnt Rubber & Chrome Dreams - I.M.L.", src: "./audio/Burnt%20Rubber%20%26%20Chrome%20Dreams%20-%20I.M.L..mp3" },
-    { title: "Das Buch Unserer Zeit (2026)", src: "./audio/Das%20Buch%20Unserer%20Zeit%20%282026%29.mp3" }
+    { title: "You Are Amazing - I.M.L.", src: "./audio/You%20Are%20Amazing%20-%20I.M.L..mp3" }
   ];
 
   const shell = section.querySelector(".library-shell") || section;
 
   function escapeHtml(value) {
-    const entities = { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" };
-    return value.replace(/[&<>"]/g, char => entities[char]);
+    return value.replace(/[&<>"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[char]));
   }
 
-  function ensurePlaylistToggleStyles() {
-    if (document.getElementById("imlPlaylistToggleStyles")) return;
+  function normalize(value) {
+    return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
+  function ensureStyles() {
+    if (document.getElementById("imlAudioStableStyles")) return;
     const style = document.createElement("style");
-    style.id = "imlPlaylistToggleStyles";
+    style.id = "imlAudioStableStyles";
     style.textContent = `
-      .has-playlist-toggle .playlist-control-row{
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:12px;
-        margin:14px 0 12px;
-      }
-      .playlist-toggle{
-        display:inline-flex;
-        min-height:42px;
-        align-items:center;
-        gap:10px;
-        border:1px solid rgba(255,255,255,.16);
-        border-radius:999px;
-        padding:8px 16px 8px 10px;
-        color:#fff;
-        background:linear-gradient(135deg,rgba(255,0,51,.92),rgba(255,92,138,.72));
-        box-shadow:0 12px 34px rgba(255,0,51,.22),inset 0 1px 0 rgba(255,255,255,.18);
-        font:inherit;
-        font-weight:950;
-        cursor:pointer;
-        transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease;
-      }
-      .playlist-toggle:hover,.playlist-toggle:focus-visible{
-        transform:translateY(-1px);
-        border-color:rgba(255,255,255,.32);
-        box-shadow:0 16px 42px rgba(255,0,51,.3),0 0 28px rgba(77,184,255,.16);
-        outline:0;
-      }
-      .playlist-toggle[aria-expanded="false"]{
-        background:linear-gradient(135deg,rgba(16,18,24,.95),rgba(34,42,58,.88));
-      }
-      .playlist-toggle-icon{
-        position:relative;
-        width:24px;
-        height:24px;
-        flex:0 0 auto;
-        border-radius:50%;
-        background:rgba(255,255,255,.16);
-        box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);
-      }
-      .playlist-toggle-icon::before,.playlist-toggle-icon::after{
-        content:"";
-        position:absolute;
-        left:50%;
-        top:50%;
-        width:12px;
-        height:2px;
-        border-radius:999px;
-        background:#fff;
-        transform:translate(-50%,-50%);
-        transition:transform .18s ease,opacity .18s ease;
-      }
-      .playlist-toggle-icon::after{
-        transform:translate(-50%,-50%) rotate(90deg);
-      }
-      .playlist-toggle[aria-expanded="true"] .playlist-toggle-icon::after{
-        opacity:0;
-        transform:translate(-50%,-50%) rotate(90deg) scaleX(.2);
-      }
-      .playlist-count{
-        color:rgba(255,255,255,.66);
-        font-size:.86rem;
-        font-weight:900;
-        white-space:nowrap;
-      }
-      .playlist-grid[hidden]{display:none!important}
-      .has-playlist-toggle .playlist-grid:not([hidden]){
-        animation:playlistReveal .28s ease both;
-      }
-      @keyframes playlistReveal{
-        from{opacity:0;transform:translateY(-8px)}
-        to{opacity:1;transform:translateY(0)}
-      }
-      @media (max-width:640px){
-        .has-playlist-toggle .playlist-control-row{
-          align-items:stretch;
-          flex-direction:column;
-        }
-        .playlist-toggle{
-          width:100%;
-          justify-content:center;
-        }
-        .playlist-count{
-          text-align:center;
-        }
-      }
+      #audioLibrary .library-shell{background:linear-gradient(180deg,rgba(18,18,20,.96),rgba(6,6,8,.96));border-color:rgba(255,255,255,.1)}
+      .audio-stage{display:grid;grid-template-columns:minmax(130px,220px) minmax(0,1fr);gap:18px;align-items:center;margin:14px 0;padding:16px;border-radius:18px;background:linear-gradient(135deg,rgba(255,23,76,.28),rgba(255,255,255,.06) 48%,rgba(0,0,0,.18));border:1px solid rgba(255,255,255,.1)}
+      .audio-art{width:100%;aspect-ratio:1;border-radius:16px;background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.16),transparent 38%),linear-gradient(135deg,#a20f35,#211018),url("./logo.svg") center/76% no-repeat;box-shadow:0 18px 46px rgba(0,0,0,.32)}
+      .audio-copy{min-width:0;display:grid;gap:8px}.audio-eyebrow{margin:0;color:#ff9ab2;font-size:.78rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.audio-title{margin:0;font-size:clamp(1.45rem,4vw,3rem);line-height:1.02}.audio-status{margin:0;color:#bfc3cd;line-height:1.35}
+      .audio-controls{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:4px}.audio-play,.audio-small-button{min-height:42px;border-radius:999px;border:0;font-weight:900}.audio-play{width:48px;height:48px;padding:0;background:#fff;color:#050505}.audio-play::before{content:"";display:block;width:0;height:0;margin:auto;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:14px solid currentColor;transform:translateX(2px)}.audio-play.is-playing::before{width:14px;height:18px;border:0;transform:none;background:linear-gradient(90deg,currentColor 0 34%,transparent 34% 66%,currentColor 66% 100%)}
+      .audio-seek{width:100%;accent-color:#ff174c}.audio-time{color:#c7c7cc;font-size:.82rem;font-weight:800;white-space:nowrap}.audio-native{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+      .audio-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;margin:12px 0}.audio-search{min-height:40px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#fff;padding:0 14px;font:inherit}.audio-small-button{padding:8px 14px;background:#fff;color:#050505}.playlist-toggle{min-height:38px;border-radius:999px;padding:8px 14px;background:#ff174c;color:#fff;border:0;font-weight:900}.audio-list-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0}.audio-count{color:#aaa;font-size:.85rem;font-weight:800}
+      .audio-list{display:flex;flex-direction:column;gap:2px;max-height:min(58vh,620px);overflow:auto;padding:4px 0;border-top:1px solid rgba(255,255,255,.1);scrollbar-width:thin}.audio-list[hidden]{display:none!important}
+      .audio-row{display:grid;grid-template-columns:34px 48px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:58px;padding:7px 8px;border:0;border-radius:10px;background:transparent;color:#fff;text-align:left;cursor:pointer}.audio-row:hover,.audio-row:focus-visible,.audio-row.active{background:rgba(255,255,255,.09);outline:0}.audio-row.active{box-shadow:inset 3px 0 0 #ff174c}.audio-number{color:#96969d;text-align:center;font-weight:900;font-size:.82rem}.audio-thumb{width:48px;height:48px;border-radius:8px;background:#7e1130 url("./logo.svg") center/80% no-repeat;border:1px solid rgba(255,255,255,.12)}.audio-row strong{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:.94rem;line-height:1.2}.audio-row small{display:block;color:#aaa;font-size:.76rem}.audio-row-action{color:#ff9ab2;font-size:.76rem;font-weight:900;text-transform:uppercase}
+      @media (max-width:720px){.audio-stage{grid-template-columns:88px minmax(0,1fr);gap:12px;padding:11px;border-radius:14px}.audio-art{border-radius:10px}.audio-title{font-size:1.15rem}.audio-eyebrow{font-size:.62rem}.audio-status{font-size:.78rem}.audio-controls{grid-template-columns:42px minmax(0,1fr);gap:8px}.audio-play{width:42px;height:42px}.audio-time{grid-column:1 / -1}.audio-toolbar{grid-template-columns:1fr 1fr}.audio-search{grid-column:1 / -1}.audio-row{grid-template-columns:26px 42px minmax(0,1fr);gap:8px;min-height:52px;padding:6px 4px}.audio-thumb{width:42px;height:42px}.audio-row strong{font-size:.8rem}.audio-row small{font-size:.68rem}.audio-row-action{display:none}.audio-list{max-height:52vh}}
     `;
     document.head.appendChild(style);
   }
 
-  if (!document.getElementById("imlAudioDeckStyles")) {
-    const style = document.createElement("style");
-    style.id = "imlAudioDeckStyles";
-    style.textContent = `
-      .iml-audio-deck{
-        position:relative;
-        display:grid;
-        grid-template-columns:auto minmax(0,1fr) auto;
-        gap:14px;
-        align-items:center;
-        margin:16px 0 12px;
-        padding:12px 14px;
-        border-radius:18px;
-        background:linear-gradient(135deg,rgba(12,12,14,.96),rgba(36,12,18,.94));
-        border:1px solid rgba(255,255,255,.12);
-        box-shadow:0 16px 42px rgba(0,0,0,.32),0 0 34px rgba(255,0,51,.16);
-      }
-      .iml-audio-deck::before{
-        content:"";
-        position:absolute;
-        inset:0;
-        border-radius:inherit;
-        pointer-events:none;
-        background:linear-gradient(90deg,rgba(255,0,51,.18),transparent 36%,rgba(255,255,255,.08));
-        opacity:.75;
-      }
-      .iml-audio-play,.iml-audio-mute{
-        position:relative;
-        z-index:1;
-        display:grid;
-        place-items:center;
-        width:44px;
-        height:44px;
-        border:0;
-        border-radius:50%;
-        color:#fff;
-        background:linear-gradient(135deg,#ff0033,#ff5c8a);
-        box-shadow:0 10px 24px rgba(255,0,51,.28);
-        cursor:pointer;
-      }
-      .iml-audio-mute{
-        width:38px;
-        height:38px;
-        background:rgba(255,255,255,.1);
-        box-shadow:none;
-        border:1px solid rgba(255,255,255,.12);
-      }
-      .iml-audio-play::before{
-        content:"";
-        width:0;
-        height:0;
-        border-top:9px solid transparent;
-        border-bottom:9px solid transparent;
-        border-left:14px solid currentColor;
-        margin-left:3px;
-      }
-      .iml-audio-deck.is-playing .iml-audio-play::before{
-        width:14px;
-        height:18px;
-        border:0;
-        margin:0;
-        background:linear-gradient(90deg,currentColor 0 34%,transparent 34% 66%,currentColor 66% 100%);
-      }
-      .iml-audio-main{
-        position:relative;
-        z-index:1;
-        display:grid;
-        gap:7px;
-        min-width:0;
-      }
-      .iml-audio-title{
-        display:flex;
-        justify-content:space-between;
-        gap:12px;
-        color:#fff;
-        font-weight:950;
-        line-height:1.15;
-      }
-      .iml-audio-title span:first-child{
-        overflow:hidden;
-        white-space:nowrap;
-        text-overflow:ellipsis;
-      }
-      .iml-audio-title span:last-child{
-        color:#ffb8c8;
-        font-size:.78rem;
-        flex:0 0 auto;
-      }
-      .iml-audio-seek{
-        width:100%;
-        accent-color:#ff0033;
-        cursor:pointer;
-      }
-      .iml-audio-times{
-        display:flex;
-        justify-content:space-between;
-        color:#bdbdc7;
-        font-size:.78rem;
-        font-weight:800;
-      }
-      .audio-player{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
-      @media (max-width:640px){
-        .iml-audio-deck{grid-template-columns:auto minmax(0,1fr);gap:10px;padding:10px}
-        .iml-audio-mute{grid-column:1 / -1;width:100%;height:34px;border-radius:999px}
-        .iml-audio-title{display:grid;gap:3px}
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  ensurePlaylistToggleStyles();
-  shell.classList.add("has-playlist-toggle");
+  ensureStyles();
 
   shell.innerHTML = `
     <h2>Audio Playlist</h2>
-    <div class="iml-audio-deck" id="audioDeck">
-      <button type="button" class="iml-audio-play" id="audioPlayButton" aria-label="Play audio"></button>
-      <div class="iml-audio-main">
-        <div class="iml-audio-title"><span id="audioNowTitle">Choose a track</span><span>I.M.L. Music</span></div>
-        <input class="iml-audio-seek" id="audioSeek" type="range" min="0" max="1000" value="0" step="1" aria-label="Audio position">
-        <div class="iml-audio-times"><span id="audioCurrentTime">0:00</span><span id="audioDuration">0:00</span></div>
+    <div class="audio-stage">
+      <div class="audio-art" aria-hidden="true"></div>
+      <div class="audio-copy">
+        <p class="audio-eyebrow">I.M.L. Music</p>
+        <h3 class="audio-title" id="audioNowTitle">Choose a song</h3>
+        <p class="audio-status" id="audioStatus">Tap any song below to play it directly on the page.</p>
+        <div class="audio-controls">
+          <button type="button" class="audio-play" id="audioPlayButton" aria-label="Play audio"></button>
+          <input class="audio-seek" id="audioSeek" type="range" min="0" max="1000" value="0" step="1" aria-label="Audio position">
+          <span class="audio-time"><span id="audioCurrentTime">0:00</span> / <span id="audioDuration">0:00</span></span>
+        </div>
       </div>
-      <button type="button" class="iml-audio-mute" id="audioMuteButton" aria-label="Mute audio">Vol</button>
     </div>
-    <audio id="audioPlayer" class="audio-player" preload="metadata"></audio>
-    <p id="audioStatus">Checking the published audio files...</p>
-    <div class="playlist-control-row">
-      <button type="button" class="playlist-toggle" id="audioPlaylistToggle" aria-expanded="true" aria-controls="audioTrackGrid">
-        <span class="playlist-toggle-icon" aria-hidden="true"></span>
-        <span class="playlist-toggle-label">Hide Audio Playlist</span>
-      </button>
-      <span class="playlist-count">${tracks.length} songs</span>
+    <audio id="audioPlayer" class="audio-native" preload="none" playsinline></audio>
+    <div class="audio-list-top">
+      <button type="button" class="playlist-toggle" id="audioPlaylistToggle" aria-expanded="true" aria-controls="audioTrackGrid">Hide Songs</button>
+      <span class="audio-count">${tracks.length} songs</span>
     </div>
-    <div class="playlist-grid" id="audioTrackGrid" aria-label="I.M.L. audio playlist">
+    <div class="audio-toolbar">
+      <input class="audio-search" id="audioSearch" type="search" placeholder="Search songs" aria-label="Search songs">
+      <button type="button" class="audio-small-button" id="audioShuffle">Shuffle</button>
+      <button type="button" class="audio-small-button" id="audioShare">Share Songs</button>
+    </div>
+    <div class="audio-list" id="audioTrackGrid" aria-label="I.M.L. audio playlist">
       ${tracks.map((track, index) => `
-        <button type="button" class="playlist-card audio-track" data-audio-index="${index}">
-          <span class="playlist-thumb audio-thumb"></span>
-          <span class="playlist-copy"><strong>${escapeHtml(track.title)}</strong><small>MP3 audio</small></span>
+        <button type="button" class="audio-row audio-track" data-audio-index="${index}">
+          <span class="audio-number">${index + 1}</span>
+          <span class="audio-thumb" aria-hidden="true"></span>
+          <span><strong>${escapeHtml(track.title)}</strong><small>MP3 audio</small></span>
+          <span class="audio-row-action">Play</span>
         </button>
       `).join("")}
     </div>
   `;
 
   const audio = shell.querySelector("#audioPlayer");
-  const status = shell.querySelector("#audioStatus");
-  const grid = shell.querySelector("#audioTrackGrid");
-  const playlistToggle = shell.querySelector("#audioPlaylistToggle");
-  const deck = shell.querySelector("#audioDeck");
   const playButton = shell.querySelector("#audioPlayButton");
-  const muteButton = shell.querySelector("#audioMuteButton");
   const seek = shell.querySelector("#audioSeek");
   const nowTitle = shell.querySelector("#audioNowTitle");
+  const status = shell.querySelector("#audioStatus");
   const currentTime = shell.querySelector("#audioCurrentTime");
   const durationTime = shell.querySelector("#audioDuration");
-  let currentTrack = null;
+  const grid = shell.querySelector("#audioTrackGrid");
+  const toggle = shell.querySelector("#audioPlaylistToggle");
+  const search = shell.querySelector("#audioSearch");
   let currentIndex = -1;
-  let checkId = 0;
   let seeking = false;
-
-  function setEnergy(playing) {
-    deck.classList.toggle("is-playing", playing);
-    playButton.setAttribute("aria-label", playing ? "Pause audio" : "Play audio");
-    document.body.classList.toggle("video-active", playing);
-    dispatchEvent(new CustomEvent("iml:video-state", { detail: { playing } }));
-  }
 
   function formatTime(seconds) {
     if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
-    const minutes = Math.floor(seconds / 60);
-    const rest = Math.floor(seconds % 60).toString().padStart(2, "0");
-    return `${minutes}:${rest}`;
+    return `${Math.floor(seconds / 60)}:${Math.floor(seconds % 60).toString().padStart(2, "0")}`;
   }
 
-  function updateSeek() {
+  function updateTimes() {
     if (!seeking) {
       const duration = audio.duration || 0;
       seek.value = duration ? Math.round((audio.currentTime / duration) * 1000) : 0;
@@ -360,108 +133,56 @@
     durationTime.textContent = formatTime(audio.duration);
   }
 
-  function updateMute() {
-    muteButton.textContent = audio.muted ? "Muted" : "Vol";
-    muteButton.setAttribute("aria-label", audio.muted ? "Unmute audio" : "Mute audio");
+  function updateRows() {
+    grid.querySelectorAll(".audio-row").forEach(row => {
+      row.classList.toggle("active", Number(row.dataset.audioIndex) === currentIndex);
+    });
   }
 
-  function stopMissingTrack(track) {
-    if (currentTrack === track) {
-      audio.pause();
-      audio.removeAttribute("src");
-      audio.load();
-    }
-    setEnergy(false);
-    status.textContent = `${track.title} cannot play yet because its MP3 file is not published at the expected website path.`;
+  function setPlayingState(playing) {
+    playButton.classList.toggle("is-playing", playing);
+    playButton.setAttribute("aria-label", playing ? "Pause audio" : "Play audio");
+    document.body.classList.toggle("video-active", playing);
   }
 
-  function setPlaylistOpen(open) {
-    grid.hidden = !open;
-    grid.setAttribute("aria-hidden", String(!open));
-    playlistToggle.setAttribute("aria-expanded", String(open));
-    playlistToggle.querySelector(".playlist-toggle-label").textContent = open ? "Hide Audio Playlist" : "Show Audio Playlist";
-    shell.classList.toggle("is-playlist-collapsed", !open);
-    dispatchEvent(new CustomEvent("iml:boost", { detail: { x: innerWidth / 2, y: Math.min(innerHeight * 0.5, 420), power: open ? 0.55 : 0.35 } }));
-  }
-
-  async function sourceExists(track, id) {
-    try {
-      const response = await fetch(track.src, { method: "HEAD", cache: "no-store" });
-      if (id !== checkId) return false;
-      if (!response.ok) {
-        stopMissingTrack(track);
-        return false;
-      }
-      return true;
-    } catch (_) {
-      if (id === checkId) status.textContent = `Tap play to start: ${track.title}`;
-      return true;
-    }
-  }
-
-  function selectTrack(index, autoPlay = true) {
+  function chooseTrack(index, shouldPlay = true) {
     const track = tracks[index];
     if (!track) return;
-    currentTrack = track;
     currentIndex = index;
-    const id = ++checkId;
-
-    grid.querySelectorAll(".audio-track").forEach(item => {
-      item.classList.toggle("active", Number(item.dataset.audioIndex) === index);
-    });
-
-    audio.src = track.src;
-    audio.load();
     nowTitle.textContent = track.title;
-    updateSeek();
     status.textContent = `Loading: ${track.title}`;
-
-    sourceExists(track, id).then(exists => {
-      if (!exists || id !== checkId) return;
-      status.textContent = `Tap play to start: ${track.title}`;
-    });
-
-    if (autoPlay) {
-      const playPromise = audio.play();
-      if (playPromise && typeof playPromise.then === "function") {
-        playPromise.then(() => {
-          if (currentTrack === track) status.textContent = `Now playing: ${track.title}`;
-        }).catch(() => {
-          if (currentTrack === track) status.textContent = `Tap play to start: ${track.title}`;
-        });
-      }
+    audio.src = new URL(track.src, location.href).href;
+    audio.load();
+    updateRows();
+    updateTimes();
+    if (!shouldPlay) return;
+    const promise = audio.play();
+    if (promise && typeof promise.catch === "function") {
+      promise.catch(() => {
+        status.textContent = `Tap play to start: ${track.title}`;
+      });
     }
+  }
 
-    dispatchEvent(new CustomEvent("iml:boost", { detail: { x: innerWidth / 2, y: Math.min(innerHeight * 0.5, 420) } }));
+  function playCurrent() {
+    if (currentIndex < 0) {
+      chooseTrack(0, true);
+      return;
+    }
+    audio.play().catch(() => {
+      status.textContent = `Tap play to start: ${tracks[currentIndex].title}`;
+    });
   }
 
   grid.addEventListener("click", event => {
-    const button = event.target.closest("[data-audio-index]");
-    if (!button) return;
-    selectTrack(Number(button.dataset.audioIndex));
-  });
-
-  playlistToggle.addEventListener("click", () => {
-    setPlaylistOpen(playlistToggle.getAttribute("aria-expanded") !== "true");
+    const row = event.target.closest("[data-audio-index]");
+    if (!row) return;
+    chooseTrack(Number(row.dataset.audioIndex), true);
   });
 
   playButton.addEventListener("click", () => {
-    if (!currentTrack) {
-      selectTrack(0, true);
-      return;
-    }
-    if (audio.paused) {
-      audio.play().catch(() => {
-        status.textContent = `Tap play to start: ${currentTrack.title}`;
-      });
-    } else {
-      audio.pause();
-    }
-  });
-
-  muteButton.addEventListener("click", () => {
-    audio.muted = !audio.muted;
-    updateMute();
+    if (audio.paused) playCurrent();
+    else audio.pause();
   });
 
   seek.addEventListener("input", () => {
@@ -474,29 +195,56 @@
     const duration = audio.duration || 0;
     if (duration) audio.currentTime = (Number(seek.value) / 1000) * duration;
     seeking = false;
-    updateSeek();
+    updateTimes();
+  });
+
+  toggle.addEventListener("click", () => {
+    const open = toggle.getAttribute("aria-expanded") !== "true";
+    grid.hidden = !open;
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.textContent = open ? "Hide Songs" : "Show Songs";
+  });
+
+  search.addEventListener("input", () => {
+    const query = normalize(search.value.trim());
+    grid.querySelectorAll(".audio-row").forEach(row => {
+      row.hidden = query && !normalize(row.textContent).includes(query);
+    });
+  });
+
+  shell.querySelector("#audioShuffle").addEventListener("click", () => {
+    const next = Math.floor(Math.random() * tracks.length);
+    chooseTrack(next, true);
+  });
+
+  shell.querySelector("#audioShare").addEventListener("click", async () => {
+    const url = `${location.origin}${location.pathname}#audioLibrary`;
+    if (navigator.share) await navigator.share({ title: "I.M.L. songs", url }).catch(() => {});
+    else {
+      await navigator.clipboard?.writeText(url).catch(() => {});
+      const button = shell.querySelector("#audioShare");
+      const old = button.textContent;
+      button.textContent = "Copied";
+      setTimeout(() => { button.textContent = old; }, 1200);
+    }
   });
 
   audio.addEventListener("play", () => {
-    setEnergy(true);
-    if (currentTrack) status.textContent = `Now playing: ${currentTrack.title}`;
+    setPlayingState(true);
+    if (tracks[currentIndex]) status.textContent = `Now playing: ${tracks[currentIndex].title}`;
   });
-  audio.addEventListener("pause", () => setEnergy(false));
-  audio.addEventListener("timeupdate", updateSeek);
-  audio.addEventListener("loadedmetadata", updateSeek);
-  audio.addEventListener("volumechange", updateMute);
+  audio.addEventListener("pause", () => setPlayingState(false));
+  audio.addEventListener("timeupdate", updateTimes);
+  audio.addEventListener("loadedmetadata", updateTimes);
   audio.addEventListener("ended", () => {
-    setEnergy(false);
-    const next = currentIndex + 1;
-    if (tracks[next]) selectTrack(next);
+    setPlayingState(false);
+    chooseTrack((currentIndex + 1) % tracks.length, true);
   });
   audio.addEventListener("error", () => {
-    if (currentTrack) stopMissingTrack(currentTrack);
+    setPlayingState(false);
+    const track = tracks[currentIndex];
+    status.textContent = track ? `This MP3 is not loading yet: ${track.title}` : "This MP3 is not loading yet.";
   });
 
-  sourceExists(tracks[0], ++checkId).then(exists => {
-    if (exists && !currentTrack) status.textContent = "Choose a track to start audio-only playback.";
-  });
-  updateMute();
-  updateSeek();
+  updateTimes();
 })();
