@@ -1,20 +1,20 @@
-const CACHE="iml-v61";
+const CACHE="iml-v62";
 const ASSETS=["./","./index.html","./manifest.json","./logo.svg","./video-inspired-bg.js","./video-library.js","./language-widget.js","./audio-library.js","./playlist-toggle.js","./music-theme.js","./music-polish.js","./site-features.js","./mobile-music-app.js","./promo-ads.js","./promo-live-files.js","./youtube-music-redesign.js","./mobile-ytm-experience.js","./mobile-compact-fix.js"];
-const BG_SCRIPT='<script src="./video-inspired-bg.js?v=61"></script>';
+const BG_SCRIPT='<script src="./video-inspired-bg.js?v=62"></script>';
 const WIDGET_SCRIPTS=[
-  '<script src="./video-library.js?v=61" defer></script>',
-  '<script src="./audio-library.js?v=61" defer></script>',
-  '<script src="./playlist-toggle.js?v=61" defer></script>',
-  '<script src="./language-widget.js?v=61" defer></script>',
-  '<script src="./music-theme.js?v=61" defer></script>',
-  '<script src="./music-polish.js?v=61" defer></script>',
-  '<script src="./site-features.js?v=61" defer></script>',
-  '<script src="./mobile-music-app.js?v=61" defer></script>',
-  '<script src="./promo-ads.js?v=61" defer></script>',
-  '<script src="./promo-live-files.js?v=61" defer></script>',
-  '<script src="./youtube-music-redesign.js?v=61" defer></script>',
-  '<script src="./mobile-ytm-experience.js?v=61" defer></script>',
-  '<script src="./mobile-compact-fix.js?v=61" defer></script>'
+  '<script src="./video-library.js?v=62" defer></script>',
+  '<script src="./audio-library.js?v=62" defer></script>',
+  '<script src="./playlist-toggle.js?v=62" defer></script>',
+  '<script src="./language-widget.js?v=62" defer></script>',
+  '<script src="./music-theme.js?v=62" defer></script>',
+  '<script src="./music-polish.js?v=62" defer></script>',
+  '<script src="./site-features.js?v=62" defer></script>',
+  '<script src="./mobile-music-app.js?v=62" defer></script>',
+  '<script src="./promo-ads.js?v=62" defer></script>',
+  '<script src="./promo-live-files.js?v=62" defer></script>',
+  '<script src="./youtube-music-redesign.js?v=62" defer></script>',
+  '<script src="./mobile-ytm-experience.js?v=62" defer></script>',
+  '<script src="./mobile-compact-fix.js?v=62" defer></script>'
 ];
 
 function withWidgets(html){
