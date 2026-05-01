@@ -7,7 +7,7 @@
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./logo.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./logo.svg">
-  <meta name="theme-color" content="#0b1220">
+  <meta name="theme-color" content="#050507">
   <meta name="description" content="Official I.M.L. hub for music, videos, and app updates.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,108 +15,110 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
   <style>
-    :root{--bg:#071326;--fg:#eef7ff;--muted:#b9d5e8;--accent:#4db8ff;--line:rgba(126,222,255,.24);--panel:rgba(6,18,34,.68)}
+    :root{--bg:#050507;--panel:#121217;--panel-2:#1d1d24;--text:#fff;--muted:#b9bac4;--line:rgba(255,255,255,.12);--red:#ff174c;--blue:#4db8ff}
     *{box-sizing:border-box}
-    html{min-height:100%;scroll-behavior:smooth}
-    body{margin:0;min-height:100%;font-family:system-ui,Arial,sans-serif;background:radial-gradient(circle at 50% 8%,#175985 0%,#102e55 30%,#081426 66%,#050915 100%);color:var(--fg);overflow-x:hidden;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);-webkit-text-size-adjust:100%}
-    body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 50% 22%,rgba(77,184,255,.4),transparent 26rem),radial-gradient(circle at 15% 64%,rgba(89,255,244,.18),transparent 25rem),radial-gradient(circle at 84% 55%,rgba(155,93,255,.2),transparent 27rem),url("./logo.svg") center 145px/min(54vw,360px) no-repeat;opacity:.38}
-    body::after{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;background:conic-gradient(from 120deg at 50% 28%,transparent 0deg,rgba(0,210,255,.24) 42deg,transparent 92deg,rgba(117,70,255,.2) 155deg,transparent 228deg,rgba(54,255,220,.18) 300deg,transparent 360deg);filter:blur(26px) saturate(1.3);opacity:.8;animation:auroraShift 14s ease-in-out infinite alternate}
-    body.video-active::before{opacity:.56}
-    canvas#bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+    html{min-height:100%;scroll-behavior:smooth;background:var(--bg)}
+    body{margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 18% 0,rgba(255,23,76,.18),transparent 24rem),radial-gradient(circle at 84% 12%,rgba(77,184,255,.14),transparent 24rem),linear-gradient(180deg,#0d0d12 0%,#050507 45%,#000 100%);overflow-x:hidden;-webkit-text-size-adjust:100%;padding-bottom:env(safe-area-inset-bottom)}
+    body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(115deg,transparent 0 28%,rgba(255,255,255,.05) 36%,transparent 46% 100%),radial-gradient(circle at 50% 120px,rgba(77,184,255,.2),transparent 20rem),url("./logo.svg") center 118px/min(46vw,330px) no-repeat;opacity:.22}
+    body.video-active::before{opacity:.32}
     header,main,#installModal{position:relative;z-index:1}
-    .site-header{position:sticky;top:0;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:calc(12px + env(safe-area-inset-top)) 14px 12px;isolation:isolate}
-    .site-header::before{content:"";position:absolute;inset:8px 10px 7px;border:1px solid rgba(126,222,255,.22);border-radius:24px;background:linear-gradient(135deg,rgba(7,17,35,.78),rgba(33,77,146,.42));box-shadow:0 14px 32px rgba(0,0,0,.22),inset 0 0 24px rgba(77,184,255,.1);backdrop-filter:blur(18px);pointer-events:none}
-    .brand-chip,.social-links{position:relative;z-index:1}
-    .brand-chip{--mx:50%;--my:50%;position:relative;display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:9px 14px;border-radius:18px;color:#fff;text-decoration:none;font-weight:900;overflow:hidden;border:1px solid rgba(126,222,255,.32);background:linear-gradient(135deg,rgba(14,44,84,.86),rgba(9,18,38,.74));box-shadow:0 0 22px rgba(77,184,255,.18);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
-    .brand-chip::before{content:"";position:absolute;inset:-1px;background:radial-gradient(circle at var(--mx) var(--my),rgba(127,240,255,.42),transparent 34%),linear-gradient(110deg,transparent 20%,rgba(255,255,255,.18),transparent 58%);opacity:.7;transform:translateX(-28%);transition:opacity .18s ease,transform .35s ease}
-    .brand-chip:hover,.brand-chip:focus-visible{transform:translateY(-2px);border-color:rgba(142,238,255,.72);box-shadow:0 0 28px rgba(77,184,255,.34)}
-    .brand-chip:hover::before,.brand-chip:focus-visible::before{opacity:1;transform:translateX(0)}
-    .brand-chip:active,.brand-chip.is-tapped{transform:scale(.97)}
-    .brand-dot{width:10px;height:10px;border-radius:50%;background:#7ff0ff;box-shadow:0 0 0 5px rgba(127,240,255,.12),0 0 18px rgba(127,240,255,.95);animation:brandBeat 2.3s ease-in-out infinite}
-    .brand-text{position:relative;z-index:1;font-size:1.08rem;text-shadow:0 0 12px rgba(127,240,255,.65)}
-    .brand-text::after{content:attr(data-text);position:absolute;inset:0;color:#9bf7ff;clip-path:inset(0 100% 0 0);animation:brandScan 3.8s ease-in-out infinite;text-shadow:0 0 16px rgba(127,240,255,.9)}
-    .btns,.mood-controls{display:flex;flex-wrap:wrap;gap:10px}
-    .social-links{align-items:center;justify-content:flex-end}
-    .button,button{font:inherit;min-height:44px;-webkit-tap-highlight-color:transparent;padding:10px 18px;border-radius:25px;border:0;background:var(--accent);color:#fff;font-weight:800;cursor:pointer;touch-action:manipulation;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
-    .button:hover,button:hover{filter:brightness(1.08)}
-    .social-button{--mx:50%;--my:50%;--brand-a:#4db8ff;--brand-b:#725dff;position:relative;overflow:hidden;gap:9px;border:1px solid rgba(255,255,255,.2);background:linear-gradient(135deg,var(--brand-a),var(--brand-b));box-shadow:0 10px 24px rgba(0,0,0,.18),0 0 22px rgba(77,184,255,.22);isolation:isolate;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
-    .youtube-link{--brand-a:#ff365c;--brand-b:#35c7ff}.tiktok-link{--brand-a:#20efd9;--brand-b:#8b5dff}
-    .social-icon{position:relative;display:inline-grid;place-items:center;width:22px;height:22px;border-radius:9px;background:rgba(2,8,18,.28);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
-    .play-icon::before{content:"";width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #fff;margin-left:2px}.clip-icon::before{content:"";width:8px;height:14px;border-right:3px solid #fff;border-bottom:3px solid #fff;border-radius:2px 2px 7px 7px;transform:rotate(-8deg)}
-    .clip-icon::after{content:"";position:absolute;width:7px;height:3px;border-radius:999px;background:#ff5bd7;right:4px;top:5px;box-shadow:-5px 8px 0 #4ff7e8}
-    @keyframes brandBeat{0%,100%{transform:scale(.82);opacity:.76}50%{transform:scale(1.08);opacity:1}}@keyframes brandScan{0%,58%,100%{clip-path:inset(0 100% 0 0)}68%,78%{clip-path:inset(0 0 0 0)}}@keyframes auroraShift{0%{transform:translate3d(-4%,0,0) rotate(-8deg) scale(1)}100%{transform:translate3d(4%,4%,0) rotate(8deg) scale(1.12)}}
-    #hero{text-align:center;padding:70px 20px 30px}.logo-wrap{position:relative;width:180px;height:180px;margin:0 auto 24px}.logo-wrap img{width:100%;height:100%;object-fit:contain;position:relative;z-index:3;animation:float 6s ease-in-out infinite}.glow{position:absolute;inset:-25%;z-index:1;border-radius:50%;background:radial-gradient(circle,rgba(120,200,255,.9),transparent 70%);filter:blur(40px);animation:pulse 4s infinite}#orbit{position:absolute;inset:0;z-index:2}@keyframes float{50%{transform:translateY(-12px)}}@keyframes pulse{50%{opacity:.4}}
-    section{padding:40px 20px}main>section:not(#hero){content-visibility:auto;contain-intrinsic-size:520px}section>h2,section>p,.hub-panel,.library-shell{max-width:960px;margin-left:auto;margin-right:auto}.hub-panel,.library-shell{padding:20px;border:1px solid var(--line);border-radius:18px;background:var(--panel);backdrop-filter:blur(16px);box-shadow:0 0 40px rgba(77,184,255,.12)}.hub-panel h2,.hub-panel h3,.library-shell h2{margin-top:0}.section-note{color:var(--muted);line-height:1.45}.mood-controls{justify-content:center;margin-top:16px}.mood-controls button{background:rgba(77,184,255,.22);border:1px solid rgba(126,222,255,.3)}.mood-controls button.active{background:linear-gradient(135deg,#35d9ff,#7b5dff);box-shadow:0 0 24px rgba(77,184,255,.42)}
-    .action-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;max-width:960px;margin:0 auto}.action-card{padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(6,18,34,.58);backdrop-filter:blur(16px);box-shadow:0 0 28px rgba(77,184,255,.08)}.action-card h3{margin:0 0 8px}.action-card p{opacity:.78;min-height:48px}.action-card .button{width:100%}.now-strip{max-width:960px;margin:16px auto 0;overflow:hidden;border:1px solid var(--line);border-radius:999px;background:rgba(6,18,34,.5);white-space:nowrap}.now-strip span{display:inline-block;padding:10px 0;animation:marquee 18s linear infinite}@keyframes marquee{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
-    iframe{display:block;width:100%;height:clamp(210px,48vw,420px);margin:16px auto 0;border:0;border-radius:20px;background:#000;position:relative;z-index:2}.playlist-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:16px}.playlist-card{position:relative;width:100%;min-height:104px;padding:12px;border:1px solid rgba(126,222,255,.22);border-radius:16px;background:linear-gradient(135deg,rgba(11,29,52,.82),rgba(5,13,26,.72));color:#fff;text-align:left;text-decoration:none;display:grid;grid-template-columns:74px 1fr;gap:12px;align-items:center;box-shadow:0 12px 28px rgba(0,0,0,.18);overflow:hidden;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.playlist-card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 15%,rgba(77,184,255,.26),transparent 38%);opacity:.55;pointer-events:none}.playlist-card:hover,.playlist-card:focus-visible,.playlist-card.active{filter:none;transform:translateY(-2px);border-color:rgba(126,222,255,.62);box-shadow:0 14px 30px rgba(0,0,0,.24),0 0 24px rgba(77,184,255,.18)}.playlist-card.is-disabled{opacity:.72;cursor:default}.playlist-thumb{position:relative;z-index:1;display:grid;place-items:center;width:74px;aspect-ratio:16/10;border-radius:12px;background:#071426 center/cover no-repeat;border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 0 18px rgba(77,184,255,.16)}.playlist-thumb::after{content:"";width:0;height:0;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:14px solid #fff;margin-left:4px;filter:drop-shadow(0 0 8px rgba(255,255,255,.72))}.audio-thumb::after{width:26px;height:26px;border:0;border-radius:50%;background:radial-gradient(circle,#fff 0 18%,transparent 19%),conic-gradient(from 90deg,#79efff,#725dff,#ff4fd8,#79efff)}.future-thumb::after{content:"+";width:auto;height:auto;border:0;font-size:1.7rem;font-weight:900;color:#fff}.playlist-copy{position:relative;z-index:1;display:grid;gap:5px}.playlist-copy strong{font-size:.98rem;line-height:1.15}.playlist-copy small{color:var(--muted);line-height:1.25}.audio-player{width:100%;margin:10px 0 4px;accent-color:#4db8ff}#audioStatus{min-height:1.5em;color:var(--muted)}
-    .latest-video-card{display:grid;grid-template-columns:minmax(180px,1.1fr) minmax(160px,.9fr);gap:16px;width:100%;margin:16px 0;padding:12px;border:1px solid rgba(126,222,255,.3);border-radius:18px;background:linear-gradient(135deg,rgba(17,55,96,.84),rgba(7,18,36,.7));box-shadow:0 16px 34px rgba(0,0,0,.22),0 0 28px rgba(77,184,255,.16);text-align:left}.latest-video-art{position:relative;min-height:190px;border-radius:14px;background:#061326 center/cover no-repeat;overflow:hidden;border:1px solid rgba(255,255,255,.14)}.latest-video-art::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(255,44,44,.92) 0 28px,rgba(255,255,255,.92) 29px 31px,transparent 32px),linear-gradient(90deg,rgba(0,0,0,.05),rgba(0,0,0,.42))}.latest-video-art span{position:absolute;left:12px;top:12px;z-index:1;padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.5);font-size:.78rem}.latest-video-copy{display:grid;align-content:center;gap:8px}.latest-video-copy strong{font-size:1.28rem;line-height:1.1}.latest-video-copy small{color:var(--muted);line-height:1.4}
-    #installBox{text-align:center}#installBox button{padding:15px 35px;font-size:1.05rem}#installStatus{min-height:1.5em;opacity:.76;margin-top:10px}#installModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px}#installModal .card{width:min(100%,380px);background:rgba(8,20,38,.92);color:var(--fg);padding:25px;border-radius:20px;text-align:center;backdrop-filter:blur(14px)}#installHelp{line-height:1.45;opacity:.86}
-    @media (max-width:640px){body::before{background:radial-gradient(circle at 50% 20%,rgba(77,184,255,.34),transparent 20rem),radial-gradient(circle at 20% 65%,rgba(89,255,244,.16),transparent 18rem),radial-gradient(circle at 82% 55%,rgba(138,88,255,.16),transparent 20rem),url("./logo.svg") center 132px/min(62vw,260px) no-repeat;opacity:.32}body::after{display:none}.site-header{padding:calc(9px + env(safe-area-inset-top)) 8px 9px;gap:8px}.site-header::before{inset:5px 6px;border-radius:20px;backdrop-filter:none}.brand-chip{min-height:38px;padding:8px 10px;border-radius:16px;gap:8px}.brand-text{font-size:.96rem}.brand-dot{width:8px;height:8px}.social-links{gap:7px}.social-button{min-height:38px;padding:8px 11px;gap:7px}.social-icon{width:19px;height:19px;border-radius:8px}#hero{padding:44px 14px 24px}.logo-wrap{width:min(56vw,164px);height:min(56vw,164px)}.logo-wrap img,.glow{animation:none}.glow{filter:blur(20px);opacity:.65}section{padding:26px 12px}main>section:not(#hero){contain-intrinsic-size:430px}.hub-panel,.action-card,.library-shell,#installModal .card{border-radius:14px;backdrop-filter:none;box-shadow:none;background:rgba(6,18,34,.72)}.mood-controls button{flex:1 1 130px}.action-grid,.playlist-grid{grid-template-columns:1fr}.playlist-card{min-height:92px;border-radius:14px}.latest-video-card{grid-template-columns:1fr;border-radius:14px}.latest-video-art{min-height:clamp(170px,48vw,230px)}.now-strip{border-radius:14px;white-space:normal}.now-strip span{display:block;padding:10px 12px;animation:none;line-height:1.35;text-align:center}iframe{border-radius:14px;height:min(56vw,260px)}#installModal{padding:calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom))}}
-    @media (prefers-reduced-motion:reduce){body::after,.brand-dot,.brand-text::after,.logo-wrap img,.glow,.now-strip span{animation:none}}
+    a{color:inherit}.site-header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;width:min(100%,1180px);margin:0 auto;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;background:linear-gradient(180deg,rgba(5,5,7,.92),rgba(5,5,7,.68));backdrop-filter:blur(16px)}
+    .brand-chip{display:inline-flex;align-items:center;gap:10px;min-height:40px;padding:8px 13px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-weight:950;text-decoration:none;box-shadow:0 12px 30px rgba(0,0,0,.26)}
+    .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 0 5px rgba(255,23,76,.14),0 0 18px rgba(255,23,76,.8)}
+    .brand-text{letter-spacing:.02em}.social-links{display:flex;gap:8px;align-items:center}.button,button{font:inherit;min-height:40px;border:0;border-radius:999px;padding:9px 15px;background:#fff;color:#050507;font-weight:900;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.button:hover,button:hover{filter:brightness(1.06)}.social-button.youtube{background:linear-gradient(135deg,#ff174c,#ff5f82);color:#fff}.social-button.tiktok{background:linear-gradient(135deg,#18dac9,#655dff);color:#fff}
+    main{width:min(100%,1180px);margin:0 auto;padding:0 14px 44px}.hero{display:grid;grid-template-columns:minmax(140px,220px) minmax(0,1fr);gap:22px;align-items:center;padding:34px 0 20px}.hero-logo{width:100%;aspect-ratio:1;border-radius:28px;background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.14),transparent 42%),linear-gradient(145deg,#181d2a,#07080c);display:grid;place-items:center;border:1px solid rgba(255,255,255,.1);box-shadow:0 24px 70px rgba(0,0,0,.36),0 0 44px rgba(77,184,255,.12)}.hero-logo img{width:78%;height:78%;object-fit:contain}.hero-copy{min-width:0}.eyebrow{margin:0 0 8px;color:#ff9ab2;font-size:.78rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.hero h1{margin:0;font-size:clamp(2.2rem,7vw,5.8rem);line-height:.92;letter-spacing:0}.hero p{margin:12px 0 0;color:var(--muted);font-size:1.04rem;line-height:1.45}.quick-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.quick-actions .button,.quick-actions button{background:rgba(255,255,255,.1);color:#fff;border:1px solid var(--line)}.quick-actions .primary{background:#fff;color:#050507}
+    section{padding:18px 0}.panel{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,rgba(25,25,30,.94),rgba(10,10,13,.96));box-shadow:0 22px 70px rgba(0,0,0,.28);padding:22px}.panel h2{margin:0 0 8px;font-size:1.45rem;line-height:1.15}.section-note{margin:0 0 12px;color:var(--muted);line-height:1.45}.action-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.action-card{padding:18px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.055)}.action-card h3{margin:0 0 8px}.action-card p{margin:0 0 14px;color:var(--muted);line-height:1.4}.action-card .button,.action-card button{width:100%}
+    .promo-strip{padding:0}.promo-mobile-strip{border:0!important;background:transparent!important;padding:0!important;margin:0!important}.promo-mobile-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}.promo-ad-card{aspect-ratio:16/9!important;min-height:0!important;border-radius:16px!important;overflow:hidden!important;border:1px solid var(--line)!important;background:#0b0b0f!important;box-shadow:0 16px 46px rgba(0,0,0,.3)!important}.promo-ad-card video{width:100%!important;height:100%!important;object-fit:cover!important}.promo-ad-card h3,.promo-ad-card p,.promo-ad-card span,.promo-ad-card .promo-badge{display:none!important}
+    iframe{display:block;width:100%;height:clamp(220px,47vw,430px);border:0;border-radius:18px;background:#202024;margin:14px 0}.playlist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:14px}.playlist-card{position:relative;display:grid;grid-template-columns:88px minmax(0,1fr);gap:10px;align-items:center;min-height:76px;width:100%;padding:8px;border:0;border-radius:12px;background:rgba(255,255,255,.055);color:#fff;text-align:left;text-decoration:none;cursor:pointer}.playlist-card:hover,.playlist-card:focus-visible,.playlist-card.active{background:rgba(255,255,255,.1);outline:0}.playlist-thumb{width:88px;aspect-ratio:16/9;border-radius:8px;background:#0b0f16 center/cover no-repeat}.playlist-copy{min-width:0}.playlist-copy strong{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.18}.playlist-copy small{display:block;color:#aaa;font-size:.78rem;margin-top:3px}.latest-video-card{display:grid;grid-template-columns:minmax(240px,1.2fr) minmax(200px,.8fr);gap:14px;padding:12px;border-radius:16px;background:rgba(255,255,255,.055);border:1px solid var(--line)}.latest-video-art{min-height:210px;border-radius:12px;background:#111 center/cover no-repeat;position:relative;overflow:hidden}.latest-video-art::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,#ff174c 0 27px,#fff 28px 31px,transparent 32px),linear-gradient(90deg,rgba(0,0,0,.06),rgba(0,0,0,.45))}.latest-video-art span{position:absolute;left:12px;top:12px;z-index:1;padding:6px 9px;border-radius:999px;background:rgba(0,0,0,.5);font-size:.75rem;font-weight:900}.latest-video-copy{display:grid;align-content:center;gap:8px}.latest-video-copy strong{font-size:1.35rem;line-height:1.12}.latest-video-copy small{color:var(--muted);line-height:1.4}
+    #installBox{text-align:center;padding-bottom:100px}.install-card{max-width:480px;margin:auto}.install-card button{padding-inline:28px;background:linear-gradient(135deg,#ff174c,#ff6a8f);color:#fff}.install-card p{color:var(--muted)}#installModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.66);align-items:center;justify-content:center;padding:20px}.modal-card{width:min(100%,380px);background:#17171c;color:#fff;padding:24px;border-radius:20px;text-align:center;border:1px solid var(--line)}#installHelp{color:var(--muted);line-height:1.45}
+    @media (max-width:820px){.hero{grid-template-columns:1fr;text-align:center;padding-top:24px}.hero-logo{width:min(52vw,190px);margin:auto}.quick-actions{justify-content:center}.action-grid{grid-template-columns:1fr}.promo-mobile-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.latest-video-card{grid-template-columns:1fr}}
+    @media (max-width:560px){body::before{background:radial-gradient(circle at 50% 120px,rgba(77,184,255,.18),transparent 16rem),url("./logo.svg") center 118px/min(62vw,230px) no-repeat;opacity:.18}.site-header{padding:calc(8px + env(safe-area-inset-top)) 10px 8px}.brand-chip{min-height:36px;padding:7px 10px}.brand-text{font-size:.86rem}.social-links{gap:6px}.social-button{min-height:36px;padding:7px 10px;font-size:.76rem}main{padding:0 10px 34px}.hero{padding:18px 0 12px}.hero-logo{width:min(48vw,150px);border-radius:22px}.hero h1{font-size:2.5rem}.hero p{font-size:.88rem}.panel{padding:14px;border-radius:16px}.panel h2{font-size:1.16rem}.promo-mobile-grid{gap:8px!important}.promo-ad-card{border-radius:11px!important}iframe{height:min(54vw,240px);min-height:190px;border-radius:12px}.playlist-grid{grid-template-columns:1fr}.playlist-card{grid-template-columns:80px minmax(0,1fr);min-height:64px;padding:6px}.playlist-thumb{width:80px}.latest-video-art{min-height:160px}.quick-actions .button,.quick-actions button{flex:1 1 130px}}
   </style>
 </head>
 <body>
-  <canvas id="bg"></canvas>
   <header class="site-header">
-    <a class="brand-chip interactive-head" href="#hero" aria-label="I.M.L. home"><span class="brand-dot" aria-hidden="true"></span><span class="brand-text" data-text="I.M.L.">I.M.L.</span></a>
-    <nav class="btns social-links" aria-label="Social links">
-      <a class="button social-button youtube-link interactive-head" href="https://youtube.com/@i.m.l._official" target="_blank" rel="noopener"><span class="social-icon play-icon" aria-hidden="true"></span><span>YouTube</span></a>
-      <a class="button social-button tiktok-link interactive-head" href="https://www.tiktok.com/@i.m.l._officially?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener"><span class="social-icon clip-icon" aria-hidden="true"></span><span>TikTok</span></a>
+    <a class="brand-chip" href="#home" aria-label="I.M.L. home"><span class="brand-dot" aria-hidden="true"></span><span class="brand-text">I.M.L.</span></a>
+    <nav class="social-links" aria-label="Social links">
+      <a class="button social-button youtube" href="https://www.youtube.com/@I.M.L._Official/videos" target="_blank" rel="noopener">YouTube</a>
+      <a class="button social-button tiktok" href="https://www.tiktok.com/@i.m.l._officially?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener">TikTok</a>
     </nav>
   </header>
-  <main>
-    <section id="hero">
-      <div class="logo-wrap"><div class="glow"></div><canvas id="orbit"></canvas><img src="./logo.svg" alt="I.M.L. Logo"></div>
-      <p>High-voltage sound | Cinematic visuals | I.M.L.</p>
-      <div class="now-strip"><span>New visuals, new music, new I.M.L. drops | Follow on TikTok and YouTube | Install the app for quick access</span></div>
-    </section>
-    <section>
-      <div class="action-grid">
-        <div class="action-card"><h3>Share I.M.L.</h3><p>Send the hub to someone who should hear the next track.</p><button type="button" id="shareButton">Share Page</button></div>
-        <div class="action-card"><h3>Watch Videos</h3><p>Jump straight into the latest I.M.L. visuals on YouTube.</p><a class="button" href="#videoLibrary">Open Playlist</a></div>
-        <div class="action-card"><h3>Follow The Clips</h3><p>Catch short updates, moments, and drops on TikTok.</p><a class="button" href="https://www.tiktok.com/@i.m.l._officially?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener">Open TikTok</a></div>
+
+  <main id="home">
+    <section class="hero" id="hero">
+      <div class="hero-logo"><img src="./logo.svg" alt="I.M.L. Logo"></div>
+      <div class="hero-copy">
+        <p class="eyebrow">Official music hub</p>
+        <h1>I.M.L.</h1>
+        <p>Videos, songs, clips, and updates in one fast page.</p>
+        <div class="quick-actions">
+          <a class="button primary" href="#audioLibrary">Play Songs</a>
+          <a class="button" href="#videoLibrary">Watch Videos</a>
+          <button type="button" id="shareButton">Share</button>
+        </div>
       </div>
     </section>
-    <section id="videoLibrary"><div class="library-shell"><h2>All Videos</h2><p class="section-note">Loading the full I.M.L. video playlist...</p></div></section>
-    <section id="audioLibrary"><div class="library-shell"><h2>Audio Playlist</h2><p class="section-note">Loading the MP3 audio playlist...</p></div></section>
-    <section id="installBox"><h2>Install App</h2><button type="button" id="installButton">Install</button><p id="installStatus">Tap Install for browser install options.</p></section>
+
+    <section id="promoAdStrip" class="promo-strip" aria-label="I.M.L. promo clips"></section>
+
+    <section id="videoLibrary"><div class="panel library-shell"><h2>All Videos</h2><p class="section-note">Loading the public I.M.L. YouTube videos...</p></div></section>
+
+    <section id="audioLibrary"><div class="panel library-shell"><h2>Audio Playlist</h2><p class="section-note">Loading the MP3 audio playlist...</p></div></section>
+
+    <section class="action-grid" aria-label="I.M.L. actions">
+      <div class="action-card"><h3>Share I.M.L.</h3><p>Send the hub to someone who should hear the next track.</p><button type="button" id="shareButtonCard">Share Page</button></div>
+      <div class="action-card"><h3>Watch Videos</h3><p>Open the full I.M.L. YouTube video page.</p><a class="button" href="https://www.youtube.com/@I.M.L._Official/videos" target="_blank" rel="noopener">Open YouTube</a></div>
+      <div class="action-card"><h3>Follow Clips</h3><p>Catch short updates and drops on TikTok.</p><a class="button" href="https://www.tiktok.com/@i.m.l._officially?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener">Open TikTok</a></div>
+    </section>
+
+    <section id="installBox"><div class="panel install-card"><h2>Install App</h2><button type="button" id="installButton">Install</button><p id="installStatus">Tap Install for browser install options.</p></div></section>
   </main>
-  <div id="installModal" aria-hidden="true"><div class="card"><h3>Install I.M.L. App</h3><p id="installHelp">Checking your browser install options...</p><button type="button" id="confirmInstall">Install</button><br><br><button type="button" id="cancelInstall">Close</button></div></div>
-  <script src="./video-inspired-bg.js?v=59"></script>
+
+  <div id="installModal" aria-hidden="true"><div class="modal-card"><h3>Install I.M.L.</h3><p id="installHelp">Checking your browser install options...</p><button type="button" id="confirmInstall">Install</button><br><br><button type="button" id="cancelInstall">Close</button></div></div>
+
   <script>
-    const orbitCanvas=document.getElementById("orbit");
-    const orbitCtx=orbitCanvas.getContext("2d");
-    const orbitLite=matchMedia("(pointer: coarse), (max-width: 640px)");
-    const orbitReduced=matchMedia("(prefers-reduced-motion: reduce)");
-    let ow=0,oh=0,orbitRaf=0,orbitLast=0;
-    function sizeOrbit(){const d=orbitLite.matches?1:Math.min(devicePixelRatio||1,1.35);ow=orbitCanvas.offsetWidth;oh=orbitCanvas.offsetHeight;orbitCanvas.width=Math.floor(ow*d);orbitCanvas.height=Math.floor(oh*d);orbitCtx.setTransform(d,0,0,d,0,0);if(orbitReduced.matches)drawOrbit(0)}
-    function drawOrbit(t=0){orbitCtx.clearRect(0,0,ow,oh);const dots=orbitLite.matches?5:12;for(let i=0;i<dots;i++){const a=t/(orbitLite.matches?1200:800)+i;const r=ow/2.25;orbitCtx.fillStyle="rgba(120,200,255,.85)";orbitCtx.beginPath();orbitCtx.arc(ow/2+Math.cos(a)*r,oh/2+Math.sin(a)*r,orbitLite.matches?2:3,0,Math.PI*2);orbitCtx.fill()}}
-    function orbit(t=0){if(document.hidden){orbitRaf=0;return}orbitRaf=requestAnimationFrame(orbit);if(orbitLite.matches&&t-orbitLast<90)return;orbitLast=t;drawOrbit(t)}
-    sizeOrbit();addEventListener("resize",sizeOrbit,{passive:true});document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!orbitReduced.matches&&!orbitRaf)orbitRaf=requestAnimationFrame(orbit)});if(orbitReduced.matches)drawOrbit(0);else orbitRaf=requestAnimationFrame(orbit);
-    function setVideoEnergy(playing){document.body.classList.toggle("video-active",playing);dispatchEvent(new CustomEvent("iml:video-state",{detail:{playing}}))}
-    document.querySelectorAll("#moodControls button").forEach(button=>{button.addEventListener("click",()=>{document.querySelectorAll("#moodControls button").forEach(b=>b.classList.remove("active"));button.classList.add("active");dispatchEvent(new CustomEvent("iml:mood",{detail:{mood:button.dataset.mood}}))})});
-    document.querySelectorAll(".interactive-head").forEach(item=>{item.addEventListener("pointermove",event=>{if(orbitLite.matches)return;const rect=item.getBoundingClientRect();item.style.setProperty("--mx",`${event.clientX-rect.left}px`);item.style.setProperty("--my",`${event.clientY-rect.top}px`)},{passive:true});item.addEventListener("pointerdown",event=>{item.classList.add("is-tapped");setTimeout(()=>item.classList.remove("is-tapped"),260);dispatchEvent(new CustomEvent("iml:boost",{detail:{x:event.clientX,y:event.clientY}}))},{passive:true})});
-    document.getElementById("shareButton").addEventListener("click",async()=>{const url="https://imlofficial.github.io/I.M.L.-Hub/";if(navigator.share){await navigator.share({title:"I.M.L. Official",text:"Check out the I.M.L. music hub",url}).catch(()=>{})}else{await navigator.clipboard.writeText(url).catch(()=>{});const button=document.getElementById("shareButton");button.textContent="Link Copied";setTimeout(()=>button.textContent="Share Page",1800)}});
-    let deferredPrompt;const modal=document.getElementById("installModal"),statusText=document.getElementById("installStatus"),installButton=document.getElementById("installButton"),installHelp=document.getElementById("installHelp"),confirmInstall=document.getElementById("confirmInstall");
-    function isStandalone(){return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
-    function setInstallStatus(){if(isStandalone()){installButton.textContent="Installed";statusText.textContent="I.M.L. is already installed.";return}installButton.textContent="Install";statusText.textContent=deferredPrompt?"Ready to install.":"Tap Install for browser install options."}
-    function openInstall(){if(isStandalone()){setInstallStatus();return}modal.style.display="flex";modal.setAttribute("aria-hidden","false");if(deferredPrompt){confirmInstall.style.display="inline-flex";installHelp.textContent="Your browser is ready to install I.M.L.";return}confirmInstall.style.display="none";installHelp.textContent=isIOS()?"On iPhone or iPad, tap Share, then Add to Home Screen.":"If the browser prompt does not appear, use the install icon in the address bar or open the browser menu and choose Install app."}
-    function closeInstall(){modal.style.display="none";modal.setAttribute("aria-hidden","true")}async function doInstall(){if(!deferredPrompt){openInstall();return}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;closeInstall();setInstallStatus()}
-    window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();deferredPrompt=event;setInstallStatus()});window.addEventListener("appinstalled",()=>{deferredPrompt=null;closeInstall();setInstallStatus()});installButton.addEventListener("click",openInstall);confirmInstall.addEventListener("click",doInstall);document.getElementById("cancelInstall").addEventListener("click",closeInstall);setInstallStatus();
-    if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=59"))}
+    const VERSION = "65";
+    async function shareSite(button){
+      const url="https://imlofficial.github.io/I.M.L.-Hub/";
+      if(navigator.share){await navigator.share({title:"I.M.L. Official",text:"Check out the I.M.L. music hub",url}).catch(()=>{});return}
+      await navigator.clipboard?.writeText(url).catch(()=>{});
+      if(button){const old=button.textContent;button.textContent="Link Copied";setTimeout(()=>button.textContent=old,1400)}
+    }
+    document.getElementById("shareButton")?.addEventListener("click",event=>shareSite(event.currentTarget));
+    document.getElementById("shareButtonCard")?.addEventListener("click",event=>shareSite(event.currentTarget));
+
+    let deferredPrompt;
+    const modal=document.getElementById("installModal");
+    const installButton=document.getElementById("installButton");
+    const statusText=document.getElementById("installStatus");
+    const installHelp=document.getElementById("installHelp");
+    const confirmInstall=document.getElementById("confirmInstall");
+    function isStandalone(){return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}
+    function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent)}
+    function setInstallStatus(){
+      if(isStandalone()){installButton.textContent="Installed";statusText.textContent="I.M.L. is already installed.";return}
+      installButton.textContent="Install";
+      statusText.textContent=deferredPrompt?"Ready to install.":"Tap Install for browser install options.";
+    }
+    function openInstall(){
+      if(isStandalone()){setInstallStatus();return}
+      modal.style.display="flex";modal.setAttribute("aria-hidden","false");
+      if(deferredPrompt){confirmInstall.style.display="inline-flex";installHelp.textContent="Your browser is ready to install I.M.L.";return}
+      confirmInstall.style.display="none";
+      installHelp.textContent=isIOS()?"On iPhone or iPad, tap Share, then Add to Home Screen.":"If the prompt does not appear, use the install icon in the address bar or your browser menu and choose Install app.";
+    }
+    function closeInstall(){modal.style.display="none";modal.setAttribute("aria-hidden","true")}
+    async function doInstall(){if(!deferredPrompt){openInstall();return}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;closeInstall();setInstallStatus()}
+    window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();deferredPrompt=event;setInstallStatus()});
+    window.addEventListener("appinstalled",()=>{deferredPrompt=null;closeInstall();setInstallStatus()});
+    installButton.addEventListener("click",openInstall);confirmInstall.addEventListener("click",doInstall);document.getElementById("cancelInstall").addEventListener("click",closeInstall);setInstallStatus();
+    if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register(`./sw.js?v=${VERSION}`).catch(()=>{}))}
   </script>
-  <script src="./video-library.js?v=59"></script>
-  <script src="./promo-ads.js?v=59"></script>
-  <script src="./promo-live-files.js?v=59"></script>
-  <script src="./audio-library.js?v=59"></script>
-  <script src="./playlist-toggle.js?v=59"></script>
-  <script src="./language-widget.js?v=59"></script>
-  <script src="./music-theme.js?v=59"></script>
-  <script src="./music-polish.js?v=59"></script>
-  <script src="./site-features.js?v=59"></script>
-  <script src="./mobile-music-app.js?v=59"></script>
-  <script src="./youtube-music-redesign.js?v=59"></script>
-  <script src="./mobile-ytm-experience.js?v=59"></script>
-  <script src="./mobile-compact-fix.js?v=59"></script>
+  <script src="./promo-ads.js?v=65" defer></script>
+  <script src="./video-library.js?v=65" defer></script>
+  <script src="./audio-library.js?v=65" defer></script>
+  <script src="./playlist-toggle.js?v=65" defer></script>
+  <script src="./language-widget.js?v=65" defer></script>
+  <script src="./mobile-compact-fix.js?v=65" defer></script>
 </body>
 </html>
