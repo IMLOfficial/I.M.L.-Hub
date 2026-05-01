@@ -1,4 +1,4 @@
-const CACHE = "iml-v65";
+const CACHE = "iml-v66";
 const ASSETS = [
   "./",
   "./index.html",
