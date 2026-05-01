@@ -6,11 +6,11 @@
   const tracks = [
     { title: "Everything is Borrowed - I.M.L.", src: "./audio/Everything%20is%20Borrowed%20-%20I.M.L..mp3" },
     { title: "F.O.C.U.S. - I.M.L.", src: "./audio/F.O.C.U.S..mp3" },
-    { title: "Analog Hearts - I.M.L.", src: "./audio/Analog%20Hearts%20-%20I.M.L..mp3" },
-    { title: "Anker und Licht - I.M.L.", src: "./audio/Anker%20und%20Licht%20-%20I.M.L..mp3" },
-    { title: "Beautiful Madness - I.M.L.", src: "./audio/Beautiful%20Madness%20-%20I.M.L..mp3" },
-    { title: "Burnt Rubber & Chrome Dreams - I.M.L.", src: "./audio/Burnt%20Rubber%20%26%20Chrome%20Dreams%20-%20I.M.L..mp3" },
-    { title: "Das Buch Unserer Zeit (2026)", src: "./audio/Das%20Buch%20Unserer%20Zeit%20%282026%29.mp3" },
+    { title: "Analog Hearts - I.M.L.", src: "./Analog%20Hearts%20-%20I.M.L..mp3" },
+    { title: "Anker und Licht - I.M.L.", src: "./Anker%20und%20Licht%20-%20I.M.L..mp3" },
+    { title: "Beautiful Madness - I.M.L.", src: "./Beautiful%20Madness%20-%20I.M.L..mp3" },
+    { title: "Burnt Rubber & Chrome Dreams - I.M.L.", src: "./Burnt%20Rubber%20%26%20Chrome%20Dreams%20-%20I.M.L..mp3" },
+    { title: "Das Buch Unserer Zeit (2026)", src: "./Das%20Buch%20Unserer%20Zeit%20%282026%29.mp3" },
     { title: "Flüssige Vernunft - I.M.L.", src: "./audio/Fl%C3%BCssige%20Vernunft%20-%20I.M.L..mp3" },
     { title: "Grass Stains and Golden Hours - I.M.L.", src: "./audio/Grass%20Stains%20and%20Golden%20Hours%20-%20I.M.L..mp3" },
     { title: "Ibiza-Träume - I.M.L.", src: "./audio/Ibiza-Tr%C3%A4ume.mp3" },
@@ -40,12 +40,17 @@
 
   const shell = section.querySelector(".library-shell") || section;
 
-  function escapeHtml(value) {
+  function html(value) {
     return value.replace(/[&<>"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[char]));
   }
 
   function normalize(value) {
     return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
+  function formatTime(seconds) {
+    if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
+    return `${Math.floor(seconds / 60)}:${Math.floor(seconds % 60).toString().padStart(2, "0")}`;
   }
 
   function ensureStyles() {
@@ -99,7 +104,7 @@
         <button type="button" class="audio-row audio-track" data-audio-index="${index}">
           <span class="audio-number">${index + 1}</span>
           <span class="audio-thumb" aria-hidden="true"></span>
-          <span><strong>${escapeHtml(track.title)}</strong><small>MP3 audio</small></span>
+          <span><strong>${html(track.title)}</strong><small>MP3 audio</small></span>
           <span class="audio-row-action">Play</span>
         </button>
       `).join("")}
@@ -119,9 +124,8 @@
   let currentIndex = -1;
   let seeking = false;
 
-  function formatTime(seconds) {
-    if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
-    return `${Math.floor(seconds / 60)}:${Math.floor(seconds % 60).toString().padStart(2, "0")}`;
+  function currentTrack() {
+    return tracks[currentIndex];
   }
 
   function updateTimes() {
@@ -133,55 +137,40 @@
     durationTime.textContent = formatTime(audio.duration);
   }
 
-  function updateRows() {
-    grid.querySelectorAll(".audio-row").forEach(row => {
-      row.classList.toggle("active", Number(row.dataset.audioIndex) === currentIndex);
-    });
-  }
-
-  function setPlayingState(playing) {
+  function setPlaying(playing) {
     playButton.classList.toggle("is-playing", playing);
     playButton.setAttribute("aria-label", playing ? "Pause audio" : "Play audio");
     document.body.classList.toggle("video-active", playing);
   }
 
-  function chooseTrack(index, shouldPlay = true) {
+  function updateRows() {
+    grid.querySelectorAll(".audio-row").forEach(row => row.classList.toggle("active", Number(row.dataset.audioIndex) === currentIndex));
+  }
+
+  function chooseTrack(index, autoplay = true) {
     const track = tracks[index];
     if (!track) return;
     currentIndex = index;
     nowTitle.textContent = track.title;
     status.textContent = `Loading: ${track.title}`;
     audio.src = new URL(track.src, location.href).href;
-    audio.load();
     updateRows();
     updateTimes();
-    if (!shouldPlay) return;
-    const promise = audio.play();
-    if (promise && typeof promise.catch === "function") {
-      promise.catch(() => {
+    if (autoplay) {
+      audio.play().catch(() => {
         status.textContent = `Tap play to start: ${track.title}`;
       });
     }
   }
 
-  function playCurrent() {
-    if (currentIndex < 0) {
-      chooseTrack(0, true);
-      return;
-    }
-    audio.play().catch(() => {
-      status.textContent = `Tap play to start: ${tracks[currentIndex].title}`;
-    });
-  }
-
   grid.addEventListener("click", event => {
     const row = event.target.closest("[data-audio-index]");
-    if (!row) return;
-    chooseTrack(Number(row.dataset.audioIndex), true);
+    if (row) chooseTrack(Number(row.dataset.audioIndex), true);
   });
 
   playButton.addEventListener("click", () => {
-    if (audio.paused) playCurrent();
+    if (!currentTrack()) chooseTrack(0, true);
+    else if (audio.paused) audio.play().catch(() => { status.textContent = `Tap play to start: ${currentTrack().title}`; });
     else audio.pause();
   });
 
@@ -208,14 +197,11 @@
   search.addEventListener("input", () => {
     const query = normalize(search.value.trim());
     grid.querySelectorAll(".audio-row").forEach(row => {
-      row.hidden = query && !normalize(row.textContent).includes(query);
+      row.hidden = Boolean(query) && !normalize(row.textContent).includes(query);
     });
   });
 
-  shell.querySelector("#audioShuffle").addEventListener("click", () => {
-    const next = Math.floor(Math.random() * tracks.length);
-    chooseTrack(next, true);
-  });
+  shell.querySelector("#audioShuffle").addEventListener("click", () => chooseTrack(Math.floor(Math.random() * tracks.length), true));
 
   shell.querySelector("#audioShare").addEventListener("click", async () => {
     const url = `${location.origin}${location.pathname}#audioLibrary`;
@@ -230,20 +216,16 @@
   });
 
   audio.addEventListener("play", () => {
-    setPlayingState(true);
-    if (tracks[currentIndex]) status.textContent = `Now playing: ${tracks[currentIndex].title}`;
+    setPlaying(true);
+    if (currentTrack()) status.textContent = `Now playing: ${currentTrack().title}`;
   });
-  audio.addEventListener("pause", () => setPlayingState(false));
+  audio.addEventListener("pause", () => setPlaying(false));
   audio.addEventListener("timeupdate", updateTimes);
   audio.addEventListener("loadedmetadata", updateTimes);
-  audio.addEventListener("ended", () => {
-    setPlayingState(false);
-    chooseTrack((currentIndex + 1) % tracks.length, true);
-  });
+  audio.addEventListener("ended", () => chooseTrack((currentIndex + 1) % tracks.length, true));
   audio.addEventListener("error", () => {
-    setPlayingState(false);
-    const track = tracks[currentIndex];
-    status.textContent = track ? `This MP3 is not loading yet: ${track.title}` : "This MP3 is not loading yet.";
+    setPlaying(false);
+    status.textContent = currentTrack() ? `This MP3 is not loading yet: ${currentTrack().title}` : "This MP3 is not loading yet.";
   });
 
   updateTimes();
