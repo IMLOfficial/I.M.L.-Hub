@@ -1,23 +1,9 @@
-const CACHE = "iml-v68";
+const CACHE = "song2video-agent-v1";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./logo.svg",
-  "./promo-ads.js",
-  "./video-library.js",
-  "./audio-library.js",
-  "./playlist-toggle.js",
-  "./language-widget.js",
-  "./mobile-compact-fix.js",
-  "./video-inspired-bg.js",
-  "./music-theme.js",
-  "./music-polish.js",
-  "./site-features.js",
-  "./mobile-music-app.js",
-  "./promo-live-files.js",
-  "./youtube-music-redesign.js",
-  "./mobile-ytm-experience.js"
+  "./logo.svg"
 ];
 
 self.addEventListener("install", event => {
@@ -46,10 +32,7 @@ self.addEventListener("fetch", event => {
   }
 
   if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request, { cache: "no-store" })
-        .catch(() => caches.match("./index.html"))
-    );
+    event.respondWith(fetch(request, { cache: "no-store" }).catch(() => caches.match("./index.html")));
     return;
   }
 
