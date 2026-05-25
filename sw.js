@@ -1,9 +1,11 @@
-const CACHE = "song2video-agent-v3";
+const CACHE = "song2video-agent-v4";
+const LOGO_SCRIPT = '<script src="./custom-logo.js?v=logo-1" defer></script>';
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./logo.svg"
+  "./logo.svg",
+  "./custom-logo.js"
 ];
 
 self.addEventListener("install", event => {
@@ -23,6 +25,25 @@ self.addEventListener("activate", event => {
   );
 });
 
+async function injectLogoOverlay(response) {
+  const type = response.headers.get("content-type") || "";
+  if (!type.includes("text/html")) return response;
+
+  let html = await response.text();
+  if (!html.includes("custom-logo.js")) {
+    html = html.replace("</body>", `${LOGO_SCRIPT}\n</body>`);
+  }
+
+  const headers = new Headers(response.headers);
+  headers.set("content-type", "text/html; charset=utf-8");
+  headers.set("cache-control", "no-store");
+  return new Response(html, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
 self.addEventListener("fetch", event => {
   const request = event.request;
   const url = new URL(request.url);
@@ -32,7 +53,11 @@ self.addEventListener("fetch", event => {
   }
 
   if (request.mode === "navigate") {
-    event.respondWith(fetch(request, { cache: "no-store" }).catch(() => caches.match("./index.html")));
+    event.respondWith(
+      fetch(request, { cache: "no-store" })
+        .then(response => injectLogoOverlay(response))
+        .catch(() => caches.match("./index.html").then(response => response ? injectLogoOverlay(response.clone()) : response))
+    );
     return;
   }
 
