@@ -1,11 +1,15 @@
-const CACHE = "song2video-agent-v4";
-const LOGO_SCRIPT = '<script src="./custom-logo.js?v=logo-1" defer></script>';
+const CACHE = "song2video-agent-v5";
+const INJECTED_SCRIPTS = [
+  '<script src="./custom-logo.js?v=logo-1" defer></script>',
+  '<script src="./openart-workflow.js?v=openart-1" defer></script>'
+];
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./logo.svg",
-  "./custom-logo.js"
+  "./custom-logo.js",
+  "./openart-workflow.js"
 ];
 
 self.addEventListener("install", event => {
@@ -25,13 +29,17 @@ self.addEventListener("activate", event => {
   );
 });
 
-async function injectLogoOverlay(response) {
+async function injectSiteEnhancements(response) {
   const type = response.headers.get("content-type") || "";
   if (!type.includes("text/html")) return response;
 
   let html = await response.text();
-  if (!html.includes("custom-logo.js")) {
-    html = html.replace("</body>", `${LOGO_SCRIPT}\n</body>`);
+  const missingScripts = INJECTED_SCRIPTS.filter(script => {
+    const match = script.match(/src="\.\/(.*?)\?/);
+    return !match || !html.includes(match[1]);
+  });
+  if (missingScripts.length) {
+    html = html.replace("</body>", `${missingScripts.join("\n")}\n</body>`);
   }
 
   const headers = new Headers(response.headers);
@@ -55,8 +63,8 @@ self.addEventListener("fetch", event => {
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request, { cache: "no-store" })
-        .then(response => injectLogoOverlay(response))
-        .catch(() => caches.match("./index.html").then(response => response ? injectLogoOverlay(response.clone()) : response))
+        .then(response => injectSiteEnhancements(response))
+        .catch(() => caches.match("./index.html").then(response => response ? injectSiteEnhancements(response.clone()) : response))
     );
     return;
   }
