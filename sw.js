@@ -1,4 +1,4 @@
-const CACHE = "song2video-agent-v1";
+const CACHE = "song2video-agent-v2";
 const ASSETS = [
   "./",
   "./index.html",
