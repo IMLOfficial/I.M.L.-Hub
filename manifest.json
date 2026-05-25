@@ -9,7 +9,7 @@
   "orientation": "any",
   "background_color": "#08080d",
   "theme_color": "#08080d",
-  "description": "A browser AI agent that generates reactive music videos from songs.",
+  "description": "A browser AI agent that generates reactive music videos from songs with WebM exports up to five minutes.",
   "prefer_related_applications": false,
   "icons": [
     {
