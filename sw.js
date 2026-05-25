@@ -1,5 +1,6 @@
-const CACHE = "song2video-agent-v5";
+const CACHE = "song2video-agent-v6";
 const INJECTED_SCRIPTS = [
+  '<script src="./audio-spectrum.js?v=spectrum-1" defer></script>',
   '<script src="./custom-logo.js?v=logo-1" defer></script>',
   '<script src="./openart-workflow.js?v=openart-1" defer></script>'
 ];
@@ -8,6 +9,7 @@ const ASSETS = [
   "./index.html",
   "./manifest.json",
   "./logo.svg",
+  "./audio-spectrum.js",
   "./custom-logo.js",
   "./openart-workflow.js"
 ];
