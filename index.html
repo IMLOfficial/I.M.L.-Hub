@@ -8,7 +8,7 @@
   <link rel="icon" href="./logo.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./logo.svg">
   <meta name="theme-color" content="#08080d">
-  <meta name="description" content="A browser AI agent that turns songs into animated music video concepts and WebM exports up to five minutes.">
+  <meta name="description" content="A browser AI agent that detects audio length and turns songs into animated music video concepts with WebM exports up to five minutes.">
   <style>
     :root{
       --bg:#08080d;
@@ -114,11 +114,11 @@
         <div class="hero-copy">
           <p class="kicker">New site from scratch</p>
           <h1>AI music video agent for songs.</h1>
-          <p>Upload an MP3, WAV, or M4A. The browser agent listens to the audio, builds a visual direction, renders a reactive music video preview, and exports a WebM video up to 5 minutes locally on your device.</p>
+          <p>Upload an MP3, WAV, or M4A. The browser agent automatically detects the audio length, builds a visual direction, renders a reactive music video preview, and exports a full-song WebM video up to 5 minutes locally on your device.</p>
           <div class="stats" aria-label="Agent capabilities">
             <div class="stat"><strong>Local</strong><span>No song upload needed</span></div>
             <div class="stat"><strong>Reactive</strong><span>Visuals follow energy</span></div>
-            <div class="stat"><strong>5 min</strong><span>Maximum WebM export</span></div>
+            <div class="stat"><strong>Auto</strong><span>Full-song export</span></div>
           </div>
         </div>
 
@@ -173,8 +173,9 @@
               <div class="right">
                 <label class="pill">Export length
                   <select id="exportLength" aria-label="Export length">
+                    <option value="auto" id="autoLengthOption" selected>Full song (auto)</option>
                     <option value="15">15s</option>
-                    <option value="30" selected>30s</option>
+                    <option value="30">30s</option>
                     <option value="60">60s</option>
                     <option value="120">2 min</option>
                     <option value="180">3 min</option>
@@ -202,7 +203,7 @@
           <div class="panel">
             <h2>Agent Log</h2>
             <div class="log" id="agentLog" aria-live="polite"></div>
-            <p class="mini-note">Long exports record in real time, so a 5 minute video takes 5 minutes to capture. For cloud AI text-to-video later, connect this interface to a backend API.</p>
+            <p class="mini-note">Full song mode detects the audio duration automatically. If the song is longer than 5 minutes, the export uses the first 5 minutes. Long exports record in real time.</p>
           </div>
         </aside>
       </section>
@@ -226,6 +227,7 @@
     const previewButton = $("#previewButton");
     const exportButton = $("#exportButton");
     const exportLength = $("#exportLength");
+    const autoLengthOption = $("#autoLengthOption");
     const downloadLink = $("#downloadLink");
     const moodPill = $("#moodPill");
     const bpmPill = $("#bpmPill");
@@ -314,6 +316,7 @@
       songTitle.value = songTitle.value || title;
       dropTitle.textContent = title;
       dropMeta.textContent = `${(file.size / 1024 / 1024).toFixed(1)} MB selected`;
+      setAutoLengthLabel();
       setButtons(true);
       downloadLink.classList.remove("ready");
       log("Song loaded", "The agent is ready to analyze the audio file.");
@@ -405,8 +408,11 @@
     function updateAnalysisUI() {
       moodPill.textContent = `Mood: ${analysis.mood}`;
       bpmPill.textContent = `BPM: ${analysis.bpm}`;
+      setAutoLengthLabel();
       setStep("direct", ["listen", "analyze"]);
-      log("Audio analyzed", `Detected ${analysis.mood} motion around ${analysis.bpm} BPM.`);
+      const duration = getDetectedDuration();
+      const lengthText = duration ? ` Length: ${formatDuration(Math.min(300, duration))}${duration > 300 ? " max export." : "."}` : "";
+      log("Audio analyzed", `Detected ${analysis.mood} motion around ${analysis.bpm} BPM.${lengthText}`);
     }
 
     function generateConcept() {
@@ -635,10 +641,30 @@
       return `${minutes}:${rest}`;
     }
 
+    function getDetectedDuration() {
+      const mediaDuration = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 0;
+      const analyzedDuration = analysis && Number.isFinite(analysis.duration) && analysis.duration > 0 ? analysis.duration : 0;
+      return mediaDuration || analyzedDuration || 0;
+    }
+
+    function setAutoLengthLabel() {
+      if (!autoLengthOption) return;
+      const duration = getDetectedDuration();
+      if (!duration) {
+        autoLengthOption.textContent = "Full song (auto)";
+        return;
+      }
+      const capped = Math.min(300, duration);
+      autoLengthOption.textContent = duration > 300 ? `Full song (${formatDuration(capped)} max)` : `Full song (${formatDuration(duration)})`;
+    }
+
     function getExportSeconds() {
+      const duration = getDetectedDuration();
+      if (exportLength.value === "auto") {
+        return duration ? Math.min(300, Math.max(5, duration)) : 30;
+      }
       const selected = Math.min(300, Math.max(5, Number(exportLength.value) || 30));
-      const duration = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : selected;
-      return Math.min(selected, Math.max(5, duration));
+      return duration ? Math.min(selected, Math.max(5, duration)) : selected;
     }
 
     async function exportVideo() {
@@ -728,6 +754,8 @@
     keywords.addEventListener("change", () => { if (analysis) generateConcept(); });
     audio.addEventListener("play", () => { previewing = true; });
     audio.addEventListener("pause", () => { if (!recording) previewing = false; });
+    audio.addEventListener("loadedmetadata", setAutoLengthLabel);
+    audio.addEventListener("durationchange", setAutoLengthLabel);
     canvas.addEventListener("pointermove", event => {
       const rect = canvas.getBoundingClientRect();
       pointer = { x: (event.clientX - rect.left) / rect.width, y: (event.clientY - rect.top) / rect.height, active: true };
@@ -745,7 +773,7 @@
     requestAnimationFrame(draw);
 
     if ("serviceWorker" in navigator) {
-      addEventListener("load", () => navigator.serviceWorker.register("./sw.js?v=agent-2").catch(() => {}));
+      addEventListener("load", () => navigator.serviceWorker.register("./sw.js?v=agent-3").catch(() => {}));
     }
   </script>
 </body>
