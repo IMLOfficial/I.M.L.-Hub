@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Song2Video AI Backend Test</title>
+  <meta name="theme-color" content="#08080d">
+  <style>
+    :root{color-scheme:dark;--bg:#08080d;--panel:#15151f;--text:#f7f7fb;--muted:#b9bbc9;--line:rgba(255,255,255,.14);--red:#ff1f5a;--blue:#4fd6ff}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 20% 0,rgba(255,31,90,.2),transparent 24rem),radial-gradient(circle at 85% 10%,rgba(79,214,255,.16),transparent 28rem),#08080d;color:var(--text);padding:24px}main{width:min(920px,100%);margin:0 auto;display:grid;gap:18px}.card{border:1px solid var(--line);border-radius:24px;background:rgba(21,21,31,.84);box-shadow:0 24px 80px rgba(0,0,0,.34);padding:20px}h1{margin:0;font-size:clamp(2rem,6vw,4.2rem);line-height:.95}p{color:var(--muted);line-height:1.5}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:grid;gap:7px;color:var(--muted);font-weight:800;font-size:.9rem}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.08);color:#fff;min-height:44px;padding:10px 12px}textarea{min-height:150px;resize:vertical}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.btn{border:0;border-radius:999px;min-height:44px;padding:10px 18px;background:#fff;color:#08080d;font-weight:950;cursor:pointer}.btn.hot{background:linear-gradient(135deg,var(--red),#ff86a7);color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}pre{white-space:pre-wrap;word-break:break-word;margin:0;padding:14px;border-radius:16px;background:#050507;border:1px solid var(--line);color:#d7f6ff;min-height:130px}@media(max-width:720px){body{padding:14px}.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card">
+      <h1>AI Video Backend Test</h1>
+      <p>This page connects to your private backend proxy. Do not put Kling, OpenAI, or Canva API keys in this public page.</p>
+    </section>
+
+    <section class="card">
+      <div class="grid">
+        <label>Backend URL
+          <input id="backendUrl" placeholder="https://your-backend.example.com">
+        </label>
+        <label>Provider
+          <select id="provider">
+            <option value="kling">Kling-style video API</option>
+            <option value="openai">OpenAI Sora video API</option>
+          </select>
+        </label>
+        <label>Target length
+          <select id="seconds">
+            <option value="30">30 seconds</option>
+            <option value="60">1 minute</option>
+            <option value="120">2 minutes</option>
+            <option value="180">3 minutes</option>
+            <option value="300">5 minutes</option>
+          </select>
+        </label>
+        <label>Aspect ratio
+          <select id="aspectRatio">
+            <option value="16:9">16:9 widescreen</option>
+            <option value="9:16">9:16 vertical</option>
+            <option value="1:1">1:1 square</option>
+          </select>
+        </label>
+      </div>
+      <label style="margin-top:12px">Prompt
+        <textarea id="prompt">Cinematic I.M.L. music video, blue lightning, neon particles, emotional light, premium YouTube Music style, no captions, no text overlays.</textarea>
+      </label>
+      <div class="actions">
+        <button class="btn hot" id="generateBtn">Generate AI Video Job</button>
+        <button class="btn" id="pollBtn" disabled>Poll Status</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Status</h2>
+      <pre id="output">Waiting for backend URL.</pre>
+    </section>
+  </main>
+
+  <script>
+    const backendUrl = document.querySelector('#backendUrl');
+    const provider = document.querySelector('#provider');
+    const seconds = document.querySelector('#seconds');
+    const aspectRatio = document.querySelector('#aspectRatio');
+    const promptInput = document.querySelector('#prompt');
+    const generateBtn = document.querySelector('#generateBtn');
+    const pollBtn = document.querySelector('#pollBtn');
+    const output = document.querySelector('#output');
+    let currentJobId = '';
+
+    backendUrl.value = localStorage.getItem('song2videoBackendUrl') || '';
+
+    function show(data) {
+      output.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    }
+
+    function getBaseUrl() {
+      const value = backendUrl.value.trim().replace(/\/$/, '');
+      if (!value) throw new Error('Add your backend URL first.');
+      localStorage.setItem('song2videoBackendUrl', value);
+      return value;
+    }
+
+    generateBtn.addEventListener('click', async () => {
+      try {
+        generateBtn.disabled = true;
+        show('Sending AI video job...');
+        const response = await fetch(`${getBaseUrl()}/api/ai-video/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            provider: provider.value,
+            prompt: promptInput.value,
+            seconds: Number(seconds.value),
+            aspectRatio: aspectRatio.value,
+            style: 'cinematic'
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Backend request failed.');
+        currentJobId = data.jobId;
+        pollBtn.disabled = !currentJobId;
+        show(data);
+      } catch (error) {
+        show(error.message);
+      } finally {
+        generateBtn.disabled = false;
+      }
+    });
+
+    pollBtn.addEventListener('click', async () => {
+      try {
+        if (!currentJobId) return;
+        show('Checking status...');
+        const response = await fetch(`${getBaseUrl()}/api/ai-video/status/${encodeURIComponent(currentJobId)}`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Status request failed.');
+        show(data);
+      } catch (error) {
+        show(error.message);
+      }
+    });
+  </script>
+</body>
+</html>
