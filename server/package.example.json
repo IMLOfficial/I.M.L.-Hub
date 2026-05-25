@@ -1,0 +1,16 @@
+{
+  "name": "song2video-ai-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node ai-video-proxy.example.js",
+    "dev": "node --watch ai-video-proxy.example.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
