@@ -8,7 +8,7 @@
   <link rel="icon" href="./logo.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./logo.svg">
   <meta name="theme-color" content="#08080d">
-  <meta name="description" content="A browser AI agent that turns songs into animated music video concepts and WebM exports.">
+  <meta name="description" content="A browser AI agent that turns songs into animated music video concepts and WebM exports up to five minutes.">
   <style>
     :root{
       --bg:#08080d;
@@ -114,11 +114,11 @@
         <div class="hero-copy">
           <p class="kicker">New site from scratch</p>
           <h1>AI music video agent for songs.</h1>
-          <p>Upload an MP3, WAV, or M4A. The browser agent listens to the audio, builds a visual direction, renders a reactive music video preview, and exports a WebM clip locally on your device.</p>
+          <p>Upload an MP3, WAV, or M4A. The browser agent listens to the audio, builds a visual direction, renders a reactive music video preview, and exports a WebM video up to 5 minutes locally on your device.</p>
           <div class="stats" aria-label="Agent capabilities">
             <div class="stat"><strong>Local</strong><span>No song upload needed</span></div>
             <div class="stat"><strong>Reactive</strong><span>Visuals follow energy</span></div>
-            <div class="stat"><strong>Export</strong><span>Canvas plus audio WebM</span></div>
+            <div class="stat"><strong>5 min</strong><span>Maximum WebM export</span></div>
           </div>
         </div>
 
@@ -176,6 +176,9 @@
                     <option value="15">15s</option>
                     <option value="30" selected>30s</option>
                     <option value="60">60s</option>
+                    <option value="120">2 min</option>
+                    <option value="180">3 min</option>
+                    <option value="300">5 min</option>
                   </select>
                 </label>
                 <button class="btn" id="exportButton" type="button" disabled>Export WebM</button>
@@ -199,7 +202,7 @@
           <div class="panel">
             <h2>Agent Log</h2>
             <div class="log" id="agentLog" aria-live="polite"></div>
-            <p class="mini-note">This first version runs in the browser. For cloud AI text-to-video later, connect this interface to a backend API.</p>
+            <p class="mini-note">Long exports record in real time, so a 5 minute video takes 5 minutes to capture. For cloud AI text-to-video later, connect this interface to a backend API.</p>
           </div>
         </aside>
       </section>
@@ -625,6 +628,19 @@
       log("Preview started", "The generated video is now reacting to live audio energy.");
     }
 
+    function formatDuration(seconds) {
+      const rounded = Math.max(0, Math.round(seconds));
+      const minutes = Math.floor(rounded / 60);
+      const rest = String(rounded % 60).padStart(2, "0");
+      return `${minutes}:${rest}`;
+    }
+
+    function getExportSeconds() {
+      const selected = Math.min(300, Math.max(5, Number(exportLength.value) || 30));
+      const duration = Number.isFinite(audio.duration) && audio.duration > 0 ? audio.duration : selected;
+      return Math.min(selected, Math.max(5, duration));
+    }
+
     async function exportVideo() {
       if (!fileUrl || recording) return;
       if (!window.MediaRecorder || !canvas.captureStream) {
@@ -637,16 +653,47 @@
       recording = true;
       downloadLink.classList.remove("ready");
       exportButton.disabled = true;
-      exportButton.textContent = "Recording...";
-      const seconds = Math.min(Number(exportLength.value), Math.max(5, audio.duration || Number(exportLength.value)));
+
+      const seconds = getExportSeconds();
       const stream = canvas.captureStream(30);
       const audioTrack = audioDestination?.stream.getAudioTracks()[0];
       if (audioTrack) stream.addTrack(audioTrack);
       const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus") ? "video/webm;codecs=vp9,opus" : "video/webm";
-      const recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 6000000 });
+      const bitrate = seconds >= 240 ? 3500000 : seconds >= 120 ? 4500000 : 6000000;
+      let recorder;
+      try {
+        recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: bitrate });
+      } catch (error) {
+        recorder = new MediaRecorder(stream);
+      }
+
       const chunks = [];
+      let stopTimer = 0;
+      let progressTimer = 0;
+      let startedAt = 0;
+      const updateProgress = () => {
+        const elapsed = Math.min(seconds, (performance.now() - startedAt) / 1000);
+        exportButton.textContent = `Recording ${formatDuration(elapsed)} / ${formatDuration(seconds)}`;
+      };
+      const stopRecording = () => {
+        clearTimeout(stopTimer);
+        if (recorder.state !== "inactive") recorder.stop();
+        audio.pause();
+      };
+
       recorder.ondataavailable = event => { if (event.data && event.data.size) chunks.push(event.data); };
+      recorder.onerror = () => {
+        clearInterval(progressTimer);
+        clearTimeout(stopTimer);
+        recording = false;
+        exportButton.disabled = false;
+        exportButton.textContent = "Export WebM";
+        log("Export failed", "The browser stopped the recording. Try a shorter export or close other apps to free memory.");
+      };
       recorder.onstop = () => {
+        clearInterval(progressTimer);
+        clearTimeout(stopTimer);
+        audio.removeEventListener("ended", stopRecording);
         const blob = new Blob(chunks, { type: "video/webm" });
         const url = URL.createObjectURL(blob);
         downloadLink.href = url;
@@ -655,16 +702,18 @@
         recording = false;
         exportButton.disabled = false;
         exportButton.textContent = "Export WebM";
-        log("Export ready", "Your generated WebM video is ready to download.");
+        log("Export ready", `Your ${formatDuration(seconds)} WebM video is ready to download.`);
       };
+
       audio.currentTime = 0;
-      recorder.start(500);
-      await audio.play().catch(() => {});
-      log("Recording export", `Capturing ${Math.round(seconds)} seconds of video and audio.`);
-      setTimeout(() => {
-        if (recorder.state !== "inactive") recorder.stop();
-        audio.pause();
-      }, seconds * 1000);
+      recorder.start(seconds > 60 ? 1000 : 500);
+      startedAt = performance.now();
+      updateProgress();
+      progressTimer = setInterval(updateProgress, 500);
+      await audio.play().catch(() => log("Playback blocked", "Tap play, then export again if the browser blocks audio start."));
+      log("Recording export", `Capturing ${formatDuration(seconds)} of video and audio. Long exports record in real time.`);
+      audio.addEventListener("ended", stopRecording, { once: true });
+      stopTimer = setTimeout(stopRecording, seconds * 1000);
     }
 
     songInput.addEventListener("change", event => handleFile(event.target.files[0]));
@@ -696,7 +745,7 @@
     requestAnimationFrame(draw);
 
     if ("serviceWorker" in navigator) {
-      addEventListener("load", () => navigator.serviceWorker.register("./sw.js?v=agent-1").catch(() => {}));
+      addEventListener("load", () => navigator.serviceWorker.register("./sw.js?v=agent-2").catch(() => {}));
     }
   </script>
 </body>
