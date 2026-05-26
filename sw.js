@@ -1,8 +1,9 @@
-const CACHE = "song2video-agent-v6";
+const CACHE = "song2video-agent-v7";
 const INJECTED_SCRIPTS = [
   '<script src="./audio-spectrum.js?v=spectrum-1" defer></script>',
   '<script src="./custom-logo.js?v=logo-1" defer></script>',
-  '<script src="./openart-workflow.js?v=openart-1" defer></script>'
+  '<script src="./openart-workflow.js?v=openart-1" defer></script>',
+  '<script src="./local-ai-demo.js?v=demo-1" defer></script>'
 ];
 const ASSETS = [
   "./",
@@ -11,7 +12,8 @@ const ASSETS = [
   "./logo.svg",
   "./audio-spectrum.js",
   "./custom-logo.js",
-  "./openart-workflow.js"
+  "./openart-workflow.js",
+  "./local-ai-demo.js"
 ];
 
 self.addEventListener("install", event => {
