@@ -1,15 +1,14 @@
 {
   "id": "./",
-  "name": "Song2Video AI Agent",
-  "short_name": "Song2Video",
+  "name": "I.M.L. Official",
+  "short_name": "I.M.L.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
-  "orientation": "any",
-  "background_color": "#08080d",
-  "theme_color": "#08080d",
-  "description": "A browser AI agent that generates reactive music videos from songs with WebM exports up to five minutes.",
+  "orientation": "portrait",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
   "prefer_related_applications": false,
   "icons": [
     {
