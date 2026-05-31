@@ -1,19 +1,23 @@
-const CACHE = "song2video-agent-v7";
-const INJECTED_SCRIPTS = [
-  '<script src="./audio-spectrum.js?v=spectrum-1" defer></script>',
-  '<script src="./custom-logo.js?v=logo-1" defer></script>',
-  '<script src="./openart-workflow.js?v=openart-1" defer></script>',
-  '<script src="./local-ai-demo.js?v=demo-1" defer></script>'
-];
+const CACHE = "iml-music-restore-v1";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./logo.svg",
-  "./audio-spectrum.js",
-  "./custom-logo.js",
-  "./openart-workflow.js",
-  "./local-ai-demo.js"
+  "./video-inspired-bg.js",
+  "./video-library.js",
+  "./language-widget.js",
+  "./audio-library.js",
+  "./playlist-toggle.js",
+  "./music-theme.js",
+  "./music-polish.js",
+  "./site-features.js",
+  "./mobile-music-app.js",
+  "./promo-ads.js",
+  "./promo-live-files.js",
+  "./youtube-music-redesign.js",
+  "./mobile-ytm-experience.js",
+  "./mobile-compact-fix.js"
 ];
 
 self.addEventListener("install", event => {
@@ -33,29 +37,6 @@ self.addEventListener("activate", event => {
   );
 });
 
-async function injectSiteEnhancements(response) {
-  const type = response.headers.get("content-type") || "";
-  if (!type.includes("text/html")) return response;
-
-  let html = await response.text();
-  const missingScripts = INJECTED_SCRIPTS.filter(script => {
-    const match = script.match(/src="\.\/(.*?)\?/);
-    return !match || !html.includes(match[1]);
-  });
-  if (missingScripts.length) {
-    html = html.replace("</body>", `${missingScripts.join("\n")}\n</body>`);
-  }
-
-  const headers = new Headers(response.headers);
-  headers.set("content-type", "text/html; charset=utf-8");
-  headers.set("cache-control", "no-store");
-  return new Response(html, {
-    status: response.status,
-    statusText: response.statusText,
-    headers
-  });
-}
-
 self.addEventListener("fetch", event => {
   const request = event.request;
   const url = new URL(request.url);
@@ -65,11 +46,7 @@ self.addEventListener("fetch", event => {
   }
 
   if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request, { cache: "no-store" })
-        .then(response => injectSiteEnhancements(response))
-        .catch(() => caches.match("./index.html").then(response => response ? injectSiteEnhancements(response.clone()) : response))
-    );
+    event.respondWith(fetch(request, { cache: "no-store" }).catch(() => caches.match("./index.html")));
     return;
   }
 
